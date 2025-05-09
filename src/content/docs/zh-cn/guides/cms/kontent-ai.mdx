@@ -1,11 +1,14 @@
 ---
 title: Kontent.ai 与 Astro
 description: 使用 Kontent.ai 作为 CMS 将內容添加到你的 Astro 项目
+sidebar:
+  label: Kontent.ai
 type: cms
 service: Kontent.ai
 i18nReady: true
 ---
-import FileTree from '~/components/FileTree.astro'
+import { Steps } from '@astrojs/starlight/components';
+import { FileTree } from '@astrojs/starlight/components';
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
 [Kontent.ai](https://www.kontent.ai/) 是一个无头 CMS，它允许你以结构化和模块化的方式管理内容，并得到人工智能功能的支持。
@@ -18,7 +21,7 @@ import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
 在开始之前，你需要以下内容：
 
-1. **Kontent.ai 项目** - 如果你还没有 Kontent.ai 账户，可以 [免费注册](https://app.kontent.ai/sign-up) 并创建一个新项目。
+1. **Kontent.ai 项目** - 如果你还没有 Kontent.ai 账号，可以 [免费注册](https://app.kontent.ai/sign-up) 并创建一个新项目。
 
 2. **Delivery API 密钥** - 你需要已发布内容的环境 ID 和用于获取草稿的预览 API 密钥（可选）。这两个密钥位于 Kontent.ai 的 **Settings -> API Keys** 选项卡中。
 
@@ -64,7 +67,7 @@ interface ImportMetaEnv {
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-    pnpm install @kontent-ai/delivery-sdk
+    pnpm add @kontent-ai/delivery-sdk
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -85,7 +88,7 @@ export const deliveryClient = createDeliveryClient({
 });
 ```
 
-:::note[备注]
+:::note
 请阅读更多有关 [在 Astro 中获取环境变量](/zh-cn/guides/environment-variables/#获取环境变量) 的内容。
 :::
 
@@ -192,7 +195,7 @@ const blogPosts = await deliveryClient
 
 接下来，你将从你的内容模型中生成 TypeScript 类型。
 
-:::note[备注]
+:::note
 这一步是可选的，但它可以提供更好的开发者体验，并允许你在构建时发现潜在问题，而不是在运行时。
 :::
 
@@ -206,7 +209,7 @@ const blogPosts = await deliveryClient
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-    pnpm install @kontent-ai/model-generator ts-node dotenv
+    pnpm add @kontent-ai/model-generator ts-node dotenv
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -358,7 +361,7 @@ const blogPosts = await deliveryClient
 
 #### 静态站点生成
 
-在本节中，你将使用 Astro 的 [静态 (SSG) 模式](/zh-cn/core-concepts/routing/#静态-ssg-模式)。
+在本节中，你将使用 Astro 的 [静态 (SSG) 模式](/zh-cn/guides/routing/#静态-ssg-模式)。
 
 首先，在 `/src/pages/blog/` 目录中创建一个名为 `[slug].astro` 的文件，该文件需要导出一个名为 `getStaticPaths` 的函数，该函数从 CMS 中收集所有数据：
 
@@ -438,11 +441,11 @@ const blogPost: BlogPost = Astro.props.blogPost
 </html>
 ```
 
-切换到 Astro 预览以查看渲染的博客文章。默认情况下是：http://localhost:3000/blog/astro-is-amazing/
+切换到 Astro 预览以查看渲染的博客文章。默认情况下是：http://localhost:4321/blog/astro-is-amazing/
 
-#### 服务端渲染
+#### 按需渲染
 
-如果你选择了 SSR 模式，你将使用动态路由从 Kontent.ai 获取页面数据。
+如果你的路由是[按需渲染的](/zh-cn/guides/on-demand-rendering/)，你将使用动态路由从 Kontent.ai 获取页面数据。
 
 在 `/src/pages/blog/` 目录下创建一个名为 `[slug].astro` 的新文件，并添加以下代码。数据获取与之前的用例非常相似，但添加了一个 `equalsFilter`，以便根据使用的 URL 找到正确的博客文章：
 
@@ -529,17 +532,25 @@ try {
 
 在 Netlify 中设置 Webhook：
 
+<Steps>
 1. 进入你的网站仪表板，点击 **Build & deploy**。
+
 2. 在 **Continuous Deployment** 选项卡下，找到 **Build hooks** 部分，点击 **Add build hook**。
+
 3. 为你的 Webhook 提供一个名称，选择要触发构建的分支，然后点击 **Save** 并复制生成的 URL。
+</Steps>
 
 ##### Vercel
 
 在 Vercel 中设置 Webhook：
 
+<Steps>
 1. 进入你的项目仪表板，点击 **Settings**。
+
 2. 在 **Git** 选项卡下，找到 **Deploy Hooks** 部分。
+
 3. 为你的 Webhook 提供一个名称，选择要触发构建的分支。点击 **Add** 并复制生成的 URL。
+</Steps>
 
 ##### 添加 Webhook 到 Kontent.ai
 

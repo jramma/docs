@@ -1,16 +1,21 @@
 ---
-title: Add Last Modified Time
+title: Add last modified time
 description: Build a remark plugin to add the last modified time to your Markdown and MDX.
-i18nReady: false
+i18nReady: true
 type: recipe
 ---
-
-import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
+import { Steps } from '@astrojs/starlight/components';
+import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro';
 
 Learn how to build a [remark plugin](https://github.com/remarkjs/remark) that adds the last modified time to the frontmatter of your Markdown and MDX files. Use this property to  display the modified time in your pages.
 
+:::note[Uses Git history]
+This recipe calculates time based on your repository’s Git history and may not be accurate on some deployment platforms. Your host may be performing **shallow clones** which do not retrieve the full git history.
+:::
+
 ## Recipe
 
+<Steps>
 1. Install Helper Packages
 
    Install [`Day.js`](https://www.npmjs.com/package/dayjs) to modify and format times:
@@ -23,7 +28,7 @@ Learn how to build a [remark plugin](https://github.com/remarkjs/remark) that ad
      </Fragment>
      <Fragment slot="pnpm">
        ```shell
-       pnpm install dayjs
+       pnpm add dayjs
        ```
      </Fragment>
      <Fragment slot="yarn">
@@ -35,15 +40,15 @@ Learn how to build a [remark plugin](https://github.com/remarkjs/remark) that ad
 
 2. Create a Remark Plugin
 
-   This plugin uses `execSync` to run a Git command that returns the timestamp of the latest commit in ISO 8601 format. The timestamp is then added to the frontmatter of the file.
+    This plugin uses `execSync` to run a Git command that returns the timestamp of the latest commit in ISO 8601 format. The timestamp is then added to the frontmatter of the file.
 
      ```js title="remark-modified-time.mjs"
      import { execSync } from "child_process";
 
-     export function modifiedTime() {
+     export function remarkModifiedTime() {
        return function (tree, file) {
          const filepath = file.history[0];
-         const result = execSync(`git log -1 --pretty="format:%cI" ${filepath}`);
+         const result = execSync(`git log -1 --pretty="format:%cI" "${filepath}"`);
          file.data.astro.frontmatter.lastModified = result.toString();
        };
      }
@@ -57,7 +62,7 @@ Learn how to build a [remark plugin](https://github.com/remarkjs/remark) that ad
      ```js title="remark-modified-time.mjs"
      import { statSync } from "fs";
 
-     export function modifiedTime() {
+     export function remarkModifiedTime() {
        return function (tree, file) {
          const filepath = file.history[0];
          const result = statSync(filepath);
@@ -84,11 +89,11 @@ Learn how to build a [remark plugin](https://github.com/remarkjs/remark) that ad
 
 4. Display Last Modified Time
 
-   If your content is stored in a [content collection](/en/guides/content-collections/), access the `remarkPluginFrontmatter` from the `entry.render()` function. Then render `lastModified` in your template wherever you would like it to appear.
+   If your content is stored in a [content collection](/en/guides/content-collections/), access the `remarkPluginFrontmatter` from the `render(entry)` function. Then render `lastModified` in your template wherever you would like it to appear.
 
    ```astro title="src/pages/posts/[slug].astro" {3-4,6,17,19-21,28}
    ---
-   import { CollectionEntry, getCollection } from 'astro:content';
+   import { getCollection, render } from 'astro:content';
    import dayjs from "dayjs";
    import utc from "dayjs/plugin/utc";
 
@@ -97,13 +102,13 @@ Learn how to build a [remark plugin](https://github.com/remarkjs/remark) that ad
    export async function getStaticPaths() {
      const blog = await getCollection('blog');
      return blog.map(entry => ({
-       params: { slug: entry.slug },
+       params: { slug: entry.id },
        props: { entry },
      }));
    }
 
    const { entry } = Astro.props;
-   const { Content, remarkPluginFrontmatter } = await entry.render();
+   const { Content, remarkPluginFrontmatter } = await render(entry);
 
    const lastModified = dayjs(remarkPluginFrontmatter.lastModified)
      .utc()
@@ -120,7 +125,7 @@ Learn how to build a [remark plugin](https://github.com/remarkjs/remark) that ad
    </html>
    ```
 
-   If you're using a [Markdown layout](/en/guides/markdown-content/#markdown-and-mdx-pages), use the `lastModified` frontmatter property from `Astro.props` in your layout template.
+   If you're using a [Markdown layout](/en/basics/layouts/#markdown-layouts), use the `lastModified` frontmatter property from `Astro.props` in your layout template.
 
    ```astro title="src/layouts/BlogLayout.astro" {2-3,5,7-9,15}
    ---
@@ -142,3 +147,4 @@ Learn how to build a [remark plugin](https://github.com/remarkjs/remark) that ad
      </body>
    </html>
    ```
+</Steps>

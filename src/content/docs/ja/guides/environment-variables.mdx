@@ -5,7 +5,7 @@ i18nReady: true
 ---
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
-Astroは環境変数に関するViteの組み込みのサポートを利用しています。環境変数を扱うために[Viteが備える任意の方式](https://vitejs.dev/guide/env-and-mode.html)を使用できます。
+Astroは環境変数に関するViteの組み込みのサポートを利用しています。環境変数を扱うために[Viteが備える任意の方式](https://vite.dev/guide/env-and-mode.html)を使用できます。
 
 サーバ側のコードでは _すべて_ の環境変数が使えますが、クライアント側のコードではセキュリティのために`PUBLIC_`というプレフィックスを持つ環境変数のみが使えることに注意してください。
 
@@ -17,7 +17,7 @@ PUBLIC_ANYBODY=there
 この例では、`PUBLIC_ANYBODY`（`import.meta.env.PUBLIC_ANYBODY`でアクセス可能）はサーバサイドでもクライアントサイドでも利用でき、`SECRET_PASSWORD`（`import.meta.env.SECRET_PASSWORD`でアクセス可能）はサーバサイドでのみ利用できます。
 
 :::caution
-`import.meta.env`と`.env`ファイルは[設定ファイル](/ja/guides/configuring-astro/#環境変数)の中では利用できません
+`.env`ファイルは[設定ファイル](/ja/guides/configuring-astro/#環境変数)の中では読み込まれません。
 :::
 
 ## デフォルト環境変数
@@ -29,6 +29,14 @@ Astroでは、いくつかの環境変数をすぐに利用できます。
 - `import.meta.env.DEV`: あなたのサイトが開発環境で動作している場合は`true`となり、その他の場合は`false`となります。常に`import.meta.env.PROD`の反対となります。
 - `import.meta.env.BASE_URL`: あなたのサイトの配信元のベースURLです。これは、[`base`オプション](/ja/reference/configuration-reference/#base)によって決まります。
 - `import.meta.env.SITE`: プロジェクトの`astro.config`で指定された[`site`オプション](/ja/reference/configuration-reference/#site)がセットされます。
+- `import.meta.env.ASSETS_PREFIX`: [`build.assetsPrefix`設定オプション](/ja/reference/configuration-reference/#buildassetsprefix)が設定されている場合に、Astroが生成するアセットリンクに付加されるプレフィックスです。Astroが関与しないアセットリンクを作成するために使用できます。
+
+他の環境変数と同様に使用します。
+
+```ts utils.ts
+const isProd = import.meta.env.PROD;
+const isDev = import.meta.env.DEV;
+```
 
 ## 環境変数を設定する
 
@@ -47,7 +55,7 @@ DB_PASSWORD="foobar"
 PUBLIC_POKEAPI="https://pokeapi.co/api/v2"
 ```
 
-`.env`ファイルについてさらに知りたい場合は、[Viteのドキュメントを参照してください](https://vitejs.dev/guide/env-and-mode.html#env-files)。
+`.env`ファイルについてさらに知りたい場合は、[Viteのドキュメントを参照してください](https://vite.dev/guide/env-and-mode.html#env-files)。
 
 ### CLIの利用
 
@@ -56,28 +64,24 @@ PUBLIC_POKEAPI="https://pokeapi.co/api/v2"
 <PackageManagerTabs>
  <Fragment slot="yarn">
     ```shell
-    POKEAPI=https://pokeapi.co/api/v2 yarn run dev
+    PUBLIC_POKEAPI=https://pokeapi.co/api/v2 yarn run dev
     ```
  </Fragment>
  <Fragment slot="npm">
     ```shell
-    POKEAPI=https://pokeapi.co/api/v2 npm run dev
+    PUBLIC_POKEAPI=https://pokeapi.co/api/v2 npm run dev
     ```
  </Fragment>
  <Fragment slot="pnpm">
     ```shell
-    POKEAPI=https://pokeapi.co/api/v2 pnpm run dev
+    PUBLIC_POKEAPI=https://pokeapi.co/api/v2 pnpm run dev
     ```
  </Fragment>
 </PackageManagerTabs>
 
-:::caution
-このようにセットされた変数は、クライアントサイドも含め、プロジェクトの任意の箇所から利用可能となります。
-:::
-
 ## 環境変数を取得する
 
-Viteでは`process.env`の代わりに、ES2020で追加された`import.meta`機能を使用した`import.meta.env`を使用します。
+Astroでは、process.envの代わりにimport.meta.envを使用して環境変数にアクセスします。これは、[ES2020で追加されたimport.meta機能](https://tc39.es/ecma262/2020/#prod-ImportMeta)を使用しています。
 
 例えば、環境変数`PUBLIC_POKEAPI`を取得するには、`import.meta.env.PUBLIC_POKEAPI`を使用します。
 
@@ -89,9 +93,7 @@ const data = await db(import.meta.env.DB_PASSWORD);
 const data = fetch(`${import.meta.env.PUBLIC_POKEAPI}/pokemon/squirtle`);
 ```
 
-:::caution
-Viteは`import.meta.env`を静的に置き換えるので、`import.meta.env[key]`のような動的なキーでアクセスすることはできません。
-:::
+SSRを使う場合、使用するSSRアダプターによって実行時に環境変数にアクセスできます。ほとんどのアダプターでは`process.env`から環境変数にアクセスできますが、Denoアダプターでは`Deno.env.get()`を使用する必要があります。Cloudflareは[独自の方法](/ja/guides/integrations-guide/cloudflare/#cloudflareランタイム)で環境変数を処理します。Astroはサーバーの環境変数をチェックし、存在しない場合は`.env`ファイルを探します。
 
 ## TypeScriptのインテリセンス
 

@@ -6,9 +6,9 @@ service: Storyblok
 stub: false
 i18nReady: true
 ---
-import FileTree from '~/components/FileTree.astro'
+import { FileTree } from '@astrojs/starlight/components';
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-
+import { Steps } from '@astrojs/starlight/components';
 
 
 [Storyblok](https://www.storyblok.com/) es un headless CMS basado en componentes que te permite gestionar tu contenido utilizando componentes reutilizables llamados Bloks.
@@ -21,7 +21,7 @@ En esta sección, utilizarás la [integración de Storyblok](https://github.com/
 
 Para comenzar, necesitarás lo siguiente:
 
-1. **Un proyecto de Astro** - Si aún no tienes un proyecto de Astro, nuestra [guía de instalación](/es/install/auto/) te ayudará a poner en marcha en poco tiempo.
+1. **Un proyecto de Astro** - Si aún no tienes un proyecto de Astro, nuestra [guía de instalación](/es/install-and-setup/) te ayudará a poner en marcha en poco tiempo.
 
 2. **Una cuenta y espacio de Storyblok** - Si aún no tienes una cuenta, [regístrate gratis](https://app.storyblok.com/#/signup) y crea un nuevo espacio.
 
@@ -32,14 +32,14 @@ Para comenzar, necesitarás lo siguiente:
 Para agregar las credenciales de tu sitio a Astro, crea un archivo `.env` en la raíz de tu proyecto con la siguiente variable:
 
 ```ini title=".env"
-STORYBLOK_TOKEN=YOUR_PREVIEW_TOKEN
+STORYBLOK_TOKEN=TU_PREVIEW_TOKEN
 ```
 
 Ahora, deberías poder usar esta variable de entorno en tu proyecto.
 
 Tu directorio raíz debería incluir este nuevo archivo ahora:
 
-<FileTree title="Project Structure">
+<FileTree title="Estructura del proyecto">
 - src/
 - **.env**
 - astro.config.mjs
@@ -60,7 +60,7 @@ Para conectar Astro con tu espacio de Storyblok, instala la [integración oficia
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-  pnpm install @storyblok/astro vite
+  pnpm add @storyblok/astro vite
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -153,7 +153,7 @@ Para renderizar nuestro contenido, la integración proporciona funciones de util
 
 Tu directorio raíz debería incluir este nuevo archivo:
 
-<FileTree title="Project Structure">
+<FileTree title="Estructura del proyecto">
 - src/
   - storyblok/
     - **BlogPost.astro**
@@ -272,7 +272,7 @@ Para conectar los Bloks recién creados a los componentes de Astro, crea una nue
 ```astro title="src/storyblok/Page.astro"
 ---
 import { storyblokEditable } from '@storyblok/astro'
-import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
 const { blok } = Astro.props
 ---
 
@@ -400,7 +400,7 @@ Para generar páginas para todas tus publicaciones de blog, crea una página `.a
 
 #### Generación de sitio estático
 
-If you are using Astro's default static site generation, you will use [dynamic routes](/es/core-concepts/routing/#rutas-dinámicas) and the `getStaticPaths` function to generate your project pages.
+If you are using Astro's default static site generation, you will use [dynamic routes](/es/guides/routing/#rutas-dinámicas) and the `getStaticPaths` function to generate your project pages.
 
 Crea un nuevo directorio `src/pages/blog/` y agrega un nuevo archivo llamado `[...slug].astro` con el siguiente código:
 
@@ -447,9 +447,13 @@ const story = data.story;
 
 Este archivo generará una página para cada historia, con el slug y contenido obtenidos de la API de Storyblok.
 
+:::note
+Cuando agregues carpetas dentro de Storyblok, inclúyelas en el slug al interactuar con la API de Storyblok. Por ejemplo, en la solicitud GET anterior, podemos usar **cdn/stories/blog**, con una carpeta blog adentro en lugar de usarlas en la raíz.
+:::
+
 #### Renderizado en el lado del servidor
 
-Si has [optado por el modo de SSR](/es/guides/server-side-rendering/#habilitando-ssr-en-tu-proyecto), utilizarás rutas dinámicas para obtener los datos de la página desde Storyblok.
+Si has [optado por el modo de SSR](/es/guides/on-demand-rendering/), utilizarás rutas dinámicas para obtener los datos de la página desde Storyblok.
 
 Crea un nuevo directorio `src/pages/blog/` y agrega un nuevo archivo llamado `[...slug].astro` con el siguiente código:
 
@@ -469,9 +473,9 @@ try {
   return Astro.redirect('/404')
 }
 ---
-<html lang="en">
+<html lang="es">
   <head>
-    <title>Storyblok & Astro</title>
+    <title>Storyblok y Astro</title>
   </head>
   <body>
     <StoryblokComponent blok={content} />
@@ -484,12 +488,12 @@ Este archivo obtendrá y renderizará los datos de la página desde Storyblok qu
 Dado que estás utilizando una redirección a `/404`, crea una página de error 404 en `src/pages`: 
 
 ```astro title="src/pages/404.astro"
-<html lang="en">
+<html lang="es">
   <head>
-    <title>Not found</title>
+    <title>No encontrado</title>
   </head>
   <body>
-    <p>Sorry, this page does not exist.</p>
+    <p>Lo siento, esta página no existe</p>
   </body>
 </html>
 ```
@@ -508,21 +512,25 @@ Si tu proyecto utiliza el modo estático predeterminado de Astro, deberás confi
 
 Para configurar un webhook en Netlify:
 
+<Steps>
 1. Ve al panel de administración de tu sitio en Netlify y haz clic en**Build & deploy**. 
 
 2. Bajo la pestaña **Continuous Deployment**, encuentra la sección de **Build hooks** y haz clic en **Add build hook**. 
 
 3. Proporciona un nombre para tu webhook y selecciona la rama en la que deseas activar la compilación. Haz clic en **Save** y copia la URL generada.
+</Steps>
 
 ##### Vercel
 
 Para configurar un webhook en Vercel:
 
+<Steps>
 1. Ve al panel de control de tu proyecto y haz clic en **Settings**. 
 
 2. Bajo la pestaña **Git**, encuentra la sección **Deploy Hooks**. 
 
 3. Proporciona un nombre para tu webhook y la rama en la que deseas activar la compilación. Haz clic en **Add** y copia la URL generada.
+</Steps>
 
 ##### Añadiendo un webhook a Storyblok
 

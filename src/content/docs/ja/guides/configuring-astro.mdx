@@ -2,10 +2,11 @@
 title: Astroの設定
 i18nReady: true
 ---
+import ReadMore from '~/components/ReadMore.astro'
 
 プロジェクトに`astro.config.mjs`ファイルを追加することで、Astroの動作をカスタマイズできます。これはAstroプロジェクトではよく使われるファイルで、公式のサンプルテンプレートやテーマはすべて、デフォルトでこのファイルを含んでいます。
 
-📚 サポートされているすべてのオプションの概要については、Astroの[API設定リファレンス](/ja/reference/configuration-reference/)をお読みください。
+<ReadMore>サポートされているすべてのオプションの概要については、Astroの[API設定リファレンス](/ja/reference/configuration-reference/)をお読みください。</ReadMore>
 
 ## Astroの設定ファイル
 
@@ -108,19 +109,19 @@ import { defineConfig } from 'astro/config'
 
 export default defineConfig({
   // この設定ファイルからの相対パスで、"./foo"ディレクトリを指します。
-  root: new URL("./foo", import.meta.url),
+  root: new URL("./foo", import.meta.url).toString(),
   // この設定ファイルから相対パスで、"./public "ディレクトリを指します。
-  publicDir: new URL("./public", import.meta.url),
+  publicDir: new URL("./public", import.meta.url).toString(),
 })
 ```
 
 :::note
-`import.meta.env`や`import.meta.glob`など、Vite固有の`import.meta`プロパティは設定ファイルからはアクセスできません。こうしたユースケースについては[dotenv](https://github.com/motdotla/dotenv)や[fast-glob](https://github.com/mrmlnc/fast-glob)などの代替手段をおすすめします。
+`import.meta.env`や`import.meta.glob`など、Vite固有の`import.meta`プロパティは設定ファイルからはアクセスできません。こうしたユースケースについては[dotenv](https://github.com/motdotla/dotenv)や[fast-glob](https://github.com/mrmlnc/fast-glob)などの代替手段をおすすめします。さらに、[tsconfigのパスエイリアス](https://www.typescriptlang.org/tsconfig#paths)は解決されません。このファイル内では、モジュールのインポートには相対パスを使用してください。
 :::
 
 ## 出力するファイル名のカスタマイズ
 
-インポートしたJavaScriptやCSSファイルなど、Astroが処理するコードについては、`astro.config.*`ファイルの`vite.build.rollupOptions`で[`entryFileNames`](https://rollupjs.org/guide/en/#outputentryfilenames)、[`chunkFileNames`](https://rollupjs.org/guide/en/#outputchunkfilenames)、[`assetFileNames`](https://rollupjs.org/guide/en/#outputassetfilenames)を用いて出力するファイル名をカスタマイズできます。
+インポートしたJavaScriptやCSSファイルなど、Astroが処理するコードについては、`astro.config.*`ファイルの`vite.build.rollupOptions`で[`entryFileNames`](https://rollupjs.org/configuration-options/#output-entryfilenames)、[`chunkFileNames`](https://rollupjs.org/configuration-options/#output-chunkfilenames)、[`assetFileNames`](https://rollupjs.org/configuration-options/#output-assetfilenames)を用いて出力するファイル名をカスタマイズできます。
 
 ```js ins={9-11}
 // astro.config.mjs
@@ -131,8 +132,8 @@ export default defineConfig({
     build: {
       rollupOptions: {
         output: {
-          entryFileNames: 'entry.[hash].js',
-          chunkFileNames: 'chunks/chunk.[hash].js',
+          entryFileNames: 'entry.[hash].mjs',
+          chunkFileNames: 'chunks/chunk.[hash].mjs',
           assetFileNames: 'assets/asset.[hash][extname]',
         },
       },
@@ -145,10 +146,25 @@ export default defineConfig({
 
 ## 環境変数
 
-Astroは他のファイルをロードする前に設定ファイルを評価します。そのため、`import.meta.env`は使えず、また`.env`ファイルによってセットされた環境変数の取得もできません。
+Astroは他のファイルをロードする前に設定ファイルを評価します。そのため、`.env`ファイルによってセットされた環境変数を取得するために`import.meta.env`は使えません。
 
 設定ファイルの中で`process.env`を使用して、[CLIによりセットされた](/ja/guides/environment-variables/#cliの利用)ものなど、その他の環境変数の取得は可能です。
 
+また、[Viteの`loadEnv`ヘルパー](https://ja.vite.dev/config/#環境変数を設定に使用する)を使用して、`.env`ファイルを手動でロードすることもできます。
+
+:::note
+`pnpm`では、プロジェクトに直接インストールされていないモジュールをインポートできません。`pnpm`を使用している場合は、`loadEnv`ヘルパーを使用するために`vite`をインストールする必要があります。
+
+```sh
+pnpm add vite --save-dev
+```
+:::
+
+```js title="astro.config.mjs"
+import { loadEnv } from "vite";
+const { SECRET_PASSWORD } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
+```
+
 ## 設定リファレンス
 
-📚 サポートされているすべての設定オプションの概要については、Astroの[API設定リファレンス](/ja/reference/configuration-reference/)を参照してください。
+<ReadMore>サポートされているすべての設定オプションの概要については、Astroの[API設定リファレンス](/ja/reference/configuration-reference/)を参照してください。</ReadMore>

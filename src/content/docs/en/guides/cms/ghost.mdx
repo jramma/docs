@@ -1,13 +1,15 @@
 ---
 title: Ghost & Astro
 description: Add content to your Astro project using Ghost as a CMS
+sidebar:
+  label: Ghost
 type: cms
 stub: false
 service: Ghost
 i18nReady: true
 ---
 
-import FileTree from '~/components/FileTree.astro'
+import { FileTree, CardGrid, LinkCard } from '@astrojs/starlight/components';
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
 [Ghost](https://github.com/TryGhost/Ghost) is an open-source, headless content management system built on Node.js.
@@ -18,7 +20,7 @@ In this section, we’ll use the [Ghost content API](https://ghost.org/docs/cont
 ### Prerequisites
 To get started you will need to have the following: 
 
-1. **An Astro project** - If you don't have an Astro project yet, our [Installation guide](/en/install/auto/) will get you up and running in no time.
+1. **An Astro project** - If you don't have an Astro project yet, our [Installation guide](/en/install-and-setup/) will get you up and running in no time.
 
 2. **A Ghost site** - It is assumed that you have a site set up with Ghost. If you don't you can set one up on a [local environment.](https://ghost.org/docs/install/local/)
 
@@ -58,22 +60,25 @@ Your root directory should now include these new files:
 
 ### Installing dependencies
 
-To connect with Ghost, install the official content API wrapper [`@tryghost/content-api`](https://www.npmjs.com/package/@tryghost/content-api) using the command below for your preferred package manager:
+To connect with Ghost, install the official content API wrapper [`@tryghost/content-api`](https://www.npmjs.com/package/@tryghost/content-api) using the command below for your preferred package manager, and optionally, a helpful package containing type definitions if you are using TypeScript:
 
 <PackageManagerTabs>
   <Fragment slot="npm">
   ```shell
   npm install @tryghost/content-api
+  npm install --save @types/tryghost__content-api
   ```
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-  pnpm install @tryghost/content-api
+  pnpm add @tryghost/content-api
+  pnpm add --save-dev @types/tryghost__content-api
   ```
   </Fragment>
   <Fragment slot="yarn">
   ```shell
   yarn add @tryghost/content-api
+  yarn add --dev @types/tryghost__content-api
   ```
   </Fragment>
 </PackageManagerTabs>
@@ -189,7 +194,7 @@ const posts = await ghostClient.posts
 
 ### Generating pages
 
-The page `src/pages/post/[slug].astro` [dynamically generates a page](/en/core-concepts/routing/#dynamic-routes) for each post.
+The page `src/pages/post/[slug].astro` [dynamically generates a page](/en/guides/routing/#dynamic-routes) for each post.
 
 <FileTree title="Project Structure">
 - src/
@@ -284,7 +289,17 @@ To deploy your site visit our [deployment guide](/en/guides/deploy/) and follow 
 
 ## Community Resources 
 
-- You can get started with this [Astro Ghost Starter](https://github.com/PhilDL/astro-starter-ghost).
-- Andre Carrera wrote [a blog post](https://andr.ec/posts/astro-ghost-blog/) showing how to use Ghost's SDK to embed posts and previews in your Astro project.
+<CardGrid>
+
+  <LinkCard title="Ghost CMS & Astro Tutorial" href="https://matthiesen.xyz/blog/astro-ghostcms" />
+  <LinkCard title="Astro + Ghost + Tailwind CSS" href="https://andr.ec/posts/astro-ghost-blog/" />
+  <LinkCard title="Building a Corporate site with Astro and Ghost" href="https://artabric.com/post/building-a-corporate-site-with-astro-and-ghost/" />
+  <LinkCard title="`astro-starter-ghost`" href="https://github.com/PhilDL/astro-starter-ghost" />
+
+</CardGrid>
+
+:::note[Have a resource to share?]
+If you found (or made!) a helpful video or blog post about using Ghost with Astro, [add it to this list](https://github.com/withastro/docs/edit/main/src/content/docs/en/guides/cms/ghost.mdx)!
+:::
 
 

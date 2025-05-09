@@ -4,7 +4,7 @@ description: Come aggiornare il tuo progetto all'ultima versione di Astro.
 i18nReady: true
 ---
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-import FileTree from '~/components/FileTree.astro'
+import { FileTree } from '@astrojs/starlight/components';
 
 
 Questa guida ti aiuterà a passare da Astro v1 ad Astro v2.
@@ -28,10 +28,10 @@ Aggiorna Astro all'ultima versione usando il tuo package manager. Se stai usando
   <Fragment slot="pnpm">
   ```shell
   # Upgrade to Astro v2.x
-  pnpm install astro@latest
+  pnpm add astro@latest
 
   # Example: upgrade React and Tailwind integrations
-  pnpm install @astrojs/react@latest @astrojs/tailwind@latest
+  pnpm add @astrojs/react@latest @astrojs/tailwind@latest
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -131,6 +131,7 @@ Nella v1.x, Astro usava `markdown.extendDefaultPlugins` per riattivare i plugin 
 Astro v2.0 rimuove questa opzione completamente perchè questo comportamento ora è predefinito.
 
 L'applicazione di plug-in remark e rehype nella configurazione di Markdown **non disabilita più i plug-in predefiniti di Astro**. GitHub-Flavored Markdown e Smartypants ora vengono applicati indipendentemente dalla configurazione di `remarkPlugins` o `rehypePlugins` personalizzati.
+
 
 ##### Cosa devo fare?
 
@@ -357,7 +358,7 @@ Astro v2.0 rimuove questa opzione completamente. L'utilizzo di `Astro.fetchConte
 
 #### Cosa devo fare?
 
-Usa [`Astro.glob()`](/it/guides/imports/#astroglob) per recuperare i file di Markdown, oppure passa alla funzionalità [Collezione di Contenuti](/it/guides/content-collections/).
+Usa [`Astro.glob()`](/it/reference/api-reference/#astroglob) per recuperare i file di Markdown, oppure passa alla funzionalità [Collezione di Contenuti](/it/guides/content-collections/).
 
 ```astro
 ---
@@ -387,13 +388,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 ### Aggiornato: Vite 4
 
-Astro v2.0 passa da Vite 3 a [Vite 4](https://vitejs.dev/), rilasciato a Dicembre 2022.
+Astro v2.0 passa da Vite 3 a [Vite 4](https://vite.dev/), rilasciato a Dicembre 2022.
 
 #### Cosa devo fare?
 
 Non dovrebbero essere necessarie modifiche al codice! Abbiamo gestito al tuo posto la maggior parte dell'aggiornamento all'interno di Astro; tuttavia, alcuni sottili comportamenti di Vite possono ancora cambiare tra le versioni.
 
-Fai riferimento alla [Guida ufficiale per la Migrazione di Vite](https://vitejs.dev/guide/migration.html) se dovessi incontrare dei problemi.
+Fai riferimento alla [Guida ufficiale per la Migrazione di Vite](https://vite.dev/guide/migration.html) se dovessi incontrare dei problemi.
 
 ## Flag Sperimentali rimossi in Astro v2.0
 
@@ -415,7 +416,7 @@ export default defineConfig({
 Queste funzionalità sono ora disponibili di default:
 
 - [Collezioni di Contenuti](/it/guides/content-collections/) come un modo per gestire i tuoi file Markdown e MDX con la sicurezza dei tipi di dati.
-- [Prerendering delle pagine individuali in HTML statico](/it/guides/server-side-rendering/#configuring-individual-routes) quando si utilizza SSR (rendering lato server) per migliorare la velocità e il caching.
+- [Prerendering delle pagine individuali in HTML statico](/it/guides/on-demand-rendering/) quando si utilizza SSR (rendering lato server) per migliorare la velocità e il caching.
 - Un overlay dei messaggi di errore riprogettato.
 
 ## Problemi conosciuti

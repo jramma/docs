@@ -1,9 +1,10 @@
-import { cachedFetch } from '~/util-server';
+import { cachedFetch } from '~/util/cachedFetch';
 
 export interface Contributor {
 	login: string;
 	id: number;
 	contributions: number;
+	avatar_url?: string;
 }
 
 interface Commit {

@@ -1,13 +1,15 @@
 ---
 title: Xata & Astro
 description: Add a serverless database with full-text search to your project with Xata
+sidebar:
+  label: Xata
 type: backend
 service: Xata
 stub: false
 i18nReady: true
 ---
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-import FileTree from '~/components/FileTree.astro'
+import { FileTree } from '@astrojs/starlight/components';
 
 
 [Xata](https://xata.io) is a **Serverless Data Platform** that combines the features of a relational database, a search engine, and an analytics engine by exposing a single consistent REST API.
@@ -17,7 +19,7 @@ import FileTree from '~/components/FileTree.astro'
 ### Prerequisites
 
 - A [Xata](https://app.xata.io/signin) account with a created database. (You can use the sample database from the Web UI.)
-- An Access Token (`XATA_TOKEN_API`).
+- An Access Token (`XATA_API_KEY`).
 - Your Database URL.
 
 After you update and initialize the [Xata CLI](https://xata.io/docs/getting-started/installation), you will have your API token in your `.env` file and database URL defined. 
@@ -30,7 +32,7 @@ XATA_API_KEY=hash_key
 # Xata branch that will be used
 # if there's not a xata branch with
 # the same name as your git branch
-XATA_FALLBACK_BRANCH=main
+XATA_BRANCH=main
 ```
 
 And the `databaseURL` defined:
@@ -48,7 +50,7 @@ To have IntelliSense and type safety for your environment variables, edit or cre
 ```ts title="src/env.d.ts"
 interface ImportMetaEnv {
   readonly XATA_API_KEY: string;
-  readonly XATA_FALLBACK_BRANCH?: string;
+  readonly XATA_BRANCH?: string;
 }
 
 interface ImportMeta {
@@ -60,7 +62,7 @@ interface ImportMeta {
 Read more about [environment variables](/en/guides/environment-variables/) and `.env` files in Astro.
 :::
 
-Using the codegeneration from the Xata CLI and choosing the TypeScript option, generated an instance of the SDK for you, with types tailored to your database schema. Additionally, `@xata.io/client` was added to your `package.json`.
+Using the code generation from the Xata CLI and choosing the TypeScript option, generated an instance of the SDK for you, with types tailored to your database schema. Additionally, `@xata.io/client` was added to your `package.json`.
 
 Your Xata environment variables and database url were automatically pulled by the SDK instance, so there's no more setup work needed.
 
@@ -68,7 +70,7 @@ Now, your project should have the following structure:
 
 <FileTree title="Project Structure">
 - src/
-  - **xata.codegen.ts**
+  - **xata.ts**
   - **env.d.ts**
 - **.env**
 - astro.config.mjs
@@ -78,13 +80,17 @@ Now, your project should have the following structure:
 
 ## Create your queries
 
-To query your posts, import and use `getXataClient()` in a `.astro` file. The example below queries the first 50 posts from Xata's Sample Blog Database.
+To query your posts, import and use `XataClient` class in a `.astro` file. The example below queries the first 50 posts from Xata's Sample Blog Database.
 
 ```astro title="src/pages/blog/index.astro"
 ---
-import { getXataClient } from "../xata.codegen";
+import { XataClient } from '../../xata';
+ 
+const xata = new XataClient({
+  apiKey: import.meta.env.XATA_API_KEY,
+  branch: import.meta.env.XATA_BRANCH
+});
 
-const xata = getXataClient();
 const { records } = await xata.db.Posts.getPaginated({
   pagination: {
     size: 50
@@ -93,14 +99,14 @@ const { records } = await xata.db.Posts.getPaginated({
 ---
 
 <ul>
-  {records.map(post) => (
+  {records.map((post) => (
     <li>{post.title}</li>
-  )}
+  ))}
 </ul>
 ```
 It's important to note the SDK needs to be regenerated everytime your schema changes. So, avoid making changes to the generated files the Xata CLI creates because once schema updates, your changes will be overwritten.
 
 
 ## Official Resources
-- [Xata Astro Starter](https://github.com/xataio/examples/tree/main/apps/starter-astro)
+- [Xata Astro Starter](https://github.com/xataio/examples/tree/main/apps/getting-started-astro)
 - [Xata Docs: Quick Start Guide](https://xata.io/docs/getting-started/quickstart-astro)

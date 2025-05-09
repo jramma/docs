@@ -3,7 +3,7 @@ type: tutorial
 title: Crear una página índice de etiquetas
 i18nReady: true
 description: |-
-  Tutorial: Crea tu primer blog Astro —
+  Tutorial: Crea tu primer blog con Astro —
   Utiliza todo lo que has aprendido hasta ahora para crear una página de índice de etiquetas
 ---
 import Box from '~/components/tutorial/Box.astro';
@@ -11,10 +11,9 @@ import Checklist from '~/components/Checklist.astro';
 import MultipleChoice from '~/components/tutorial/MultipleChoice.astro';
 import Option from '~/components/tutorial/Option.astro';
 import PreCheck from '~/components/tutorial/PreCheck.astro';
+import { Steps } from '@astrojs/starlight/components';
 
-
-
-Ahora que tienes páginas individuales para cada etiqueta, vamos a crear enlaces a ellas.
+Ahora que tienes páginas individuales para cada etiqueta, ¡es hora de crear enlaces a ellas!
 
 <PreCheck>
   - Agregar una nueva página utilizando el patrón de enrutamiento `/pages/folder/index.astro`
@@ -22,25 +21,26 @@ Ahora que tienes páginas individuales para cada etiqueta, vamos a crear enlaces
   - Actualizar tu sitio con enlaces de navegación a esta nueva página de etiquetas
 </PreCheck>
 
-## Utilizar el patrón de enrutamiento `/pages/folder/index.astro`
+## Utiliza el patrón de enrutamiento `/pages/folder/index.astro`
 
-Para añadir una página de índice de etiquetas a su sitio web, puede crear un nuevo archivo en `src/pages/tags.astro`. 
+Para añadir una página de índice de etiquetas a tu sitio web, puedes crear un nuevo archivo en `src/pages/tags.astro`. 
 
-Pero, como ya tienes el directorio `/tags/`, puedes aprovechar otro patrón de enrutamiento en Astro, y mantener todos tus archivos relacionados con etiquetas juntos.
+Pero, como ya tienes el directorio `/tags/`, puedes aprovechar otro patrón de enrutamiento en Astro, y mantener juntos todos tus archivos relacionados con etiquetas.
 
 <Box icon="puzzle-piece">
 
 ## Pruébalo tú mismo: crea una página de índice de etiquetas
 
+<Steps>
 1. Crea un nuevo fichero `index.astro` en el directorio `src/pages/tags/`.
 
-2. Vaya a `localhost:3000/tags` y compruebe que su sitio contiene ahora una página en esta URL. Estará vacía, pero existirá.
+2. Ve a `http://localhost:4321/tags` y comprueba que tu sitio contiene ahora una página en esta URL. Estará vacía, pero existirá.
 
-3. Crea una página mínima en `src/pages/tags/index.astro` que utilice tu diseño. Esto ya lo has hecho antes.
+3. Crea una página mínima en `src/pages/tags/index.astro` que utilice tu plantilla. Esto ya lo has hecho antes.
 
     <details>
       <summary>Ampliar para ver los pasos</summary>
-
+      <Steps>
       1. Crea un nuevo componente de página en `src/pages/tags/`.
 
           <details>
@@ -62,25 +62,27 @@ Pero, como ya tienes el directorio `/tags/`, puedes aprovechar otro patrón de e
           ```
           </details>
 
-      3. Define un título de página y pásalo a tu diseño como atributo de componente.
+      3. Define un título de página y pásalo a tu plantilla como atributo de componente.
 
           <details>
           <summary>Mostrar el código</summary>
           ```astro title="src/pages/tags/index.astro" ins={3} "pageTitle"
           ---
           import BaseLayout from '../../layouts/BaseLayout.astro';
-          const pageTitle = "Tag Index";
+          const pageTitle = "Índice de etiquetas";
           ---
           <BaseLayout pageTitle={pageTitle}></BaseLayout>
           ```
           </details>
+      </Steps>
     </details>
 
 4. Comprueba de nuevo la vista previa de tu navegador y deberías tener una página formateada, ¡lista para añadirle contenido!
 
+</Steps>
 </Box>
 
-## Crear un array de etiquetas
+## Crea un array de etiquetas
 
 Anteriormente has mostrado elementos en una lista desde un array usando `map()`. ¿Cómo sería definir un array con todas tus etiquetas y mostrarlas en una lista en esta página?
 
@@ -89,9 +91,9 @@ Anteriormente has mostrado elementos en una lista desde un array usando `map()`.
     
     ```astro title="src/pages/tags/index.astro"
     ---
-    import BaseLayout from '../../layouts/BaseLayout.astro';
-    const tags = ["astro", "successes", "community", "setbacks", "learning in public"];
-    const pageTitle = "Tag Index";
+    import BaseLayout from '../../layouts/BaseLayout.astro';    
+    const tags = ['astro', 'bloguear', 'aprender en público', 'éxitos', 'contratiempos', 'comunidad']
+    const pageTitle = "Índice de etiquetas";
     ---
     <BaseLayout pageTitle={pageTitle}>
       <ul>
@@ -105,8 +107,7 @@ Podrías hacer esto, pero entonces tendrías que volver a este archivo y actuali
 
 Afortunadamente, ya conoces una forma de obtener los datos de todos tus archivos Markdown en una sola línea de código y luego devolver una lista de todas tus etiquetas.
 
-
-
+<Steps>
 1. En `src/pages/tags/index.astro`, añade la línea de código al script frontmatter que dará acceso a tu página a los datos de cada archivo de entrada de blog `.md`.
 
     <details>
@@ -115,33 +116,35 @@ Afortunadamente, ya conoces una forma de obtener los datos de todos tus archivos
     ---
     import BaseLayout from '../../layouts/BaseLayout.astro';
     const allPosts = await Astro.glob('../posts/*.md');
-    const pageTitle = "Tag Index";
+    const pageTitle = "Índice de etiquetas";
     ---
     ```
     </details>
 
-2. A continuación, añade la siguiente línea de JavaScript a tu componente de página. Es la misma que utilizamos en `src/pages/tags/[tag].astro` para devolver una lista de etiquetas únicas.
+2. A continuación, añade la siguiente línea de JavaScript a tu componente de página. Es la misma que utilizaste en `src/pages/tags/[tag].astro` para devolver una lista de etiquetas únicas.
 
     ```astro title = "src/pages/tags/index.astro" ins={4}
     ---
     import BaseLayout from '../../layouts/BaseLayout.astro';
     const allPosts = await Astro.glob('../posts/*.md');
     const tags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())];
-    const pageTitle = "Tag Index";
+    const pageTitle = "Índice de etiquetas";
     ---
     
     ```
+</Steps>
 
 ## Crea tu lista de etiquetas
 
 En lugar de crear elementos en una lista desordenada esta vez, crea un `<p>` para cada elemento, dentro de un `<div>`. El patrón debería resultarte familiar.
 
+<Steps>
 1. Añade el siguiente código a tu plantilla de componentes:
 
     ```astro title="src/pages/tags/index.astro" ins={2}
-      <BaseLayout pageTitle={pageTitle}>
-        <div>{tags.map((tag) => <p>{tag}</p>)}</div>
-      </BaseLayout>
+    <BaseLayout pageTitle={pageTitle}>
+      <div>{tags.map((tag) => <p>{tag}</p>)}</div>
+    </BaseLayout>
     ```
     En la vista previa de tu navegador, comprueba que puedes ver tus etiquetas en la lista.
 
@@ -156,18 +159,20 @@ En lugar de crear elementos en una lista desordenada esta vez, crea un `<p>` par
       </div>
     </BaseLayout>
     ```
+</Steps>
 
 ## Añade estilos a tu lista de etiquetas
 
+<Steps>
 1. Añade las siguientes clases CSS para dar estilo a tu `<div>` y a cada `<p>` que se genere. Nota: Astro utiliza sintaxis HTML para añadir nombres de clases.
 
     ```astro title="src/pages/tags/index.astro" 'class="tags"' 'class="tag"'
     <BaseLayout pageTitle={pageTitle}>
-    <div class="tags">
-      {tags.map((tag) => (
-        <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
-      ))}
-    </div>
+      <div class="tags">
+        {tags.map((tag) => (
+          <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
+        ))}
+      </div>
     </BaseLayout>
     ```
 
@@ -182,7 +187,6 @@ En lugar de crear elementos en una lista desordenada esta vez, crea un `<p>` par
       .tags {
         display: flex; 
         flex-wrap: wrap; 
-        margin: 0 auto;  
       }
 
       .tag {
@@ -196,7 +200,8 @@ En lugar de crear elementos en una lista desordenada esta vez, crea un `<p>` par
     </style>
     ```
 
-3. Comprueba la vista previa de tu navegador en `localhost:3000/tags` para verificar que tienes algunos estilos nuevos y que cada una de las etiquetas de la página tiene un enlace que funciona a su propia página de etiquetas individual.
+3. Comprueba la vista previa de tu navegador en `http://localhost:4321/tags` para verificar que tienes algunos estilos nuevos y que cada una de las etiquetas de la página tiene un enlace que funciona a su propia página de etiquetas individual.
+</Steps>
 
 ### Registro de códigos
 
@@ -207,7 +212,7 @@ Este es el aspecto que debería tener tu nueva página:
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const allPosts = await Astro.glob('../posts/*.md');
 const tags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())];
-const pageTitle = "Tag Index";
+const pageTitle = "Índice de etiquetas";
 ---
 <BaseLayout pageTitle={pageTitle}>
   <div class="tags">
@@ -224,7 +229,6 @@ const pageTitle = "Tag Index";
   .tags {
     display: flex; 
     flex-wrap: wrap; 
-    margin: 0 auto;  
   }
 
   .tag {
@@ -240,74 +244,78 @@ const pageTitle = "Tag Index";
 
 ## Añade esta página a tu navegación
 
-En este momento, puedes navegar a `localhost:3000/tags` y ver esta página. Desde esta página, puedes hacer clic en los enlaces a sus páginas de etiquetas individuales.
+En este momento, puedes navegar a `http://localhost:4321/tags` y ver esta página. Desde esta página, puedes hacer clic en los enlaces a sus páginas de etiquetas individuales.
 
 Pero aún así, debes hacer que estas páginas se puedan descubrir desde otras páginas de tu sitio web.
 
+<Steps>
 1. En tu componente `Navigation.astro`, incluye un enlace a esta nueva página de índice de etiquetas.
 
     <details>
     <summary>Muéstrame el código</summary>
     ```astro title="src/components/Navigation.astro" ins={4}
-    <a href="/">Home</a>
-    <a href="/about/">About</a>
+    <a href="/">Inicio</a>
+    <a href="/about/">Sobre mí</a>
     <a href="/blog/">Blog</a>
-    <a href="/tags/">Tags</a>
+    <a href="/tags/">Etiquetas</a>
     ```
     </details>
 
+</Steps>
+
 <Box icon="puzzle-piece">
 
-## Reto: Incluir etiquetas en el diseño de las entradas del blog
+## Reto: Incluye etiquetas en la plantilla de las entradas del blog
 
 Ya has escrito todo el código que necesitas para mostrar también una lista de etiquetas en cada entrada del blog, y enlazarlas a sus páginas de etiquetas. Ya tienes trabajo que puedes reutilizar.
 
 Sigue los pasos que se indican a continuación y comprueba tu trabajo comparándolo con la [muestra de código final](#registro-de-códigos-markdownpostlayout).
 
+<Steps>
 1. Copia el `<div class="tags">...</div>` y `<style>...</style>` de `src/pages/tags/index.astro` y reutilízalo dentro de `MarkdownPostLayout.astro`: 
 
-  ```astro title="src/layouts/MarkdownPostLayout.astro" ins={13-17, 21-40}
-  ---
-  import BaseLayout from './BaseLayout.astro';
-  const { frontmatter } = Astro.props;
-  --- 
-  <BaseLayout pageTitle={frontmatter.title}>
-    <p><em>{frontmatter.description}</em></p>
-    <p>{frontmatter.pubDate.slice(0,10)}</p>
+   ```astro title="src/layouts/MarkdownPostLayout.astro" ins={13-17, 21-40}
+   ---
+   import BaseLayout from './BaseLayout.astro';
+   const { frontmatter } = Astro.props;
+   --- 
+   <BaseLayout pageTitle={frontmatter.title}>
+     <p><em>{frontmatter.description}</em></p>
+     <p>{frontmatter.pubDate.toString().slice(0,10)}</p>
 
-    <p>Escrito por: {frontmatter.author}</p>
+     <p>Escrito por: {frontmatter.author}</p>
 
-    <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} /> 
+     <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} /> 
 
-    <div class="tags">
-      {tags.map((tag) => (
-        <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
-      ))}
-    </div>
+     <div class="tags">
+       {tags.map((tag) => (
+         <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
+       ))}
+     </div>
 
-    <slot />
-  </BaseLayout>
-  <style>
-    a {
-      color: #00539F;
-    }
+     <slot />
+   </BaseLayout>
+   <style>
+     a {
+       color: #00539F;
+     }
               
-    .tags {
-      display: flex; 
-      flex-wrap: wrap; 
-      margin: 0 auto;  
-    }
+     .tags {
+       display: flex; 
+       flex-wrap: wrap;  
+     }
 
-    .tag {
-      margin: 0.25em;
-      border: dotted 1px #a1a1a1;
-      border-radius: .5em;
-      padding: .5em 1em;
-      font-size: 1.15em;
-      background-color: #F8FCFD;
-    }
-  </style>
-```
+     .tag {
+       margin: 0.25em;
+       border: dotted 1px #a1a1a1;
+       border-radius: .5em;
+       padding: .5em 1em;
+       font-size: 1.15em;
+       background-color: #F8FCFD;
+     }
+   </style>
+   ```
+</Steps>
 
 Antes de que este código funcione, necesitas hacer **una pequeña edición** al código que pegaste en `MarkdownPostLayout.astro`. ¿Puedes averiguar cuál es?
 
@@ -320,7 +328,7 @@ Antes de que este código funcione, necesitas hacer **una pequeña edición** al
 <details>
 <summary>¡Dame otra pista!</summary>
 
-Para utilizar props (valores pasados) de una entrada de blog `.md` en tu diseño, como etiquetas, necesitas agregar un prefijo especial al valor.
+Para utilizar props (valores pasados) de una entrada de blog `.md` en tu plantilla, como etiquetas, necesitas agregar un prefijo especial al valor.
 
 <details>
 <summary>¡Enséñame el código!</summary>
@@ -348,7 +356,7 @@ const { frontmatter } = Astro.props;
 --- 
 <BaseLayout pageTitle={frontmatter.title}>
   <p><em>{frontmatter.description}</em></p>
-  <p>{frontmatter.pubDate.slice(0,10)}</p>
+  <p>{frontmatter.pubDate.toString().slice(0,10)}</p>
 
   <p>Escrito por: {frontmatter.author}</p>
 
@@ -370,7 +378,6 @@ const { frontmatter } = Astro.props;
   .tags {
     display: flex; 
     flex-wrap: wrap; 
-    margin: 0 auto;  
   }
 
   .tag {
@@ -432,4 +439,4 @@ Coincide cada ruta de archivo con una segunda ruta de archivo que creará una p�
 
 ### Recursos
 
-- [Enrutamiento estático en Astro](/es/core-concepts/routing/#rutas-estáticas)
+- [Enrutamiento estático en Astro](/es/guides/routing/#rutas-estáticas)

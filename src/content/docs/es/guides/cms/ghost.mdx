@@ -7,7 +7,7 @@ service: Ghost
 i18nReady: true
 ---
 
-import FileTree from '~/components/FileTree.astro'
+import { FileTree } from '@astrojs/starlight/components';
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
 [Ghost](https://github.com/TryGhost/Ghost) es un sistema de gestión de contenido de código abierto, headless y construido en Node.js.
@@ -18,7 +18,7 @@ En esta sección, usaremos la [API de contenido de Ghost](https://ghost.org/docs
 ### Prerrequisitos
 Para comenzar, necesitarás lo siguiente:
 
-1. **Un proyecto Astro** - Si aún no tienes un proyecto Astro, nuestra [guía de instalación](/es/install/auto/) te ayudará a comenzar en cuestión de minutos.
+1. **Un proyecto Astro** - Si aún no tienes un proyecto Astro, nuestra [guía de instalación](/es/install-and-setup/) te ayudará a comenzar en cuestión de minutos.
 
 2. **Un sitio Ghost** - Se supone que tienes un sitio configurado con Ghost. Si no, puedes configurar uno en un [entorno local.](https://ghost.org/docs/install/local/)
 
@@ -49,7 +49,7 @@ Lee más sobre [usar variables de entorno](/es/guides/environment-variables/) y 
 
 Tu directorio raíz ahora debería incluir estos nuevos archivos:
 
-<FileTree title="Project Structure">
+<FileTree title="Estructura del proyecto">
 - src/
   - **env.d.ts**
 - **.env**
@@ -59,22 +59,25 @@ Tu directorio raíz ahora debería incluir estos nuevos archivos:
 
 ### Instalación de dependencias
 
-Para conectar con Ghost, instala el paquete oficial [`@tryghost/content-api`](https://www.npmjs.com/package/@tryghost/content-api) usando el comando de tu gestor de paquetes preferido:
+Para conectar con Ghost, instala el paquete oficial [`@tryghost/content-api`](https://www.npmjs.com/package/@tryghost/content-api) usando el comando de tu gestor de paquetes preferido y opcionalmente un paquete útil que contiene definiciones de tipo si estás usando TypeScript:
 
 <PackageManagerTabs>
   <Fragment slot="npm">
   ```shell
   npm install @tryghost/content-api
+  npm install --save @types/tryghost__content-api
   ```
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-  pnpm install @tryghost/content-api
+  pnpm add @tryghost/content-api
+  pnpm add --save-dev @types/tryghost__content-api
   ```
   </Fragment>
   <Fragment slot="yarn">
   ```shell
   yarn add @tryghost/content-api
+  yarn add --dev @types/tryghost__content-api
   ```
   </Fragment>
 </PackageManagerTabs>
@@ -96,7 +99,7 @@ Puedes obtener los datos de tu sitio con el paquete de la API de contenido de Gh
 
 Primero, crea un archivo `ghost.ts` dentro de un directorio `lib`.
 
-<FileTree title="Project Structure">
+<FileTree title="Estructura del proyecto">
 - src/
   - lib/
     - **ghost.ts**
@@ -127,7 +130,7 @@ export const ghostClient = new GhostContentAPI({
 La página `src/pages/index.astro` mostrará una lista de publicaciones, cada una con una descripción y un enlace a su propia página.
 
 
-<FileTree title="Project Structure">
+<FileTree title="Estructura del proyecto">
 - src/
  - lib/
     - ghost.ts
@@ -192,9 +195,9 @@ const posts = await ghostClient.posts
 
 ### Generando páginas
 
-La página `src/pages/post/[slug].astro` [genera dinámicamente una página](/es/core-concepts/routing/#rutas-dinámicas) para cada publicación.
+La página `src/pages/post/[slug].astro` [genera dinámicamente una página](/es/guides/routing/#rutas-dinámicas) para cada publicación.
 
-<FileTree title="Project Structure">
+<FileTree title="Estructura del proyecto">
 - src/
  - lib/
     -  ghost.ts
@@ -287,7 +290,9 @@ Para desplegar tu sitio visita nuestra [guía de despliegue](/es/guides/deploy/)
 
 ## Recursos de la comunidad
 
-- Puedes empezar con esta [plantilla de Astro Ghost](https://github.com/PhilDL/astro-starter-ghost).
-- Andre Carrera escribió [un post de blog](https://andr.ec/posts/astro-ghost-blog/) que muestra cómo usar el SDK de Ghost para incrustar publicaciones y vistas previas en tu proyecto de Astro.
+- [`astro-starter-ghost`](https://github.com/PhilDL/astro-starter-ghost) en GitHub
+- [`astro-ghostcms`](https://github.com/MatthiesenXYZ/astro-ghostcms) en GitHub
+- [Astro + Ghost + Tailwind CSS](https://andr.ec/posts/astro-ghost-blog/) por Andre Carrera
+- [Tutorial de Ghost CMS y Astro](https://matthiesen.xyz/blog/astro-ghostcms) por Adam Matthiesen
 
 

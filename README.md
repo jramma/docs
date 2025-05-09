@@ -51,7 +51,7 @@ Did you find a typo, a broken link, or another item with an obvious quick fix?
 
 If you can see what the problem is, and you know how to fix it, then you can make a PR (pull request) with the change and contribute to the docs repo yourself.
 
-> Want to make a larger contribution? Please see [CONTRIBUTING.md](CONTRIBUTING.md) first! 
+> Want to make a larger contribution? Please see [CONTRIBUTING.md](https://github.com/withastro/docs/blob/main/CONTRIBUTING.md) first! 
 
 ## Translate a Page
 
@@ -59,7 +59,13 @@ Speak another language natively?
 
 Join our i18n gang on Discord or jump into the PRs to help with reviewing existing draft translations!
 
-Check out the dedicated [i18n guide](https://github.com/withastro/docs/blob/main/contributor-guides/translating-astro-docs.md) for more details.
+Check out the dedicated [i18n guide](https://contribute.docs.astro.build/guides/i18n/) for more details.
+
+### Translation progress
+
+<a href="https://i18n.docs.astro.build/">
+  <img alt="Details of each language’s progress translating the Astro Docs" width="600" src="https://i18n.docs.astro.build/summary.svg" />
+</a>
 
 ## Next Steps
 

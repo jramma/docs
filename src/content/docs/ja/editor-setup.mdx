@@ -3,9 +3,10 @@ title: エディタのセットアップ
 description: Astroで開発するため、エディタの設定をしましょう。
 i18nReady: true
 ---
-import Badge from '~/components/Badge.astro';
-import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
+import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
+import { Steps } from '@astrojs/starlight/components';
+import Badge from "~/components/Badge.astro"
 
 エディタをカスタマイズし、新機能を追加して開発者体験を向上させましょう。
 
@@ -22,30 +23,41 @@ Astroはどのようなコードエディタでも動作しますが、VS Code�
 早速、[Astro VS Code拡張機能](https://marketplace.visualstudio.com/items?itemName=astro-build.astro-vscode)をインストールしてみましょう。
 
 
-📚 Astroプロジェクトでどのように[TypeScriptをセットアップ](/ja/guides/typescript/)するのか見る。
+import ReadMore from '~/components/ReadMore.astro';
 
-### JetBrainsのIDE
+<ReadMore>Astroプロジェクトでどのように[TypeScriptをセットアップ](/ja/guides/typescript/)するのか見る。</ReadMore>
 
-WebStorm 2023.1にAstroの初期サポートが追加されました。[JetBrains Marketplace](https://plugins.jetbrains.com/plugin/20959-astro)か、IDEのプラグインタブで「Astro」と検索して公式のプラグインをインストールできます。このプラグインにはシンタックスハイライト、コード補完、フォーマットなどの機能が含まれており、今後はさらに高度な機能が追加される予定です。他のすべての[JavaScriptをサポートしているJetBrainsのIDE](https://www.jetbrains.com/products/#lang=js&type=ide)でも利用可能です。
 
-JetBrainsの次期IDEである[Fleet](https://www.jetbrains.com/fleet/)は言語サーバーをサポートしているため、公式のAstroツールを利用できるようになります。
+## Zed 
+
+[Zed](https://zed.dev/)はオープンソースのコードエディタで、バージョン0.123.2でAstroのサポートが追加されました。IDEの「拡張機能」タブから[Astro extension](https://github.com/zed-extensions/astro)をインストールできます。この拡張機能には、構文のハイライト、コード補完、フォーマットなどの機能が含まれています。
+
+## JetBrainsのIDE
+
+[WebStorm](https://www.jetbrains.com/webstorm/)はJavaScriptとTypeScriptに対応したIDEで、バージョン2024.2でAstro Language Serverのサポートが追加されました。このアップデートでは、構文のハイライト、コード補完、フォーマットなどの機能が追加されています。
+
+公式プラグインは[JetBrains Marketplace](https://plugins.jetbrains.com/plugin/20959-astro)から、またはIDEの"Plugins"タブで"Astro"を検索してインストールしてください。言語サーバーの切り替えは `Settings | Languages & Frameworks | TypeScript | Astro` で行えます。
+
+WebStormでのAstroサポートの詳細については、公式の[WebStorm Astro Documentation](https://www.jetbrains.com/help/webstorm/astro.html)を参照してください。
 
 ## その他のコードエディタ
 
 素晴らしいコミュニティが他の人気エディタ用の拡張機能をメンテナンスしています。
 
-- [VS Code Extension on Open VSX](https://open-vsx.org/extension/astro-build/astro-vscode) <span style="margin: 0.25em;"><Badge variant="accent">Official</Badge></span> - [VSCodium](https://vscodium.com/)のようなオープンプラットフォーム向けのOpen VSX Registryで利用可能な公式のAstro VS Code拡張機能です。
-- [Nova Extension](https://extensions.panic.com/extensions/sciencefidelity/sciencefidelity.astro/)<span style="margin: 0.25em;"><Badge variant="neutral">Community</Badge></span> - Nova向けにAstro用シンタックスハイライトや自動補完を提供します。
-- [Vim Plugin](https://github.com/wuelnerdotexe/vim-astro) <span style="margin: 0.25em;"><Badge variant="neutral">Community</Badge></span> - VimとNeovim向けにAstro用シンタックスハイライトやインデント、コードの折りたたみを提供します。
-- Neovim [LSP](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#astro)と[TreeSitter](https://github.com/virchau13/tree-sitter-astro) Plugins <span style="margin: 0.25em;"><Badge variant="neutral">Community</Badge></span> - Neovim向けにAstro用シンタックスハイライトやtreesitterパース、自動補完を提供します。
+- [VS Code Extension on Open VSX](https://open-vsx.org/extension/astro-build/astro-vscode) <span style="margin: 0.25em;"><Badge text="Official" /></span> - [VSCodium](https://vscodium.com/)のようなオープンプラットフォーム向けのOpen VSX Registryで利用可能な公式のAstro VS Code拡張機能です。
+- [Nova Extension](https://extensions.panic.com/extensions/sciencefidelity/sciencefidelity.astro/)<span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span> - Nova向けにAstro用シンタックスハイライトや自動補完を提供します。
+- [Vim Plugin](https://github.com/wuelnerdotexe/vim-astro) <span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span> - VimとNeovim向けにAstro用シンタックスハイライトやインデント、コードの折りたたみを提供します。
+- Neovim [LSP](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#astro)と[TreeSitter](https://github.com/virchau13/tree-sitter-astro) Plugins <span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span> - Neovim向けにAstro用シンタックスハイライトやtreesitterパース、自動補完を提供します。
+- Emacs - Astroと連携するための[EmacsとEglotの設定](https://medium.com/@jrmjrm/configuring-emacs-and-eglot-to-work-with-astro-language-server-9408eb709ab0)<span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span>の説明を参照してください。
+- [Astro syntax highlighting for Sublime Text](https://packagecontrol.io/packages/Astro) <span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span> - Sublime Text用のAstroパッケージで、Sublime Textパッケージマネージャーから利用できます。
 
 ## ブラウザ内エディタ
 
 ローカルエディタに加え、Astroはブラウザで動作するオンラインエディタでもきちんと動作します。
 
 - [StackBlitz](https://stackblitz.com/)と[CodeSandbox](https://codesandbox.io/) - ブラウザ上で動作するオンラインエディタで、`.astro`ファイル用のシンタックスハイライトをサポートしています。設定やインストールは不要です。
-- [GitHub.dev](https://github.dev/) - [Web Extentions](https://code.visualstudio.com/api/extension-guides/web-extensions)としてAstro VS Code拡張機能をインストールでき、拡張機能の一部をフルに利用できるようになります。現在のところ、シンタックスハイライトのみをサポートしています。
-- [Gitpod](https://gitpod.io/) - Open VSXから公式のAstro VS Code拡張機能をインストールできるクラウド上のフル開発環境です。
+- [GitHub.dev](https://github.dev/) - [Web Extensions](https://code.visualstudio.com/api/extension-guides/web-extensions)としてAstro VS Code拡張機能をインストールでき、一部の機能のみ利用できるようになります。現在のところ、シンタックスハイライトのみをサポートしています。
+- [IDX](https://idx.dev)と[Gitpod](https://gitpod.io/) – Open VSXから公式Astro VS Code拡張機能をインストールできるクラウドIDEです。
 
 ## その他のツール
 
@@ -67,40 +79,64 @@ JetBrainsの次期IDEである[Fleet](https://www.jetbrains.com/fleet/)は言語
 
 （CLIなど）エディタの外や、Astroのエディタツールをサポートしていないエディタ内で`.astro`ファイルをフォーマットするためには、[公式のAstro Prettierプラグイン](https://github.com/withastro/prettier-plugin-astro)をインストールしてください。
 
-まず、Prettierとプラグインをインストールしましょう:
+<Steps>
+1. まず、Prettierとプラグインをインストールしましょう。
 
-<PackageManagerTabs>
-  <Fragment slot="npm">
-  ```shell
-  npm install --save-dev prettier prettier-plugin-astro
-  ```
-  </Fragment>
-  <Fragment slot="pnpm">
-  ```shell
-  pnpm install -D prettier prettier-plugin-astro
-  ```
-  </Fragment>
-  <Fragment slot="yarn">
-  ```shell
-  yarn add --dev prettier prettier-plugin-astro
-  ```
-  </Fragment>
-</PackageManagerTabs>
+    <PackageManagerTabs>
+      <Fragment slot="npm">
+      ```shell
+      npm install --save-dev --save-exact prettier prettier-plugin-astro
+      ```
+      </Fragment>
+      <Fragment slot="pnpm">
+      ```shell
+      pnpm add --save-dev --save-exact prettier prettier-plugin-astro
+      ```
+      </Fragment>
+      <Fragment slot="yarn">
+      ```shell
+      yarn add --dev --exact prettier prettier-plugin-astro
+      ```
+      </Fragment>
+    </PackageManagerTabs>
 
-これにより、Prettierは実行時にプラグインを自動的に認識し、`.astro`ファイルを処理します。
+2. プロジェクトルートに`.prettierrc`設定ファイル (または`.prettierrc.json`, `.prettierrc.mjs`, [その他サポートされている形式のファイル](https://prettier.io/docs/configuration))を設置し、`prettier-plugin-astro`を追加してください。
 
-```shell
-prettier --write .
-```
+    このファイルでは、Astroファイル用のパーサーも手動で指定してください。
+
+    ```json title=".prettierrc"
+    {
+      "plugins": ["prettier-plugin-astro"],
+      "overrides": [
+        {
+          "files": "*.astro",
+          "options": {
+            "parser": "astro",
+          }
+        }
+      ]
+    }
+    ```
+
+3. フォーマットを実行するには、以下のコマンドをターミナルで実行してください。
+
+    <PackageManagerTabs>
+      <Fragment slot="npm">
+      ```shell
+      npx prettier . --write
+      ```
+      </Fragment>
+      <Fragment slot="pnpm">
+      ```shell
+      pnpm exec prettier . --write
+      ```
+      </Fragment>
+      <Fragment slot="yarn">
+      ```shell
+      yarn exec prettier . --write
+      ```
+      </Fragment>
+    </PackageManagerTabs>
+</Steps>
 
 Prettierプラグインの対応オプション、VS Code内でのPrettierの設定方法などについては、[PrettierプラグインのREADME](https://github.com/withastro/prettier-plugin-astro/blob/main/README.md)を参照してください。
-
-:::caution[pnpm との併用]
-Prettier内のアップストリームの問題により、[pnpm](https://pnpm.io/)を使用した場合にはプラグインが自動的に認識されません。プラグインを認識させるためには、Prettierの実行時に以下のパラメータを付与する必要があります。
-
-```shell
-prettier --write . --plugin=prettier-plugin-astro
-```
-
-VS Code内でPrettierを使用する場合は、さらに追加の設定が必要です。詳しくはプラグインのREADMEを参照してください。
-:::

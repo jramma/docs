@@ -1,29 +1,45 @@
 ---
 title: Keystatic & Astro
 description: Add content to your Astro project using Keystatic as a CMS
+sidebar:
+  label: Keystatic
 type: cms
 service: Keystatic
-i18nReady: false
+i18nReady: true
 ---
-import FileTree from '~/components/FileTree.astro'
-import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-import Aside from '~/components/Aside.astro'
+import { Steps } from '@astrojs/starlight/components';
+import { FileTree } from '@astrojs/starlight/components';
+import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro';
 
 [Keystatic](https://keystatic.com/) is an open source, headless content-management system that allows you to structure your content and sync it with GitHub.
 
 :::tip
 If you're starting a **new Astro + Keystatic project from scratch**, you can use the [Keystatic CLI](https://keystatic.com/docs/quick-start#keystatic-cli) to generate a new project in seconds:
 
-```bash
-npm create @keystatic@latest
-```
+<PackageManagerTabs>
+  <Fragment slot="npm">
+  ```shell
+  npm create @keystatic@latest
+  ```
+  </Fragment>
+  <Fragment slot="pnpm">
+  ```shell
+  pnpm create @keystatic@latest
+  ```
+  </Fragment>
+  <Fragment slot="yarn">
+  ```shell
+  yarn create @keystatic
+  ```
+  </Fragment>
+</PackageManagerTabs>
 
 Select the Astro template, and you'll be ready to [deploy](#deploying-keystatic--astro)!
 :::
 
 ## Prerequisites
 
-- An existing Astro project [with server-side rendering (SSR) and `output: 'hybrid'` configured](/en/guides/server-side-rendering/#enabling-ssr-in-your-project).
+- An existing Astro project [with an adapter configured](/en/guides/on-demand-rendering/).
 
 :::note
 If you intend to sync Keystatic's data with GitHub, you will also need **a GitHub account with `write` permissions** on the repository for this project.
@@ -61,7 +77,7 @@ You will also need two Keystatic packages:
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-  pnpm install @keystatic/core @keystatic/astro
+  pnpm add @keystatic/core @keystatic/astro
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -70,6 +86,25 @@ You will also need two Keystatic packages:
   ```
   </Fragment>
 </PackageManagerTabs>
+
+## Adding the Astro integration
+
+Add the Astro integration from `@keystatic/astro` in your Astro config file:
+
+```js  ins={6} ins=", keystatic()"
+// astro.config.mjs
+import { defineConfig } from 'astro/config'
+
+import react from '@astrojs/react'
+import markdoc from '@astrojs/markdoc'
+import keystatic from '@keystatic/astro'
+
+// https://astro.build/config
+export default defineConfig({
+  integrations: [react(), markdoc(), keystatic()],
+  output: 'static',
+})
+```
 
 ## Creating a Keystatic config file
 
@@ -94,12 +129,8 @@ export default config({
       format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Title' } }),
-        content: fields.document({
+        content: fields.markdoc({
           label: 'Content',
-          formatting: true,
-          dividers: true,
-          links: true,
-          images: true,
         }),
       },
     }),
@@ -107,88 +138,48 @@ export default config({
 });
 ```
 
-:::note[already using content collections?]
-If you are already using [content collections](/en/guides/content-collections/#defining-collections) in your Astro project, then update the schema above to exactly match the collection(s) defined in your existing schema.
+:::note[Already using content collections?]
+If you are already using [content collections](/en/guides/content-collections/) in your Astro project, then update the schema above to exactly match the collection(s) defined in your existing schema.
 :::
 
 Keystatic is now configured to manage your content based on your schema.
 
-## Setting up the Keystatic Admin UI dashboard
+## Running Keystatic locally
 
-The Keystatic Admin UI is a React app that runs in your Astro project. 
-
-The following steps will create a dashboard that lives in `src/pages/keystatic/` for managing your site content.
-
-1. Create a `keystatic.page.ts` in the project root, alongside your Keystatic config file.
-
-    ```ts
-    // keystatic.page.ts
-    import { makePage } from '@keystatic/astro/ui'
-    import keystaticConfig from './keystatic.config'
-    
-    export const Keystatic = makePage(keystaticConfig)
-    ```
-
-2. Create a new page called `src/pages/keystatic/[...params].astro` and mount the component on the client side only:
-
-    ```astro
-    ---
-    // src/pages/keystatic/[...params].astro
-    import { Keystatic } from '../../../keystatic.page'
-    export const prerender = false
-    ---
-    
-    <Keystatic client:only />
-    ```
-
-3. Create a new file called `src/pages/api/keystatic/[...params].ts` that will create `API routes` for Keystatic's Admin UI.
-
-    ```jsx
-    // src/pages/api/keystatic/[...params].ts
-    import { makeHandler } from '@keystatic/astro/api'
-    import keystaticConfig from '../../../../keystatic.config'
-    
-    export const all = makeHandler({
-      config: keystaticConfig,
-    })
-    
-    export const prerender = false
-    ```
-
-4. To launch your Keystatic Admin UI dashboard, start Astro's dev server:
+To launch your Keystatic Admin UI dashboard, start Astro's dev server:
 
     ```bash
     npm run dev
     ```
 
-5. Visit `http://127.0.0.1:3000/keystatic` in the browser to see the Keystatic Admin UI running.
+Visit `http://127.0.0.1:4321/keystatic` in the browser to see the Keystatic Admin UI running.
 
 ## Creating a new post
 
+<Steps>
 1. In the Keystatic Admin UI dashboard, click on the “Posts” collection.
 
- 2. Use the button to create a new post. Add the title "My First Post" and some content, then save the post.
- 
- 3. This post should now be visible from your "Posts" collection. You can view and edit your individual posts from this dashboard page.
- 
- 4. Return to view your Astro project files. You will now find a new `.mdoc` file inside the `src/content/posts` directory for this new post:
+2. Use the button to create a new post. Add the title "My First Post" and some content, then save the post.
 
-		<FileTree title="Project Structure">
-		- src/
-		  - content/
-		    - posts/
-		      - **my-first-post.mdoc**
-		</FileTree>
+3. This post should now be visible from your "Posts" collection. You can view and edit your individual posts from this dashboard page.
+
+4. Return to view your Astro project files. You will now find a new `.mdoc` file inside the `src/content/posts` directory for this new post:
+    <FileTree title="Project Structure">
+    - src/
+      - content/
+        - posts/
+          - **my-first-post.mdoc**
+    </FileTree>
 
 5. Navigate to that file in your code editor and verify that you can see the Markdown content you entered. For example: 
-
-		```markdown
-		---
-		title: My First Post
-		---
-		
-		This is my very first post. I am **super** excited!
-		```
+      ```markdown
+      ---
+      title: My First Post
+      ---
+      
+      This is my very first post. I am **super** excited!
+      ```
+</Steps>
 
 ## Rendering Keystatic content
 
@@ -215,7 +206,7 @@ const posts = await getCollection('posts')
 
 ### Displaying a single entry
 
-To display content from an individual post, you can import and use the `<Content />` component to [render your content to HTML](/en/guides/content-collections/#rendering-content-to-html):
+To display content from an individual post, you can import and use the `<Content />` component to [render your content to HTML](/en/guides/content-collections/#rendering-body-content):
 
 ```tsx {4-5}
 ---

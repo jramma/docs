@@ -1,11 +1,12 @@
 ---
 title: Legacy v0.x Upgrade Guide 
 description: Archived guide documenting changes between pre-v1 versions of Astro
+sidebar:
+  label: v1.0
 i18nReady: false
 ---
-import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-
-
+import { Steps } from '@astrojs/starlight/components';
+import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro';
 
 This guide will help you upgrade through breaking changes in pre-v1 versions of Astro.
 
@@ -37,7 +38,6 @@ You can update your project's version of Astro to the latest version using your 
   </Fragment>
 </PackageManagerTabs>
 
-
 Read the guide below for major highlights and instructions on how to handle breaking changes.
 
 ## Astro 1.0
@@ -46,11 +46,11 @@ Astro v1.0 introduces some changes that you should be aware of when migrating fr
 
 ### Updated: Vite 3
 
-Astro v1.0 has upgraded from Vite 2 to [Vite 3](https://vitejs.dev/). We've handled most of the upgrade for you inside of Astro; however, some subtle Vite behaviors may still change between versions. Refer to the official [Vite Migration Guide](https://vitejs.dev/guide/migration.html#general-changes) if you run into trouble.
+Astro v1.0 has upgraded from Vite 2 to [Vite 3](https://vite.dev/). We've handled most of the upgrade for you inside of Astro; however, some subtle Vite behaviors may still change between versions. Refer to the official [Vite Migration Guide](https://vite.dev/guide/migration.html#general-changes) if you run into trouble.
 
 ### Deprecated: `Astro.canonicalURL`
 
-You can now use the new [`Astro.url`](/en/reference/api-reference/#astrourl) helper to construct your own canonical URL from the current page/request URL. 
+You can now use the new [`Astro.url`](/en/reference/api-reference/#url) helper to construct your own canonical URL from the current page/request URL. 
 
 ```js del="Astro.canonicalURL" ins="new URL(Astro.url.pathname, Astro.site)"
 // Before:
@@ -100,6 +100,7 @@ To make migrating easier, a new `legacy.astroFlavoredMarkdown` flag (removed in 
 
 If you're not familiar with MDX, here are some steps you can follow to quickly convert an existing "Astro Flavored Markdown" file to MDX. As you learn more about MDX, feel free to explore other ways of writing your pages!
 
+<Steps>
 1. Install the [`@astrojs/mdx`](/en/guides/integrations-guide/mdx/) integration.
 
 2. Change your existing `.md` file extensions to `.mdx`
@@ -150,6 +151,7 @@ If you're not familiar with MDX, here are some steps you can follow to quickly c
 
     <About />    
     ```
+</Steps>
 
 :::tip
 While you are transitioning to MDX, you may wish to enable the `legacy.astroFlavoredMarkdown` flag (removed in v2.0) and include both **`.md` and `.mdx`** files, so that your site continues to function normally even before all your files have been converted. Here is one way you can do that:
@@ -181,7 +183,7 @@ The `v1.0.0-beta.0` release of Astro contained no breaking changes. Below are sm
 
 ### Changed: RSS Feeds
 
-RSS feeds should now be generated using the `@astrojs/rss` package, as described in our [RSS guide](/en/guides/rss/).
+RSS feeds should now be generated using the `@astrojs/rss` package, as described in our [RSS guide](/en/recipes/rss/).
 
 ## Migrate to v0.26
 ### New Configuration API
@@ -228,7 +230,6 @@ This includes a few changes to be aware of:
 - New `<style is:inline>` directive, to leave a style tag inline in the page template (similar to previous `<script>` behavior).
 - New `<style is:global>` directive to replace `<style global>` in a future release.
 
-
 ```js del={2} ins={4}
 // v0.25
 <script hoist type="module">
@@ -242,7 +243,6 @@ Read [RFC0016](https://github.com/withastro/rfcs/blob/main/proposals/0016-style-
 
 ### Updated `Astro.request` API
 
-
 `Astro.request` has been changed from our custom object to a standard `Request` object. This is part of a project to use more web standard APIs, especially where SSR is concerned.
 
 This includes a few changes to be aware of:
@@ -252,7 +252,6 @@ This includes a few changes to be aware of:
 - Move `Astro.request.canonicalURL` to `Astro.canonicalURL`.
 
 Read [RFC0018](https://github.com/withastro/rfcs/blob/main/proposals/0018-astro-request.md) for more background on these changes.
-
 
 ### Other Changes
 
@@ -304,7 +303,6 @@ export default {
 }
 ```
 
-
 | Deprecated Renderers on npm | v0.25+ Integrations on npm |
 | --------------------------- | -------------------------- |
 | @astrojs/renderer-react     | @astrojs/react             |
@@ -334,7 +332,7 @@ If you are using `npm` & Node v16+, then this may be automatically handled for y
 
 We love to find sensible defaults that "just work" out-of-the-box. As part of this, we decided to make [Shiki](https://github.com/shikijs/shiki) our new default syntax highlighter. This comes pre-configured with the `github-dark` theme, providing zero-config highlighting in your code blocks without extraneous CSS classes, stylesheets, or client-side JS.
 
-Check our new [syntax highlighting docs](/en/guides/markdown-content/#syntax-highlighting) for full details. **If you prefer to keep Prism as your syntax highlighter,** [set the `syntaxHighlight` option to `'prism'`](/en/guides/markdown-content/#prism-configuration) in your project's markdown configuration.
+Check our new syntax highlighting docs for full details. **If you prefer to keep Prism as your syntax highlighter,** set the `syntaxHighlight` option to `'prism'` in your project's markdown configuration.
 
 #### The `<Prism />` component has a new home
 
@@ -346,7 +344,7 @@ import { Prism } from '@astrojs/prism';
 ---
 ```
 
-Since the `@astrojs/prism` package is still bundled with `astro` core, you won't need to install anything new, nor add Prism as an integration! However, note that we _do_ plan to extract `@astrojs/prism` (and Prism syntax highlighting in general) to a separate, installable package in the future. See [the `<Prism />` component API reference](/en/reference/api-reference/#prism-) for more.
+Since the `@astrojs/prism` package is still bundled with `astro` core, you won't need to install anything new, nor add Prism as an integration! However, note that we _do_ plan to extract `@astrojs/prism` (and Prism syntax highlighting in general) to a separate, installable package in the future. See the `<Prism />` component API reference for more details.
 
 ### CSS Parser Upgrade
 
@@ -390,7 +388,6 @@ Importing CSS files should work anywhere that ESM imports are supported, includi
 
 When a CSS file is imported using this method, any `@import` statements are also resolved and inlined into the imported CSS file. All `url()` references are also resolved relative to the source file, and any `url()` referenced assets will be included in the final build.
 
-
 **2. Absolute URL Path**
 
 **Example:** `<link href="/style.css">`
@@ -401,7 +398,6 @@ You can reference any file inside of the `public/` directory by absolute URL pat
 We recommend using the `import` approach over the absolute URL approach since it provides the best possible CSS performance and features by default.
 
 #### How to Resolve JavaScript Files
-
 
 **1. Absolute URL Path**
 
@@ -469,7 +465,6 @@ Previously, all `<script>` elements were read from the final HTML output and pro
 </script>
 ```
 
-
 ## Migrate to v0.23
 
 ### Missing Sass Error
@@ -529,7 +524,7 @@ export default {
 };
 ```
 
-To learn more about configuring Vite, please visit their [configuration guide](https://vitejs.dev/config/).
+To learn more about configuring Vite, please visit their [configuration guide](https://vite.dev/config/).
 
 #### Vite Plugins
 
@@ -545,7 +540,7 @@ export default {
 };
 ```
 
-To learn more about Vite plugins, please visit their [plugin guide](https://vitejs.dev/guide/using-plugins.html).
+To learn more about Vite plugins, please visit their [plugin guide](https://vite.dev/guide/using-plugins.html).
 
 #### Vite Changes to Renderers
 
@@ -578,16 +573,15 @@ export default {
 }
 ```
 
-To learn more about Vite plugins, please visit their [plugin guide](https://vitejs.dev/guide/using-plugins.html).
+To learn more about Vite plugins, please visit their [plugin guide](https://vite.dev/guide/using-plugins.html).
 
 :::note
 In prior releases, these were configured with `snowpackPlugin` or `snowpackPluginOptions`.
 :::
 
-
 ### Aliasing
 
-In Astro v0.21+, import aliases can be added from `tsconfig.json` or `jsconfig.json`.
+In Astro v0.21+, import aliases can be added in `tsconfig.json`.
 
 ```json add={4-6}
 {
@@ -599,8 +593,6 @@ In Astro v0.21+, import aliases can be added from `tsconfig.json` or `jsconfig.j
   }
 }
 ```
-
-_These aliases are integrated automatically into [VSCode](https://code.visualstudio.com/docs/languages/jsconfig) and other editors._
 
 ### File Extensions in Imports
 
@@ -624,14 +616,15 @@ Previously, you could create mini Astro Components inside of the Astro Frontmatt
 
 To migrate to v0.21+, please convert all JSX Astro components (that is, any Astro components created inside of another component’s frontmatter) to standalone components.
 
-
 ### Styling Changes
 
 #### Autoprefixer
 
 Autoprefixer is no longer run by default. To enable:
 
+<Steps>
 1. Install the latest version (`npm install autoprefixer`)
+
 2. Create a `postcss.config.cjs` file at the root of your project with:
    ```js
    module.exports = {
@@ -640,12 +633,15 @@ Autoprefixer is no longer run by default. To enable:
      },
    };
    ```
+</Steps>
 
 #### Tailwind CSS
 
 Ensure you have PostCSS installed. This was optional in previous releases, but is required now:
 
+<Steps>
 1. Install the latest version of postcss (`npm install -D postcss`)
+
 2. Create a `postcss.config.cjs` file at the root of your project with:
    ```js
    module.exports = {
@@ -655,7 +651,7 @@ Ensure you have PostCSS installed. This was optional in previous releases, but i
    };
    ```
    For more information, read the [Tailwind CSS documentation](https://tailwindcss.com/docs/installation#add-tailwind-as-a-post-css-plugin)
-
+</Steps>
 
 ### Known Issues
 
@@ -670,5 +666,4 @@ const whereShouldIPutMyImports = "on top!"
 ---
 ```
 
-
-[vite]: https://vitejs.dev
+[vite]: https://vite.dev

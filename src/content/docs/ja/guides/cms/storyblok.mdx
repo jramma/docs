@@ -19,7 +19,7 @@ import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
 始めるには、以下の手順を行っている必要があります。
 
-1. **Astroプロジェクト** - もしAstroプロジェクトをまだ持っていない場合は、[自動CLIでAstroをインストール](/ja/install/auto/)を見ると、すぐに使い始めることができます。
+1. **Astroプロジェクト** - もしAstroプロジェクトをまだ持っていない場合は、[自動CLIでAstroをインストール](/ja/install-and-setup/)を見ると、すぐに使い始めることができます。
 
 2. **Storyblok**アカウントとスペース -  もしアカウントを持っていない場合は、[無料で登録](https://app.storyblok.com/#/signup)してスペースを作成します。
 
@@ -59,7 +59,7 @@ AstroとStoryblokスペースを接続するために、次の中から好みの
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-  pnpm install @storyblok/astro
+  pnpm add @storyblok/astro
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -371,7 +371,7 @@ export default defineConfig({
 
 #### 静的サイトジェネレーター
 
-Astroのデフォルト静的モードを利用している場合、[動的ルーティング](/ja/core-concepts/routing/#動的ルーティング)と`getStaticPaths()`関数を使えます。この関数はビルド時に呼ばれて、ページとなるパスのリストをせいせいします。
+Astroのデフォルト静的モードを利用している場合、[動的ルーティング](/ja/guides/routing/#動的ルーティング)と`getStaticPaths()`関数を使えます。この関数はビルド時に呼ばれて、ページとなるパスのリストをせいせいします。
 
 `src/pages`に`[…slug].astro`という以下のファイルを作成します。
 
@@ -413,7 +413,7 @@ const { content } = Astro.props
 
 #### サーバーサイドレンダリング
 
-[プロジェクトでSSRを有効にする](/ja/guides/server-side-rendering/#プロジェクトでssrを有効にする)場合、Storyblokデータを取得するために動的ルーティングで `slug` パラメータが利用されます。
+[プロジェクトでSSRを有効にする](/ja/guides/on-demand-rendering/)場合、Storyblokデータを取得するために動的ルーティングで `slug` パラメータが利用されます。
 
 ```astro title="src/pages/[...slug].astro"
 ---

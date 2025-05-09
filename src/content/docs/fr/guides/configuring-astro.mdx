@@ -1,111 +1,122 @@
 ---
-title: Configurer Astro
+title: Aperçu de la configuration
+description: Découvrez les différentes façons de configurer et de personnaliser votre nouveau projet et votre expérience de développement.
+i18nReady: true
 ---
+import ReadMore from '~/components/ReadMore.astro'
 
-Personnalisez le fonctionnement d'Astro en ajoutant un fichier `astro.config.mjs` dans votre projet. Il s'agit d'un fichier commun aux projets Astro, et tous les modèles et thèmes d'exemple officiels en contiennent un par défaut.
+Astro est flexible et sans contrainte au niveau du choix du framework, ce qui vous permet de configurer votre projet de nombreuses façons différentes. Cela signifie que le démarrage d'un nouveau projet peut sembler difficile : il n'y a pas de « meilleure façon » de configurer votre projet Astro !
 
-📚 Consultez la [référence d'API d'Astro](/fr/reference/configuration-reference/) pour une vue d'ensemble des options supportées.
+Les guides de cette section « Configuration » vous aideront à vous familiariser avec les différents fichiers qui vous permettent de configurer et de personnaliser certains aspects de votre projet et de votre environnement de développement.
 
-## Le Fichier de Configuration d'Astro
+S'il s'agit de votre premier projet Astro, ou si cela fait un moment que vous n'avez pas configuré un nouveau projet, utilisez les guides suivants et les références de la documentation pour obtenir de l'aide.
 
-Un fichier de configuration Astro valide exporte sa configuration en utilisant l'exportation `default`, et en utilisant l'aide recommandée `defineConfig` :
+## Le fichier de configuration d'Astro
 
-```js
-// astro.config.mjs
-import { defineConfig } from 'astro/config'
-
-export default defineConfig({
-  // vos options de configuration ici...
-  // https://docs.astro.build/fr/reference/configuration-reference/
-})
-```
-
-Utiliser `defineConfig()` est recommandé pour obtenir l'aide sur les types utilisés dans votre éditeur de code, mais c'est aussi optionnel. Un fichier de configuration absolument minimal, valide, pourrait ressembler à ça :
-
-```js
-// Exemple : Fichier de configuration minimal, vide
-export default {}
-```
-
-## Types de Fichier de Configuration Supportés
-
-Astro supporte plusieurs formats de fichiers pour son fichier de configuration JavaScript : `astro.config.js`, `astro.config.mjs`, `astro.config.cjs` et `astro.config.ts`.
-
-Le chargement du fichier de configuration TypeScript est géré par [`tsm`](https://github.com/lukeed/tsm) et respecte les options tsconfig de votre projet.
-
-## Résolution du Fichier de Configuration
-
-Astro essaiera automatiquement de résoudre un fichier de configuration nommé `astro.config.mjs` à la racine du projet. Si aucun fichier de configuration n'est trouvé à cet endroit, les options par défaut d'Astro seront utilisées.
-
-```bash
-# Exemple : Lit votre configuration à partir de ./astro.config.mjs
-astro build
-```
-
-Vous pouvez explicitement définir un fichier de configuration à utiliser avec l'option `--config` du CLI. Cette option est toujours relative au répertoire de travail actuel dans lequel vous avez exécuté la commande `astro`.
-
-```bash
-# Exemple : Lit votre configuration à partir de ce fichier
-astro build --config my-config-file.js
-```
-
-## Autocomplétion de Configuration
-
-Astro recommande d'utiliser l'aide `defineConfig()` dans votre fichier de configuration. `defineConfig()` fournit une autocomplétion automatique dans votre IDE. Les éditeurs comme VS Code sont capables de lire les définitions TypeScript d'Astro et de fournir des indications de type JSDoc automatiques, même si votre fichier de configuration n'est pas écrit en TypeScript.
+Le [fichier de configuration Astro](/fr/reference/configuration-reference/) est un fichier JavaScript inclus à la racine de chaque projet de démarrage :
 
 ```js
 // astro.config.mjs
-import { defineConfig } from 'astro/config'
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   // vos options de configuration ici...
-  // https://docs.astro.build/fr/reference/configuration-reference/
-})
+});
 ```
 
-Vous pouvez également fournir des définitions de type manuellement à VS Code, en utilisant cette notation JSDoc :
+Il n'est nécessaire que si vous avez quelque chose à configurer, mais la plupart des projets utiliseront ce fichier. L'aide `defineConfig()` fournit une IntelliSense automatique dans votre IDE et est l'endroit où vous ajouterez toutes vos options de configuration pour dire à Astro comment construire et rendre votre projet en HTML.
 
-```js
-// astro.config.mjs
- export default /** @type {import('astro').AstroUserConfig} */ ({
-  // vos options de configuration ici...
-  // https://docs.astro.build/fr/reference/configuration-reference/
-}
-```
+Nous recommandons d'utiliser le format de fichier par défaut `.mjs` dans la plupart des cas, ou `.ts` si vous voulez écrire du TypeScript dans votre fichier de configuration. Cependant, `astro.config.js` et `astro.config.cjs` sont également supportés.
 
-## Référencement des Fichiers Relatifs
+<ReadMore>Lisez la [référence de configuration](/fr/reference/configuration-reference/) d'Astro pour un aperçu complet de toutes les options de configuration prises en charge.</ReadMore>
 
-Si vous indiquez un chemin relatif à `root` ou à l'option `--root`, Astro va résoudre ce chemin par rapport au répertoire de travail actuel où vous avez exécuté la commande `astro`.
+## Le fichier de configuration TypeScript
 
-```js
+Chaque projet de démarrage Astro inclut un fichier `tsconfig.json` dans votre projet. Le [script du composant](/fr/basics/astro-components/#le-script-du-composant) d'Astro est Typescript, qui fournit l'outil d'édition d'Astro et vous permet d'ajouter optionnellement une syntaxe à votre JavaScript pour la vérification du type du code de votre propre projet.
+
+Utilisez le fichier `tsconfig.json` pour configurer le modèle TypeScript qui effectuera les vérifications de type sur votre code, configurer les plugins TypeScript, définir les alias d'importation, et plus encore.
+
+<ReadMore>Veuillez lire le [Guide TypeScript](/fr/guides/typescript/) d'Astro pour une présentation complète des options TypeScript et des types d'utilitaires intégrés à Astro.</ReadMore>
+
+## Expérience de développement
+
+Lorsque vous travaillez en mode développement, vous pouvez tirer parti de votre éditeur de code et d'autres outils pour améliorer l'expérience du développeur Astro.
+
+Astro fournit sa propre extension officielle VS Code et est compatible avec plusieurs autres outils d'édition populaires. Astro fournit également une barre d'outils personnalisable qui s'affiche dans l'aperçu de votre navigateur lorsque le serveur de développement est en cours d'exécution. Vous pouvez installer et même créer vos propres applications de barre d'outils pour des fonctionnalités supplémentaires.
+
+<ReadMore>Lisez les guides Astro sur les [options de configuration de l'éditeur](/fr/editor-setup/) et [l'utilisation de la barre d'outils de développement](/fr/guides/dev-toolbar/) pour apprendre à personnaliser votre expérience de développement.</ReadMore>
+
+## Tâches courantes d'un nouveau projet
+
+Voici quelques premières étapes que vous pourriez choisir de suivre avec un nouveau projet Astro.
+
+### Ajouter votre domaine de déploiement
+
+Pour générer votre sitemap et créer des URL canoniques, configurez votre URL de déploiement dans l'option [`site`](/fr/reference/configuration-reference/#site). Si vous déployez vers un chemin (par exemple `www.example/docs`), vous pouvez également configurer une [`base`](/fr/reference/configuration-reference/#base) pour la racine de votre projet.
+
+De plus, les différents hôtes de déploiement peuvent avoir un comportement différent en ce qui concerne les barres obliques à la fin de vos URLs. (par exemple, `example.com/about` vs `example.com/about/`). Une fois que votre site est déployé, vous pouvez avoir besoin de configurer votre préférence [`trailingSlash`](/fr/reference/configuration-reference/#trailingslash).
+
+```js title="astro.config.mjs"
+import { defineConfig } from "astro/config";
+
 export default defineConfig({
-    // Cherches vers le répertoire "./foo" dans le répertoire de travail actuel
-    root: 'foo'
-})
+  site: "https://www.example.com",
+  base: "/docs",
+  trailingSlash: "always",
+});
 ```
 
-Astro va chercher toutes les autres chaînes de caractères de fichiers et de répertoires par rapport à la racine du projet :
+### Ajouter les métadonnées du site
 
-```js
-export default defineConfig({
-    // Se dirige vers le répertoire "./foo" dans le répertoire de travail actuel
-    root: 'foo',
-    // Se dirige vers le répertoire "./foo/public" dans le répertoire de travail actuel
-    publicDir: 'public',
-})
+Astro n'utilise pas son fichier de configuration pour les données de référencement ou les métadonnées, mais seulement pour les informations nécessaires à la construction du code de votre projet et à son rendu en HTML.
+
+Au lieu de cela, ces informations sont ajoutées au `<head>` de votre page dans les balises HTML `<link>` et `<meta>`, comme si vous écriviez des pages HTML simples.
+
+Un modèle courant pour les sites Astro est de créer un [composant `.astro`](/fr/basics/astro-components/) qui peut être ajouté à un [composant de mise en page](/fr/basics/layouts/) commun afin qu'il puisse s'appliquer à toutes vos pages.
+
+```astro title="src/components/MainLayout.astro"
+---
+import Head from "./Head.astro";
+
+const { ...props } = Astro.props;
+---
+<html>
+  <head>
+    <meta charset="utf-8">
+    <Head />
+    <!-- Eléments d'entête supplémentaires -->
+  </head>
+  <body>
+    <!-- Contenu de la page va ici -->
+  </body>
+</html>
 ```
 
-Pour référencer un fichier ou un répertoire relatif au fichier de configuration, utilisez `import.meta.url` (sauf si vous écrivez un fichier commonJS `astro.config.cjs`).
+Comme `Head.astro` est un composant Astro ordinaire, vous pouvez importer des fichiers et recevoir des éléments transmis par d'autres composants, tels qu'un titre de page spécifique.
 
-```js
-export default defineConfig({
-    // Se dirige vers le répertoire "./foo", relatif à ce fichier de configuration
-    root: new URL("./foo", import.meta.url),
-    // Se dirige vers le répertoire "./public", relatif à ce fichier de configuration
-    publicDir: new URL("./public", import.meta.url),
-})
+```astro title="src/components/Head.astro"
+---
+import Favicon from "../assets/Favicon.astro";
+import SomeOtherTags from "./SomeOtherTags.astro";
+
+const { title = "Mon site Astro", ...props } = Astro.props;
+---
+<link rel="sitemap" href="/sitemap-index.xml">
+<title>{title}</title>
+<meta name="description" content="Bienvenue sur mon nouveau site Astro !">
+
+<!-- Web analytics -->
+<script data-goatcounter="https://my-account.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+<!-- Balises Open Graph -->
+<meta property="og:title" content="Mon nouveau site Astro" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://www.example.com/" />
+<meta property="og:description" content="Bienvenue sur mon nouveau site Astro !" />
+<meta property="og:image" content="https://www.example.com/_astro/seo-banner.BZD7kegZ.webp">
+<meta property="og:image:alt" content="">
+
+<SomeOtherTags />
+
+<Favicon />
 ```
-
-## Référence de Configuration
-
-📚 Lis la [référence d'API de configuration d'Astro](/fr/reference/configuration-reference/) pour une vue d'ensemble des options de configuration supportées.

@@ -1,9 +1,10 @@
 ---
 title: Configurazione dell'Editor 
 description: Configura il tuo editor per lavorare con Astro.
+i18nReady: true
 ---
-import Badge from '~/components/Badge.astro';
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
+import Badge from "~/components/Badge.astro"
 
 Personalizza il tuo editor di testo per migliorare l'esperienza di sviluppo di Astro e sbloccare nuove funzionalità.
 
@@ -11,8 +12,7 @@ Personalizza il tuo editor di testo per migliorare l'esperienza di sviluppo di A
 
 [VS Code](https://code.visualstudio.com/) è un popolare editor di testo  per i sviluppatori web, ideato da Microsoft. Il motore di VS Code alimenta anche i famosi editor di testo all'interno dei browser come [GitHub Codespaces](https://github.com/features/codespaces) e [Gitpod](https://gitpod.io/).
 
-Astro funziona con qualsiasi editor di testo. Però, VS Code è l'editor di testo che consigliamo. Noi manteniamo [un'estensione Astro per VS Code](https://marketplace.visualstudio.com/items?itemName=astro-build.astro-vscode) ufficiale che sblocca diverse caratteristiche chiave e 
-miglioramenti dell'esperienza dello sviluppatore per i progetti Astro.
+Astro funziona con qualsiasi editor di testo. Però, VS Code è l'editor di testo che consigliamo. Noi manteniamo [un'estensione Astro per VS Code](https://marketplace.visualstudio.com/items?itemName=astro-build.astro-vscode) ufficiale che sblocca diverse caratteristiche chiave e miglioramenti dell'esperienza dello sviluppatore per i progetti Astro.
 
 - Evidenziazione della sintassi dei file `.astro`.
 - Informazioni sui tipi di TypeScript per i file `.astro`.
@@ -20,22 +20,25 @@ miglioramenti dell'esperienza dello sviluppatore per i progetti Astro.
 
 Per cominciare, installa [l'estensione Astro VS Code](https://marketplace.visualstudio.com/items?itemName=astro-build.astro-vscode) oggi.
 
-📚 Guarda come [configurare TypeScript](/it/guides/typescript/) nel tuo progetto Astro.
+import ReadMore from '~/components/ReadMore.astro';
+
+<ReadMore>Guarda come [configurare TypeScript](/it/guides/typescript/) nel tuo progetto Astro.</ReadMore>
 
 ## Gli IDE di JetBrains 
 
 Il supporto iniziale per Astro è arrivato da WebStorm a Gennaio 2023. Puoi installare il plugin ufficiale attraverso [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/20959-astro) oppure cercando "Astro" nella tab dei plugin dell'IDE. Questo plugin include proprietà come l'evidenziazione della sintassi, il completamento del codice e la formattazione, e in futuro ha intenzione di aggiungere anche funzionalità più avanzate. Il plugin è disponibile anche per tutti gli altri [JetBrains IDEs con il supporto di JavaScript](https://www.jetbrains.com/products/#lang=js&type=ide).
 
-Il futuro [Fleet IDE](https://www.jetbrains.com/fleet/) di JetBrains include il supporto del language server e sarà in grado di usare gli strumenti ufficiali di Astro.
 
 ## Altri Editor di Testo
 
 La nostra magnifica community mantiene diverse estensioni per altri editor popolari, compresi:
 
-- [VS Code Extension on Open VSX](https://open-vsx.org/extension/astro-build/astro-vscode) <span style="margin: 0.25em;"><Badge variant="accent">Official</Badge></span> - L'estensione ufficale di Astro su VS Code Extension, disponibile sul registro Open VSXper piattaforme libere come [VSCodium](https://vscodium.com/)
-- [Nova Extension](https://extensions.panic.com/extensions/sciencefidelity/sciencefidelity.astro/) <span style="margin: 0.25em;"><Badge variant="neutral">Community</Badge></span> - Fornisce l'evidenziazione della sintassi e il completamento del codice per Astro all'interno di Nova
-- [Vim Plugin](https://github.com/wuelnerdotexe/vim-astro) <span style="margin: 0.25em;"><Badge variant="neutral">Community</Badge></span> - Fornisce l'evidenziazione della sintassi, indentazione, e il supporto per il ripiegamento del codice per Astro all'insterno di Vim o Neovim
-- Neovim [LSP](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#astro) e [TreeSitter](https://github.com/virchau13/tree-sitter-astro) Plugins <span style="margin: 0.25em;"><Badge variant="neutral">Community</Badge></span> - Fornisce l'evidenziazione della sintassi, treesitter parsing, e il completamento del codice per Astro all'interno di Neovim
+- [VS Code Extension on Open VSX](https://open-vsx.org/extension/astro-build/astro-vscode) <span style="margin: 0.25em;"><Badge text="Official" /></span> - L'estensione ufficale di Astro su VS Code Extension, disponibile sul registro Open VSXper piattaforme libere come [VSCodium](https://vscodium.com/)
+- [Nova Extension](https://extensions.panic.com/extensions/sciencefidelity/sciencefidelity.astro/) <span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span> - Fornisce l'evidenziazione della sintassi e il completamento del codice per Astro all'interno di Nova
+- [Vim Plugin](https://github.com/wuelnerdotexe/vim-astro) <span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span> - Fornisce l'evidenziazione della sintassi, indentazione, e il supporto per il ripiegamento del codice per Astro all'insterno di Vim o Neovim
+- Neovim [LSP](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#astro) e [TreeSitter](https://github.com/virchau13/tree-sitter-astro) Plugins <span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span> - Fornisce l'evidenziazione della sintassi, treesitter parsing, e il completamento del codice per Astro all'interno di Neovim
+- Emacs - Consulta le instruzioni per [Configurare Emacs ed Eglot](https://medium.com/@jrmjrm/configuring-emacs-and-eglot-to-work-with-astro-language-server-9408eb709ab0) <span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span> per lavorare con Astro
+- [Evidenziazione della sintassi di Astro per Sublime Text](https://packagecontrol.io/packages/Astro) <span style="margin: 0.25em;"><Badge class="neutral-badge" text="Community" /></span> - Il pacchetto Astro per Sublime Text, disponibile sul gestore di pacchetti di Sublime Text.
 
 ## Editor all'interno dei Browser 
 
@@ -75,7 +78,7 @@ Per iniziare, prima installa Prettier ed il plugin:
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-  pnpm install -D prettier prettier-plugin-astro
+  pnpm add -D prettier prettier-plugin-astro
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -92,13 +95,3 @@ prettier --write .
 ```
 
 Vedi [README del plugin di Prettier](https://github.com/withastro/prettier-plugin-astro/blob/main/README.md) per maggiori informazionis ulle opzioni supportate, come configurare Prettier all'interno di VS Code, e altro.
-
-:::caution[Se si usa pnpm]
-Per alcuni problemi all'interno di Prettier, il plugin non sarà automaticamente rilevato quando si usa [pnpm](https://pnpm.io/). Per far in modo che il plugin venga trovato, il seguente parametro deve essere aggiunto quando si esegue Prettier:
-
-```shell
-prettier --write . --plugin=prettier-plugin-astro
-```
-
-La configuarzione aggiuntiva è necessaria anche quando Prettier viene usate all'interno di VS Code. Vedi README del plugin per maggiori informazioni.
-:::

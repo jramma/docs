@@ -5,10 +5,10 @@ i18nReady: true
 ---
 import Since from '~/components/Since.astro'
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-import Tabs from '~/components/tabs/Tabs'
+import { Tabs, TabItem } from '@astrojs/starlight/components'
 
 
-Astro wird mit integrierter Unterstützung für [TypeScript](https://www.typescriptlang.org/) ausgeliefert. Du kannst `.ts`- und `.tsx`-Dateien in dein Astro-Projekt importieren, TypeScript-Code direkt in deiner [Astro-Komponente](/de/core-concepts/astro-components/#das-komponentenskript) schreiben und sogar eine [`astro.config.ts`](/de/guides/configuring-astro/#die-astro-konfigurationsdatei)-Datei verwenden, wenn du möchtest.
+Astro wird mit integrierter Unterstützung für [TypeScript](https://www.typescriptlang.org/) ausgeliefert. Du kannst `.ts`- und `.tsx`-Dateien in dein Astro-Projekt importieren, TypeScript-Code direkt in deiner [Astro-Komponente](/de/basics/astro-components/#das-komponentenskript) schreiben und sogar eine [`astro.config.ts`](/de/guides/configuring-astro/#die-astro-konfigurationsdatei)-Datei verwenden, wenn du möchtest.
 
 Mit TypeScript kannst du Fehler zur Laufzeit verhindern, indem du die Struktur von Objekten und Komponenten in deinem Code definierst. Wenn du zum Beispiel TypeScript verwendest, um [die Eigenschaften deiner Komponente](#komponenten-eigenschaften) einzugeben, bekommst du in deinem Editor eine Fehlermeldung, wenn du eine Eigenschaft setzt, die deine Komponente nicht akzeptiert.
 
@@ -29,7 +29,7 @@ Um von einer der Vorlagen zu erben, verwende [die Einstellung `extends`] (https:
 }
 ```
 
-Außerdem enthalten unsere Vorlagen eine Datei `env.d.ts` im Ordner `src`, um die [Client-Typen](https://vitejs.dev/guide/features.html#client-types) von Vite für dein Projekt bereitzustellen:
+Außerdem enthalten unsere Vorlagen eine Datei `env.d.ts` im Ordner `src`, um die [Client-Typen](https://vite.dev/guide/features.html#client-types) von Vite für dein Projekt bereitzustellen:
 
 ```typescript title="env.d.ts"
 /// <reference types="astro/client" />
@@ -45,7 +45,7 @@ Wenn du nicht VSCode verwendest, kannst du das [Astro TypeScript Plugin](https:/
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-  pnpm install @astrojs/ts-plugin
+  pnpm add @astrojs/ts-plugin
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -72,7 +72,7 @@ Um zu überprüfen, ob das Plugin funktioniert, erstelle eine `.ts`-Datei und im
 
 ### UI-Frameworks
 
-Wenn dein Projekt ein [UI-Framework](/de/core-concepts/framework-components/) verwendet, können je nach Framework zusätzliche Einstellungen erforderlich sein. Weitere Informationen findest du in der TypeScript-Dokumentation deines Frameworks. ([Vue](https://vuejs.org/guide/typescript/overview.html#using-vue-with-typescript), [React](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup), [Preact](https://preactjs.com/guide/v10/typescript), [Solid](https://www.solidjs.com/guides/typescript))
+Wenn dein Projekt ein [UI-Framework](/de/guides/framework-components/) verwendet, können je nach Framework zusätzliche Einstellungen erforderlich sein. Weitere Informationen findest du in der TypeScript-Dokumentation deines Frameworks. ([Vue](https://vuejs.org/guide/typescript/overview.html#using-vue-with-typescript), [React](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup), [Preact](https://preactjs.com/guide/v10/typescript), [Solid](https://www.solidjs.com/guides/typescript))
 
 ## Typ-Importe
 
@@ -87,11 +87,8 @@ Auf diese Weise vermeidest du Fälle, in denen der Astro-Bundler versucht, deine
 
 Du kannst TypeScript so konfigurieren, dass Typ-Importe in deiner `.tsconfig`-Datei erzwungen werden.
 
-<Tabs client:visible sharedStore="typescript-version">
-	<Fragment slot="tab.4.9">TypeScript ≤4.9</Fragment>
-	<Fragment slot="tab.5.0">TypeScript ≥5.0</Fragment>
-
-	<Fragment slot="panel.4.9">
+<Tabs syncKey="typescript-version">
+  <TabItem label="TypeScript ≤4.9">
 		Setze [`importsNotUsedAsValues`](https://www.typescriptlang.org/tsconfig#importsNotUsedAsValues) auf `"error"`. TypeScript prüft dann deine Importe und sagt dir, wann `import type` verwendet werden sollte. Diese Einstellung ist standardmäßig in unseren Vorlagen `strict` und `strictest` enthalten.
 
     ```json title="tsconfig.json" ins={3}
@@ -101,8 +98,8 @@ Du kannst TypeScript so konfigurieren, dass Typ-Importe in deiner `.tsconfig`-Da
       }
     }
     ```
-	</Fragment>
-	<Fragment slot="panel.5.0">
+  </TabItem>
+  <TabItem label="TypeScript ≥5.0">
 		Setze [`verbatimModuleSyntax`](https://www.typescriptlang.org/tsconfig#verbatimModuleSyntax) auf `true`. TypeScript prüft deine Importe und sagt dir, wann `import type` verwendet werden sollte.
 
     ```json title="tsconfig.json" ins={3}
@@ -112,12 +109,12 @@ Du kannst TypeScript so konfigurieren, dass Typ-Importe in deiner `.tsconfig`-Da
       }
     }
     ```
-	</Fragment>
+  </TabItem>
 </Tabs>
 
 ## Import-Aliase
 
-Astro unterstützt [Import-Aliase](/de/guides/aliases/), die du in deiner `tsconfig.json` & `jsconfig.json` `paths` Konfiguration definierst. [Lies unsere Anleitung](/de/guides/aliases/), um mehr zu erfahren.
+Astro unterstützt [Import-Aliase](/de/guides/imports/#import-aliasnamen), die du in deiner `tsconfig.json` & `jsconfig.json` `paths` Konfiguration definierst.
 
 
 ```astro title="src/pages/about/nate.astro" "@components" "@layouts"

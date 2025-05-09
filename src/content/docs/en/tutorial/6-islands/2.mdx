@@ -11,8 +11,7 @@ import Checklist from '~/components/Checklist.astro';
 import MultipleChoice from '~/components/tutorial/MultipleChoice.astro';
 import Option from '~/components/tutorial/Option.astro';
 import PreCheck from '~/components/tutorial/PreCheck.astro';
-
-
+import { Steps } from '@astrojs/starlight/components';
 
 Now that you can build Astro islands for interactive elements, don't forget that you can go pretty far with just vanilla JavaScript and CSS!
 
@@ -25,6 +24,7 @@ Let's build a clickable icon to let your users toggle between light or dark mode
 
 ## Add and style a theme toggle icon
 
+<Steps>
 1. Create a new file at `src/components/ThemeIcon.astro` and paste the following code into it:
 
     ```astro title="src/components/ThemeIcon.astro"
@@ -44,7 +44,6 @@ Let's build a clickable icon to let your users toggle between light or dark mode
       }
       .sun { fill: black; }
       .moon { fill: transparent; }
-      
 
       :global(.dark) .sun { fill: transparent; }
       :global(.dark) .moon { fill: white; }
@@ -68,12 +67,14 @@ Let's build a clickable icon to let your users toggle between light or dark mode
     </header>
     ```
 
-3. Visit your browser preview at `localhost:3000` to see the icon now on all your pages. You can try clicking it, but you have not written a script to make it interactive yet.
+3. Visit your browser preview at `http://localhost:4321` to see the icon now on all your pages. You can try clicking it, but you have not written a script to make it interactive yet.
+</Steps>
 
 ## Add CSS styling for a dark theme
 
 Choose some alternate colors to use in dark mode.
 
+<Steps>
 1. In `global.css`, define some dark styles. You can choose your own, or copy and paste:
 
     ```css title="src/styles/global.css"
@@ -86,14 +87,15 @@ Choose some alternate colors to use in dark mode.
       color: #fff;
     }
     ```
+</Steps>
 
 ## Add client-side interactivity
 
 To add interactivity to an Astro component, you can use a `<script>` tag. This script can check and set the current theme from `localStorage` and toggle the theme when the icon is clicked. 
-
+<Steps>
 1. Add the following `<script>` tag in `src/components/ThemeIcon.astro` after your `<style>` tag:
 
-    ```astro title="src/components/ThemeIcon.astro" ins={9-37}
+    ```astro title="src/components/ThemeIcon.astro" ins={9-38}
     <style>
       .sun { fill: black; }
       .moon { fill: transparent; }
@@ -104,8 +106,9 @@ To add interactivity to an Astro component, you can use a `<script>` tag. This s
 
     <script is:inline>
       const theme = (() => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
+        const localStorageTheme = localStorage?.getItem("theme") ?? '';
+        if (['dark', 'light'].includes(localStorageTheme)) {
+          return localStorageTheme;
         }
         if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
           return 'dark';
@@ -129,13 +132,12 @@ To add interactivity to an Astro component, you can use a `<script>` tag. This s
         localStorage.setItem("theme", isDark ? "dark" : "light");
       }
 
-      document.getElementById("themeToggle").addEventListener("click", handleToggleClick);
+      document.getElementById("themeToggle")?.addEventListener("click", handleToggleClick);
     </script>
     ```
 
-2. Check your browser preview at `localhost:3000` and click the theme icon. Verify that you can change between light and dark modes.
-
-
+2. Check your browser preview at `http://localhost:4321` and click the theme icon. Verify that you can change between light and dark modes.
+</Steps>
 
 <Box icon="question-mark">
 

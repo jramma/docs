@@ -4,21 +4,28 @@ description: 通过动态路由和内容集合来让你的 Astro 站点支持国
 type: recipe
 i18nReady: true
 ---
-import FileTree from '~/components/FileTree.astro'
-import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
+import { FileTree } from '@astrojs/starlight/components';
+import ReadMore from '~/components/ReadMore.astro';
+import { Steps } from '@astrojs/starlight/components';
+import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro';
 
-尽管 Astro 没有内置的国际化功能，但你也可以构建你自己的国际化解决方案。
+在这个指南中，你将学习如何使用内容集合和动态路由来构建你自己的国际化（i18n）解决方案，并针对不同的语言提供你的内容。
 
-本节示例中，你将看到如何使用内容集合和动态路由来支持不同语言。
+:::tip
+在 v4.0 中，Astro 添加了对 i18n 路由的内置支持，允许你配置默认和支持的语言，并包含有用的辅助函数来帮助你服务于国际受众。如果你想使用它，可以查看我们的[国际化指南](/zh-cn/guides/internationalization/)来了解这些功能。
+:::
 
 假设示例拥有不同语言的子路径，例如面向英语的 `example.com/en/blog` 和面向法语的 `example.com/fr/blog`。
 
 如果你希望默认语言不像其他语言那样在 URL 中可见，后续会有 [关于隐藏默认语言的介绍](/zh-cn/recipes/i18n/#在-url-中隐藏默认语言)。
 
+<ReadMore> 请参阅 [参考资料部分](#参考资料) 以获取与之相关的外部链接，例如从右到左（RTL）样式和选择语言标签。</ReadMore>
+
 ## 操作步骤
 
 ### 为页面设置多语言
 
+<Steps>
 1. 创建一个你想支持的语言的目录。例如，如果你打算支持英语和法语，那么是创建 `en/` 和 `fr/` 目录：
     <FileTree>
     - src/
@@ -31,7 +38,7 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
           - index.astro
         - index.astro
     </FileTree>
-    
+
 2. 设置 `src/pages/index.astro` 重定向到你的默认语言。
 
     <StaticSsrTabs>
@@ -47,7 +54,7 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
       </Fragment>
       
       <Fragment slot="ssr">
-        如果你正好使用 SSR 适配器，那么你也可以使用 [`Astro.redirect`](/zh-cn/core-concepts/routing/#动态重定向) 来重定向到默认语言。
+        如果你正好使用 SSR 适配器，那么你也可以使用 [`Astro.redirect`](/zh-cn/guides/routing/#动态重定向) 来重定向到默认语言。
 
         ```astro
         ---
@@ -57,9 +64,11 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
         ```
       </Fragment>
     </StaticSsrTabs>
+</Steps>
 
 ### 为翻译内容创建内容集合
 
+<Steps>
 1. 在 `src/content` 文件夹中为每种你想要包含的内容创建一个文件夹，同时在其中也创建对应语言的子目录。假设你现在打算为博客文章支持英语和法语：
 
     <FileTree>
@@ -74,10 +83,10 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
               - post-2.md
     </FileTree>
 
-2. 创建一个 `src/content/config.ts` 文件并且导出对应的内容集合。
+2. 创建一个 `src/content.config.ts` 文件并且导出对应的内容集合。
 
     ```ts
-    //src/content/config.ts
+    //src/content.config.ts
     import { defineCollection, z } from 'astro:content';
 
     const blogCollection = defineCollection({
@@ -93,9 +102,9 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
     };
 
     ```
-    📚 你可以在这获取有关更多 [内容集合](/zh-cn/guides/content-collections/) 的内容。
+    <ReadMore>你可以在这获取有关更多 [内容集合](/zh-cn/guides/content-collections/) 的内容。</ReadMore>
 
-3. 使用 [动态路由](/zh-cn/core-concepts/routing/#动态路由) 来获取并基于 `lang` 和 `slug` 参数的内容渲染内容。
+3. 使用 [动态路由](/zh-cn/guides/routing/#动态路由) 来获取并基于 `lang` 和 `slug` 参数的内容渲染内容。
 
     <StaticSsrTabs>
       <Fragment slot="static">
@@ -104,15 +113,15 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
         ```astro
         //src/pages/[lang]/blog/[...slug].astro
         ---
-        import { getCollection } from 'astro:content'
+        import { getCollection, render } from 'astro:content';
 
         export async function getStaticPaths() {
-          const pages = await getCollection('blog')
+          const pages = await getCollection('blog');
 
           const paths = pages.map(page => {
-            const [lang, ...slug] = page.slug.split('/');
-            return { params: { lang, slug: slug.join('/') || undefined }, props: page }
-          })
+            const [lang, ...slug] = page.id.split('/');
+            return { params: { lang, slug: slug.join('/') || undefined }, props: page };
+          });
 
           return paths;
         }
@@ -120,8 +129,7 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
         const { lang, slug } = Astro.params;
         const page = Astro.props;
         const formattedDate = page.data.date.toLocaleString(lang);
-
-        const { Content } = await page.render();
+        const { Content } = await render(page);
         ---
         <h1>{page.data.title}</h1>
         <p>by {page.data.author} • {formattedDate}</p>
@@ -130,22 +138,22 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
       </Fragment>
 
       <Fragment slot="ssr">
-        在 [SSR 模式](/zh-cn/guides/server-side-rendering/) 下，你可以直接获取到请求的内容：
+        在 [SSR 模式](/zh-cn/guides/on-demand-rendering/) 下，你可以直接获取到请求的内容：
 
         ```astro
         //src/pages/[lang]/blog/[...slug].astro
         ---
-        import { getEntryBySlug } from 'astro:content';
+        import { getEntry, render } from 'astro:content';
 
         const { lang, slug } = Astro.params;
-        const page = await getEntryBySlug('blog', `${lang}/${slug}`);
+        const page = await getEntry('blog', `${lang}/${slug}`);
 
         if (!page) {
           return Astro.redirect('/404');
         }
 
         const formattedDate = page.data.date.toLocaleString(lang);
-        const { Content, headings } = await page.render();
+        const { Content, headings } = await render(page);
         ---
         <h1>{page.data.title}</h1>
         <p>by {page.data.author} • {formattedDate}</p>
@@ -154,17 +162,19 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
       </Fragment>
     </StaticSsrTabs>
 
-    📚 你可以在这获取有关更多 [动态路由](/zh-cn/core-concepts/routing/#动态路由) 的内容。
+    <ReadMore>你可以在这获取有关更多 [动态路由](/zh-cn/guides/routing/#动态路由) 的内容。</ReadMore>
 
 
     :::tip[日期格式化]
     在上述例子中使用了内置的 [`toLocaleString()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) 日期格式化方法来创建为人类可读的日期字符串，以确保日期和时间格式与用户所选择的语言相匹配。
     :::
+</Steps>
 
 ### 翻译 UI 标签
 
 创建术语字典来翻译你网站上用户界面的元素标签，这样可以让访问者在他们的语言环境下更好地体验你的网站。
 
+<Steps>
 1. 创建一个 `src/i18n/ui.ts` 文件来存储你翻译后的标签：
 
     ```ts
@@ -241,7 +251,7 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
     </ul>
     ```
 
-4. 每个页面必须在 `<html>` 元素中包含一个 `lang` 属性以匹配页面的语言。在这个例子中，[可复用布局](/zh-cn/core-concepts/layouts/) 会从当前路由中提取语言：
+4. 每个页面必须在 `<html>` 元素中包含一个 `lang` 属性以匹配页面的语言。在这个例子中，[可复用布局](/zh-cn/basics/layouts/) 会从当前路由中提取语言：
 
     ```astro
     ---
@@ -269,18 +279,20 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
     ```astro
     ---
     // src/pages/en/about.astro
-    import Base from "../../layouts/Base.astro"
+    import Base from '../../layouts/Base.astro';
     ---
     <Base>
         <h1>About me</h1>
         ...
     </Base>
     ```
+</Steps>
 
 ### 允许用户切换不同语言
 
 为你所支持的不同语言创建链接，以便用户能选择他们浏览你网站时所使用的语言。
 
+<Steps>
 1. 创建一个用以显示每个语言的链接的组件：
 
     ```astro
@@ -322,9 +334,11 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
         </body>
     </html>
     ```
+</Steps>
 
 ### 在 URL 中隐藏默认语言
 
+<Steps>
 1. 除默认语言外，为每种语言创建一个目录。例如，将默认语言的页面直接放在 `pages/` 中，而将翻译的页面放在 `fr/` 中：
 
     <FileTree>
@@ -344,26 +358,25 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
     export const showDefaultLang = false;
     ```
 
-
 3. 在 `src/i18n/utils.ts` 中添加一个辅助函数以根据当前语言对路径翻译：
 
    ```js
-    // src/i18n/utils.ts
-    import { ui, defaultLang, showDefaultLang } from './ui';
+   // src/i18n/utils.ts
+   import { ui, defaultLang, showDefaultLang } from './ui';
 
-    export function useTranslatedPath(lang: keyof typeof ui) {
-      return function translatePath(path: string, l: string = lang) {
-        return !showDefaultLang && l === defaultLang ? path : `/${l}${path}`
-      }
-    }
-    ```
+   export function useTranslatedPath(lang: keyof typeof ui) {
+     return function translatePath(path: string, l: string = lang) {
+       return !showDefaultLang && l === defaultLang ? path : `/${l}${path}`
+     }
+   }
+   ```
 
 4. 在需要的地方导入这个辅助函数。例如，一个 `nav` 组件可能如下所示：
 
     ```astro 
     ---
     // src/components/Nav.astro
-    import { getLangFromUrl, useTranslations } from '../i18n/utils';
+    import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
     
     const lang = getLangFromUrl(Astro.url);
     const t = useTranslations(lang);
@@ -394,8 +407,11 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
     ---
     // src/components/LanguagePicker.astro
     import { languages } from '../i18n/ui';
+    import { getLangFromUrl, useTranslatedPath } from '../i18n/utils';
+    
+    const lang = getLangFromUrl(Astro.url);
+    const translatePath = useTranslatedPath(lang);
     ---
-
     <ul>
       {Object.entries(languages).map(([lang, label]) => (
         <li>
@@ -404,102 +420,110 @@ import StaticSsrTabs from '~/components/tabs/StaticSsrTabs.astro'
       ))}
     </ul>
     ```
+</Steps>
 
 ### 翻译路由
 
 将你页面中的路由翻译成不同语言。
 
+<Steps>
 1. 在 `src/i18n/ui.ts` 中添加路由映射。
 
- ```ts
- // src/i18n/ui.ts
- export const routes = {
-   de: {
-    'services': 'leistungen',
-   },
-   fr: {
-    'services': 'prestations-de-service',
-   },
-  }
+    ```ts
+    // src/i18n/ui.ts
+    export const routes = {
+      de: {
+      'services': 'leistungen',
+      },
+      fr: {
+      'services': 'prestations-de-service',
+      },
+    }
     ```
 
-2. Update the `useTranslatedPath` helper function in `src/i18n/utils.ts` to add router translation logic.
 2. 在 `src/i18n/utils.ts` 中更新 `useTranslatedPath` 辅助函数以添加路由翻译逻辑：
 
-  ```js
-  // src/i18n/utils.ts
-  import { ui, defaultLang, showDefaultLang, routes } from './ui';
+    ```js
+    // src/i18n/utils.ts
+    import { ui, defaultLang, showDefaultLang, routes } from './ui';
 
-  export function useTranslatedPath(lang: keyof typeof ui) {
-    return function translatePath(path: string, l: string = lang) {
-      const pathName = path.replaceAll('/', '')
-      const hasTranslation = defaultLang !== l && routes[l] !== undefined && routes[l][pathName] !== undefined
-      const translatedPath = hasTranslation ? '/' + routes[l][pathName] : path
-  
-      return !showDefaultLang && l === defaultLang ? translatedPath : `/${l}${translatedPath}`
+    export function useTranslatedPath(lang: keyof typeof ui) {
+      return function translatePath(path: string, l: string = lang) {
+        const pathName = path.replaceAll('/', '')
+        const hasTranslation = defaultLang !== l && routes[l] !== undefined && routes[l][pathName] !== undefined
+        const translatedPath = hasTranslation ? '/' + routes[l][pathName] : path
+    
+        return !showDefaultLang && l === defaultLang ? translatedPath : `/${l}${translatedPath}`
+      }
     }
-  }
-  ```
+    ```
 
 3. `src/i18n/utils.ts` 中创建一个辅助函数来获取对应路由，如果该路由存在于当前 URL 的话：
 
-  ```js
-  // src/i18n/utils.ts
-  import { ui, defaultLang, showDefaultLang, routes } from './ui';
-  
-  export function getRouteFromUrl(url: URL): string | undefined {
-    const pathname = new URL(url).pathname
-    const parts = pathname?.split('/')
-    const path = parts.pop() || parts.pop()
-  
-    if (path === undefined) {
+    ```js
+    // src/i18n/utils.ts
+    import { ui, defaultLang, showDefaultLang, routes } from './ui';
+    
+    export function getRouteFromUrl(url: URL): string | undefined {
+      const pathname = new URL(url).pathname;
+      const parts = pathname?.split('/');
+      const path = parts.pop() || parts.pop();
+    
+      if (path === undefined) {
+        return undefined;
+      }
+      
+      const currentLang = getLangFromUrl(url);
+    
+      if (defaultLang === currentLang) {
+        const route = Object.values(routes)[0];
+        return route[path] !== undefined ? route[path] : undefined;
+      }
+      
+      const getKeyByValue = (obj: Record<string, string>, value: string): string | undefined  => {
+          return Object.keys(obj).find((key) => obj[key] === value);
+      }
+    
+      const reversedKey = getKeyByValue(routes[currentLang], path);
+    
+      if (reversedKey !== undefined) {
+        return reversedKey;
+      }
+    
       return undefined
     }
-    
-    const currentLang = getLangFromUrl(url);
-  
-    if (defaultLang === currentLang) {
-      const route = Object.values(routes)[0];
-      return route[path] !== undefined ? route[path] : undefined
-    }
-    
-    const getKeyByValue = (obj: Record<string, string>, value: string): string | undefined  => {
-        return Object.keys(obj).find((key) => obj[key] === value)
-    }
-  
-    const reversedKey = getKeyByValue(routes[currentLang], path)
-  
-    if (reversedKey !== undefined) {
-      return reversedKey
-    }
-  
-    return undefined
-  }
-  ```
+    ```
 
 4. 这个辅助函数可以用来获取翻译后的路由。例如，当没有定义翻译后的路由时，用户将被重定向到首页：
 
- ```astro
+    ```astro
     ---
     // src/components/LanguagePicker.astro
     import { languages } from '../i18n/ui';
+    import { getRouteFromUrl, useTranslatedPath } from '../i18n/utils';
+
     const route = getRouteFromUrl(Astro.url);
     ---
-
     <ul>
-      {Object.entries(languages).map(([lang, label]) => (
-        <li>
-          <a href={translatePath(`/${route ? route : ''}`, lang)}>{label}</a>
-        </li>
-      ))}
+      {Object.entries(languages).map(([lang, label]) => {
+        const translatePath = useTranslatedPath(lang);
+        return (
+          <li>
+            <a href={translatePath(`/${route ? route : ''}`)}>{label}</a>
+          </li>
+        )
+      })}
     </ul>
     ```
+</Steps>
 
-## 参考
+## 参考资料
 - [选择语言标签](https://www.w3.org/International/questions/qa-choosing-language-tags)
-- [Right-to-left Styling 101](https://rtlstyling.com/)
+- [从右到左的 (RTL) 样式 101](https://rtlstyling.com/)
 
 ## 其他第三方库
-- [astro-i18next](https://github.com/yassinedoghri/astro-i18next) — An Astro integration for i18next including some utility components.
-- [astro-i18n](https://github.com/alexandre-fernandez/astro-i18n) — A TypeScript-first internationalization library for Astro.
-- [astro-i18n-aut](https://github.com/jlarmstrongiv/astro-i18n-aut) — An Astro integration for i18n that supports the `defaultLocale` without page generation. The integration is adapter agnostic and UI framework agnostic.
+- [astro-i18next](https://github.com/yassinedoghri/astro-i18next) — 为 i18next 提供的 Astro 集成，包括一些实用组件。
+- [astro-i18n](https://github.com/alexandre-fernandez/astro-i18n) — 为 Astro 设计的以 TypeScript 为主的国际化库。
+- [astro-i18n-aut](https://github.com/jlarmstrongiv/astro-i18n-aut) — i18n 的 Astro 集成，无需生成页面即可支持`defaultLocale`。该集成与适配器、UI 框架无关。
+- [astro-react-i18next](https://github.com/jeremyxgo/astro-react-i18next) — 一个 Astro 集成，可以在 Astro 网站上的 React 组件中无缝使用 i18next 和 react-i18next。
+- [paraglide](https://inlang.com/c/astro) — 一个专门为像 Astro 群岛这样的部分水合模式设计的完全类型安全的 i18n 库。

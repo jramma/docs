@@ -8,14 +8,13 @@ description: >-
   values as props
 i18nReady: true
 ---
-import Badge from '~/components/Badge.astro';
 import Box from '~/components/tutorial/Box.astro';
 import Checklist from '~/components/Checklist.astro';
 import PreCheck from '~/components/tutorial/PreCheck.astro';
+import { Steps } from '@astrojs/starlight/components';
+import Badge from "~/components/Badge.astro"
 
-
-
-Now that you have a layout for your pages, let's add a layout for blog posts!
+Now that you have a layout for your pages, it's time to add a layout for blog posts!
 
 <PreCheck>
   - Create a new blog post layout for your Markdown files
@@ -26,6 +25,7 @@ Now that you have a layout for your pages, let's add a layout for blog posts!
 
 When you include the `layout` frontmatter property in an `.md` file, all of your frontmatter YAML values are available to the layout file.
 
+<Steps>
 1. Create a new file at `src/layouts/MarkdownPostLayout.astro`
 
 2. Copy the following code into `MarkdownPostLayout.astro`
@@ -34,6 +34,7 @@ When you include the `layout` frontmatter property in an `.md` file, all of your
     ---
     const { frontmatter } = Astro.props;
     ---
+    <meta charset="utf-8" />
     <h1>{frontmatter.title}</h1>
     <p>Written by {frontmatter.author}</p>
     <slot />
@@ -49,15 +50,16 @@ When you include the `layout` frontmatter property in an `.md` file, all of your
     description: 'This is the first post of my new Astro blog.'
     author: 'Astro Learner'
     image:
-        url: 'https://docs.astro.build/assets/full-logo-light.png' 
-        alt: 'The full Astro logo.'
+        url: 'https://docs.astro.build/assets/rose.webp' 
+        alt: 'The Astro logo on a dark background with a pink glow.'
     tags: ["astro", "blogging", "learning in public"]
     ---
     ```
 
-4. Check your browser preview again at `localhost:3000/posts/post-1` and notice what the layout has added to your page. 
+4. Check your browser preview again at `http://localhost:4321/posts/post-1` and notice what the layout has added to your page. 
 
 5. Add the same layout property to your two other blog posts `post-2.md` and `post-3.md`. Verify in your browser that your layout is also applied to these posts.
+</Steps>
 
 :::tip
 When using layouts, you now have the option of including elements, like a page title, in the Markdown content or in the layout. Remember to visually inspect your page preview and make any adjustments necessary to avoid duplicated elements. 
@@ -77,12 +79,13 @@ Published on: 2022-07-01
 Welcome to my _new blog_ about learning Astro! Here, I will share my learning journey as I build a new website.
 ```
 
-```astro title="src/layouts/MarkdownPostLayout.astro" ins={5}
+```astro title="src/layouts/MarkdownPostLayout.astro" ins={6}
 ---
 const { frontmatter } = Astro.props;
 ---
+<meta charset="utf-8" />
 <h1>{frontmatter.title}</h1>
-<p>Published on: {frontmatter.pubDate.slice(0,10)}</p>
+<p>Published on: {frontmatter.pubDate.toString().slice(0,10)}</p>
 <p>Written by {frontmatter.author}</p>
 <slot />
 ```
@@ -95,8 +98,9 @@ Here is an example of a refactored layout that leaves only individual blog post 
 ---
 const { frontmatter } = Astro.props;
 ---
+<meta charset="utf-8" />
 <h1>{frontmatter.title}</h1>
-<p>{frontmatter.pubDate.slice(0,10)}</p>
+<p>{frontmatter.pubDate.toString().slice(0,10)}</p>
 <p><em>{frontmatter.description}</em></p>
 <p>Written by: {frontmatter.author}</p>
 <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} />
@@ -104,7 +108,7 @@ const { frontmatter } = Astro.props;
 ```
 </Box>
 
-:::note[avoid duplication]
+:::note[Avoid duplication]
  Anything rendered by your layout does **not** need to be typed into your blog post! If you notice any duplication when you check your browser preview, then be sure to remove content from your Markdown file.
  :::
 
@@ -175,8 +179,8 @@ Can you figure out what should go in the blanks so that the following two compon
 
 ### Resources
 
-- [Markdown Layouts in Astro](/en/guides/markdown-content/#frontmatter-layout)
+- [Markdown Layouts in Astro](/en/guides/markdown-content/#frontmatter-layout-property)
 
-- [Markdown Layout Props](/en/core-concepts/layouts/#markdown-layout-props)
+- [Markdown Layout Props](/en/basics/layouts/#markdown-layout-props)
 
-- [Introduction to YAML](https://dev.to/paulasantamaria/introduction-to-yaml-125f) <Badge>external</Badge>
+- [Introduction to YAML](https://dev.to/paulasantamaria/introduction-to-yaml-125f) <Badge class="neutral-badge" text="external" />

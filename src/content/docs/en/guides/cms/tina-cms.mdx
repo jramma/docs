@@ -1,19 +1,25 @@
 ---
 title: Tina CMS & Astro
 description: Add content to your Astro project using Tina as a CMS
+sidebar:
+  label: Tina CMS
 type: cms
 stub: false
 service: Tina CMS
 i18nReady: true
 ---
-import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
+import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro';
+import Grid from '~/components/FluidGrid.astro';
+import Card from '~/components/ShowcaseCard.astro';
+import { Steps } from '@astrojs/starlight/components';
 
 [Tina CMS](https://tina.io/) is a Git-backed headless content management system.
 
 ## Integrating with Astro
 
-To get started, you'll need an existing Astro project. 
+To get started, you'll need an existing Astro project.
 
+<Steps>
 1. Run the following command to install Tina into your Astro project.
 
     <PackageManagerTabs>
@@ -38,8 +44,8 @@ To get started, you'll need an existing Astro project.
     - When prompted "What framework are you using", choose **Other**.
     - When asked where public assets are stored, press <kbd>Enter</kbd>.
 
-    After this has finished, you should now have a `.tina` folder in the root of your project and an `admin` folder in your public directory. It will also create a Markdown file at `content/posts/hello-world.md`.
- 
+    After this has finished, you should now have a `.tina` folder in the root of your project and a generated `hello-world.md` file at `content/posts`.
+
 2. Change  the `dev` script in `package.json`:
 
     <PackageManagerTabs>
@@ -49,7 +55,7 @@ To get started, you'll need an existing Astro project.
       {
           "scripts": {
               "dev": "astro dev",
-              "dev": "tinacms dev -c 'astro dev'"
+              "dev": "tinacms dev -c \"astro dev\""
           }
       }
       ```
@@ -60,7 +66,7 @@ To get started, you'll need an existing Astro project.
       {
           "scripts": {
               "dev": "astro dev",
-              "dev": "tinacms dev -c 'astro dev'"
+              "dev": "tinacms dev -c \"astro dev\""
           }
       }
       ```
@@ -71,7 +77,7 @@ To get started, you'll need an existing Astro project.
       {
           "scripts": {
               "dev": "astro dev",
-              "dev": "tinacms dev -c 'astro dev'"
+              "dev": "tinacms dev -c \"astro dev\""
           }
       }
       ```
@@ -132,7 +138,7 @@ To get started, you'll need an existing Astro project.
                 name: "body",
                 label: "Body",
                 isBody: true,
-              },  
+              },
             ],
           },
         ],
@@ -143,11 +149,20 @@ To get started, you'll need an existing Astro project.
     Learn more about Tina collections [in the Tina docs](https://tina.io/docs/reference/collections/).
 
 5. In production, TinaCMS can commit changes directly to your GitHub repository. To set up TinaCMS for production, you can choose to use [Tina Cloud](https://tina.io/docs/tina-cloud/) or self-host the [Tina Data Layer](https://tina.io/docs/self-hosted/overview/). You can [read more about registering for Tina Cloud](https://app.tina.io/register) in the Tina Docs.
+</Steps>
 
 ## Official Resources
 
 - [TinaCMS Astro integration guide](https://tina.io/docs/frameworks/astro/).
 
-## Community Resources 
+## Community Resources
 
-- [Astro Tina Starter](https://github.com/tombennet/astro-tina-starter/tree/main) by Tom Bennet
+- [Astro Tina Starter with visual editing](https://github.com/dawaltconley/tina-astro) by Jeff See + Dylan Awalt-Conley
+- [Astro Tina Starter with basic editing](https://github.com/tombennet/astro-tina-starter/tree/main) by Tom Bennet
+- [Using Astro’s Image Optimization with Tina](https://joschua.io/posts/2023/08/16/how-to-use-astro-assets-with-tina-cms/)
+
+## Themes
+
+<Grid>
+  <Card title="Resume01" href="https://astro.build/themes/details/resume01/" thumbnail="resume01.png"/>
+</Grid>

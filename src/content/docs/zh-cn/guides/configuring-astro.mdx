@@ -1,162 +1,126 @@
 ---
-title: 配置 Astro
+title: 配置概览
+description: 了解配置和自定义新项目以及你的开发体验的方法。
+i18nReady: true
 ---
+import ReadMore from '~/components/ReadMore.astro'
 
-可以通过在您的项目中添加一个 `astro.config.mjs` 文件来自定义 Astro 的运行方式。它是 Astro 项目中的常见文件，所有官方的示例模板和主题都默认包含该文件。
+Astro 是一个灵活、自由的框架，它允许你以多种不同的方式来配置你的项目。这意味着开始一个新项目可能会让人感到不知所措：因为没有“一个最好的方法”来设置你的 Astro 项目！
 
-📚 阅读 Astro [API 的配置参考](/zh-cn/reference/configuration-reference/)以概览所有支持的配置项。
+这个“配置”部分中的指南将帮助你熟悉各种文件，这些文件允许你配置和自定义项目和开发环境的各个方面。
+
+如果这是你的第一个 Astro 项目，或者你已经有一段时间没有建立新项目了，请使用以下指南和文档中的参考来获取帮助。
+
+可以通过在你的项目中添加一个 `astro.config.mjs` 文件来自定义 Astro 的运行方式。它是 Astro 项目中的常见文件，所有官方的示例模板和主题都默认包含该文件。
+
+<ReadMore>阅读 Astro [API 的配置参考](/zh-cn/reference/configuration-reference/)以概览所有支持的配置项。</ReadMore>
 
 ## Astro 配置文件
 
-一个有效的 Astro 配置文件使用 `default` 导出其配置, 推荐使用 `defineConfig` 助手函数。
+[Astro 配置文件](/zh-cn/reference/configuration-reference/) 是一个 JavaScript 文件，它被包含在每个起始项目的根目录中：
 
 ```js
 // astro.config.mjs
-import { defineConfig } from 'astro/config'
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   // 你的配置项都在这里
-  // https://docs.astro.build/zh-cn/reference/configuration-reference/
-})
+});
 ```
 
-推荐使用 `defineConfig()` 以便 IDE 可以提供自动类型提示，但这并非是必须的。一个最基本的有效配置文件应该是这样：
+仅当你需要配置某些内容时才需要此文件，但大多数项目都会使用此文件。 `defineConfig()` 助手函数在你的 IDE 中提供自动化的 IntelliSense，你可以在其中添加所有配置选项，以告诉 Astro 如何构建项目并将其渲染为 HTML。
+
+我们建议在大多数情况下使用默认文件格式 `.mjs`，如果你想在配置文件中编写 TypeScript，则使用 `.ts`。但是，也支持 `astro.config.js` 和 `astro.config.cjs`。
+
+<ReadMore>阅读 Astro 的 [配置参考](/zh-cn/reference/configuration-reference/)，了解所有支持的配置选项的完整概述。</ReadMore>
+
+## TypeScript 配置文件
+
+每个 Astro 起始项目都包含了一个 `tsconfig.json` 文件。Astro 的[组件脚本](/zh-cn/basics/astro-components/#组件脚本)就是 Typescript，它提供 Astro 的编辑器工具，并允许你可选地向 JavaScript 添加语法，以对你自己的项目代码进行类型检查。
+
+使用 `tsconfig.json` 文件配置 TypeScript 模板，该模板将对代码执行类型检查、配置 TypeScript 插件、设置导入别名等。
+
+<ReadMore>阅读 Astro 的 [TypeScript 指南](/zh-cn/guides/typescript/)，了解 TypeScript 选项和 Astro 内置实用程序类型的完整概述。</ReadMore>
+
+## 开发体验
+
+当你处在开发模式下工作时，你可以利用代码编辑器和其他工具来改善 Astro 开发者的体验。
+
+Astro 提供了自己的官方 VS Code 扩展，并且与其他几种流行的编辑器工具兼容。Astro 还提供了一个可自定义的工具栏，当开发服务器运行时，该工具栏会显示在浏览器预览中。你可以安装甚至构建自己的工具栏应用程序以获得附加功能。
+
+<ReadMore>参阅 Astro 的[编辑器设置选项](/zh-cn/editor-setup/)和[使用开发工具栏](/zh-cn/guides/dev-toolbar/)指南，了解如何自定义你的开发体验。</ReadMore>
+
+## 新项目常见事宜
+
+以下是你在面对一个新的 Astro 项目时，可能会考虑的一些初始步骤。
+
+### 添加你的部署域名
+
+要生成站点地图并创建规范 URL，可以在 [`site`](/zh-cn/reference/configuration-reference/#site) 选项中配置部署 URL。如果你要部署到一个路径（例如 `www.example/docs`），你还可以为项目的根目录配置 [`base`](/zh-cn/reference/configuration-reference/#base)。
+
+此外，部署时不同的 host 对于 URL 末尾的尾部斜杠可能有不同的行为。（例如 `example.com/about` 与 `example.com/about/`）。当部署站点后，你可能需要配置 [`trailingSlash`](/zh-cn/reference/configuration-reference/#trailingslash) 偏好。
 
 ```js title="astro.config.mjs"
-// 示例：最基础完全空白的配置文件
-export default {}
-```
-
-## 受支持的配置文件类型
-
-Astro 支持多种 JavaScript 配置文件格式，如：`astro.config.js`、`astro.config.mjs`、`astro.config.cjs` 和 `astro.config.ts`。我们推荐在大多数情况下使用 `.mjs`，如果您想在配置文件中编写TypeScript，则建议使用 `.ts`。
-
-TypeScript 配置文件使用 [`tsm`](https://github.com/lukeed/tsm) 解析并会遵循您项目中的 tsconfig 选项。
-
-## 配置文件解析
-
-Astro 将自动尝试解析项目根目录下名为 `astro.config.mjs` 的文件。如果没在根目录下找到配置文件，则会使用默认配置：
-
-```bash
-# 示例：从 ./astro.config.mjs 中读取配置
-astro build
-```
-
-你也可以用 `--config` CLI 标志明确指出要使用的配置文件。这个 CLI 标志将基于你运行 `astro` 命令的目录进行解析。
-
-```bash
-# 示例：从这个文件中读取配置
-astro build --config my-config-file.js
-```
-
-## 配置智能提示
-
-Astro 建议在配置文件中使用 `defineConfig()` 助手函数。IDE 将借助 `defineConfig()` 为你提供智能提示。像 VSCode 这样的编辑器就能够读取 Astro 的 TypeScript 类型定义并自动提供 jsdoc 类型提示，即使你的配置文件不是用 TypeScript 写的。
-
-```js
-// astro.config.mjs
-import { defineConfig } from 'astro/config'
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  // 你的配置项都在这里
-  // https://docs.astro.build/zh-cn/reference/configuration-reference/
-})
+  site: "https://www.example.com",
+  base: "/docs",
+  trailingSlash: "always",
+});
 ```
 
-你也可以使用 JSDoc 标注，手动向 VSCode 提供类型定义。
+### 添加站点元数据
 
-```js
-// astro.config.mjs
- export default /** @type {import('astro').AstroUserConfig} */ ({
-  // 你的配置项都在这里
-  // https://docs.astro.build/zh-cn/reference/configuration-reference/
-}
+Astro 不会将其配置文件用于常见的 SEO 或元数据，它们仅用于构建项目代码并将其渲染为 HTML 所需的信息。
+
+相反，这些信息会被添加到页面中的 `<head>` 部分并放在 HTML 的 `<link>` 和 `<meta>` 标签中，就像编写纯 HTML 页面一样。
+
+Astro 站点的一种常见做法是创建一个 `<Head />` [`.astro` 组件](/zh-cn/basics/astro-components/)，该组件可以添加到通用的[布局组件](/zh-cn/basics/layouts/)中，以便应用于你所有的页面。
+
+```astro title="src/components/MainLayout.astro"
+---
+import Head from './Head.astro';
+
+const { ...props } = Astro.props;
+---
+<html>
+  <head>
+    <meta charset="utf-8">
+    <Head />
+    <!-- head 部分的附加元素 -->
+  </head>
+  <body>
+    <!-- 你的页面内容在这 -->
+  </body>
+</html>
 ```
 
-## 引用相对文件
+因为 `Head.astro` 只是一个常规的 Astro 组件，所以你可以导入文件并接收从其他组件传递的 props，例如特定的页面标题。
 
-如果你提供了 `root` 相对路径或 `--root` CLI 标志，Astro 将基于你运行 `astro` 命令的目录来解析。
+```astro title="src/components/Head.astro"
+---
+import Favicon from '../assets/Favicon.astro';
+import SomeOtherTags from './SomeOtherTags.astro';
 
-```js
-// astro.config.mjs
-import { defineConfig } from 'astro/config'
+const { title = 'My Astro Website', ...props } = Astro.props;
+---
+<link rel="sitemap" href="/sitemap-index.xml">
+<title>{title}</title>
+<meta name="description" content="Welcome to my new Astro site!">
 
-export default defineConfig({
-  // 基于你当前的工作目录解析 "./foo" 目录
-  root: 'foo'
-})
+<!-- 网站分析 -->
+<script data-goatcounter="https://my-account.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+<!-- 开放图谱标签 -->
+<meta property="og:title" content="My New Astro Website" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://www.example.com/" />
+<meta property="og:description" content="Welcome to my new Astro site!" />
+<meta property="og:image" content="https://www.example.com/_astro/seo-banner.BZD7kegZ.webp">
+<meta property="og:image:alt" content="">
+
+<SomeOtherTags />
+
+<Favicon />
 ```
-
-Astro 将相对于项目根目录解析其他所有的相对文件和目录字符串：
-
-```js
-// astro.config.mjs
-import { defineConfig } from 'astro/config'
-
-export default defineConfig({
-  //  基于你当前的工作目录解析 "./foo" 目录
-  root: 'foo',
-  //  基于你当前的工作目录解析 "./foo/public" 目录
-  publicDir: 'public',
-})
-```
-
-使用 `import.meta.url` 引用相对于配置文件的文件或目录（除非你正在编写 common.js 模块标准的 `astro.config.cjs` 文件）。
-
-```js "import.meta.url"
-// astro.config.mjs
-import { defineConfig } from 'astro/config'
-
-export default defineConfig({
-    // 基于配置文件解析 "./foo" 目录
-    root: new URL("./foo", import.meta.url).toString(),
-    // 基于配置文件解析 "./public" 目录
-    publicDir: new URL("./public", import.meta.url)..toString(),
-})
-```
-
-:::note
-Vite 特定的 `import.meta` 属性，如 `import.meta.env` 或 `import.meta.glob`，*无法*在你的配置文件中访问。我们推荐使用 [dotenv](https://github.com/motdotla/dotenv) 或 [fast-glob](https://github.com/mrmlnc/fast-glob) 作为替代方案。
-:::
-
-## 自定义输出文件名
-
-对于使用 Astro 进行处理的代码，如导入的 JavaScript 或 CSS 文件，你可以在 `astro.config.*` 文件中的 `vite.build.rollupOptions`条目使用 [`entryFileNames`](https://rollupjs.org/guide/en/#outputentryfilenames)、[`chunkFileNames`](https://rollupjs.org/guide/en/#outputchunkfilenames) 和 [`assetFileNames`](https://rollupjs.org/guide/en/#outputassetfilenames) 来定制输出文件名。
-
-```js ins={9-11}
-// astro.config.mjs
-import { defineConfig } from 'astro/config'
-
-export default defineConfig({
-  vite: {
-    build: {
-      rollupOptions: {
-        output: {
-          entryFileNames: 'entry.[hash].js',
-          chunkFileNames: 'chunks/chunk.[hash].js',
-          assetFileNames: 'assets/asset.[hash][extname]',
-        },
-      },
-    },
-  },
-})
-```
-
-这适合用于当你的脚本名称可能受到广告拦截器的影响（如 `ads.js` 或 `google-tag-manager.js`）时。
-
-## 环境变量
-
-Astro 会在加载其他文件之前评估配置文件。因此，你不能使用 `import.meta.env` 访问在 `.env` 文件中设置的环境变量。
-
-你可以在配置文件中使用 `process.env` 访问其他环境变量，如 [CLI 设置的环境变量](/zh-cn/guides/environment-variables/#使用-cli)。
-
-你也可以使用 [Vite 的 `loadEnv` 助手函数](https://cn.vitejs.dev/config/#using-environment-variables-in-config)来手动加载 `.env` 文件。
-
-```js title="astro.config.mjs"
-import { loadEnv } from "vite";
-const { SECRET_PASSWORD } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
-```
-
-## 配置参考
-
-📚 阅读 Astro [API 的配置参考](/zh-cn/reference/configuration-reference/)以概览所有支持的配置选项。

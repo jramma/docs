@@ -1,70 +1,89 @@
 ---
-# NOTE: This file is auto-generated from 'scripts/generate-integration-pages.ts'
-#       and pulls content directly from the package’s README.
-#       DO NOT MAKE EDITS TO THIS FILE DIRECTLY, THEY WILL BE OVERWRITTEN!
-#       For corrections, please edit the package README at
-#       https://github.com/withastro/astro/tree/main/packages/integrations/svelte/
-#
-# TRANSLATORS: please remove this note and the <DontEditWarning/> component.
-
 type: integration
 title: '@astrojs/svelte'
 description: Learn how to use the @astrojs/svelte framework integration to extend component support in your Astro project.
-githubURL: 'https://github.com/withastro/astro/tree/main/packages/integrations/svelte/'
-hasREADME: true
+sidebar:
+  label: Svelte
+githubIntegrationURL: 'https://github.com/withastro/astro/tree/main/packages/integrations/svelte/'
 category: renderer
 i18nReady: true
 ---
+import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro';
+import Since from '~/components/Since.astro';
 
-import Video from '~/components/Video.astro';
-import DontEditWarning from '~/components/DontEditWarning.astro';
-
-<DontEditWarning/>
-
-This **[Astro integration][astro-integration]** enables server-side rendering and client-side hydration for your [Svelte](https://svelte.dev/) components.
+This **[Astro integration][astro-integration]** enables rendering and client-side hydration for your [Svelte](https://svelte.dev/) 5 components. For Svelte 3 and 4 support, install `@astrojs/svelte@5` instead.
 
 ## Installation
 
-There are two ways to add integrations to your project. Let's try the most convenient option first!
-
-### `astro add` command
-
-Astro includes a CLI tool for adding first party integrations: `astro add`. This command will:
-
-1.  (Optionally) Install all necessary dependencies and peer dependencies
-2.  (Also optionally) Update your `astro.config.*` file to apply this integration
+Astro includes an `astro add` command to automate the setup of official integrations. If you prefer, you can [install integrations manually](#manual-install) instead.
 
 To install `@astrojs/svelte`, run the following from your project directory and follow the prompts:
 
-```sh
-# Using NPM
-npx astro add svelte
-# Using Yarn
-yarn astro add svelte
-# Using PNPM
-pnpm astro add svelte
-```
+<PackageManagerTabs>
+  <Fragment slot="npm">
+  ```sh
+  npx astro add svelte
+  ```
+  </Fragment>
+  <Fragment slot="pnpm">
+  ```sh
+  pnpm astro add svelte
+  ```
+  </Fragment>
+  <Fragment slot="yarn">
+  ```sh
+  yarn astro add svelte
+  ```
+  </Fragment>
+</PackageManagerTabs>
 
 If you run into any issues, [feel free to report them to us on GitHub](https://github.com/withastro/astro/issues) and try the manual installation steps below.
 
-### Install dependencies manually
+### Manual Install
 
-First, install the `@astrojs/svelte` integration like so:
+First, install the `@astrojs/svelte` package:
 
-```sh
-npm install @astrojs/svelte
-```
+<PackageManagerTabs>
+  <Fragment slot="npm">
+  ```sh
+  npm install @astrojs/svelte
+  ```
+  </Fragment>
+  <Fragment slot="pnpm">
+  ```sh
+  pnpm add @astrojs/svelte
+  ```
+  </Fragment>
+  <Fragment slot="yarn">
+  ```sh
+  yarn add @astrojs/svelte
+  ```
+  </Fragment>
+</PackageManagerTabs>
 
-Most package managers will install associated peer dependencies as well. Still, if you see a "Cannot find package 'svelte'" (or similar) warning when you start up Astro, you'll need to install Svelte:
+Most package managers will install associated peer dependencies as well. If you see a `Cannot find package 'svelte'` (or similar) warning when you start up Astro, you'll need to install Svelte and TypeScript:
 
-```sh
-npm install svelte
-```
+<PackageManagerTabs>
+  <Fragment slot="npm">
+  ```sh
+  npm install svelte typescript
+  ```
+  </Fragment>
+  <Fragment slot="pnpm">
+  ```sh
+  pnpm add svelte typescript
+  ```
+  </Fragment>
+  <Fragment slot="yarn">
+  ```sh
+  yarn add svelte typescript
+  ```
+  </Fragment>
+</PackageManagerTabs>
 
-Now, apply this integration to your `astro.config.*` file using the `integrations` property:
+Then, apply the integration to your `astro.config.*` file using the `integrations` property:
 
-```js ins={3} "svelte()"
-// astro.config.mjs
+```js title="astro.config.mjs" ins={2} ins="svelte()"
 import { defineConfig } from 'astro/config';
 import svelte from '@astrojs/svelte';
 
@@ -74,75 +93,52 @@ export default defineConfig({
 });
 ```
 
+And create a new file called `svelte.config.js` in your project root directory and add the following code:
+
+```js title="svelte.config.js"
+import { vitePreprocess } from '@astrojs/svelte';
+
+export default {
+  preprocess: vitePreprocess(),
+}
+```
+
 ## Getting started
 
 To use your first Svelte component in Astro, head to our [UI framework documentation][astro-ui-frameworks]. You'll explore:
 
-*   📦 how framework components are loaded,
-*   💧 client-side hydration options, and
-*   🤝 opportunities to mix and nest frameworks together
-
-## Troubleshooting
-
-For help, check out the `#support` channel on [Discord](https://astro.build/chat). Our friendly Support Squad members are here to help!
-
-You can also check our [Astro Integration Documentation][astro-integration] for more on integrations.
-
-## Contributing
-
-This package is maintained by Astro's Core team. You're welcome to submit an issue or PR!
-
-[astro-integration]: /en/guides/integrations-guide/
-
-[astro-ui-frameworks]: /en/core-concepts/framework-components/#using-framework-components
+* 📦 how framework components are loaded,
+* 💧 client-side hydration options, and
+* 🤝 opportunities to mix and nest frameworks together
 
 ## Options
 
 This integration is powered by `@sveltejs/vite-plugin-svelte`. To customize the Svelte compiler, options can be provided to the integration. See the [`@sveltejs/vite-plugin-svelte` docs](https://github.com/sveltejs/vite-plugin-svelte/blob/HEAD/docs/config.md) for more details.
 
-### Default options
+You can set options either by passing them to the `svelte` integration in `astro.config.mjs` or in `svelte.config.js`. The options in `astro.config.mjs` will take precedence over the options in `svelte.config.js` if both are present:
 
-This integration passes the following default options to the Svelte compiler:
-
-```js
-const defaultOptions = {
-  emitCss: true,
-  compilerOptions: { dev: isDev, hydratable: true },
-  preprocess: vitePreprocess(),
-};
-```
-
-These `emitCss`, `compilerOptions.dev`, and `compilerOptions.hydratable` values are required to build properly for Astro and cannot be overridden.
-
-Providing your own `preprocess` options **will** override the [`vitePreprocess()`](https://github.com/sveltejs/vite-plugin-svelte/blob/HEAD/docs/preprocess.md) default. Make sure to enable the preprocessor flags needed for your project.
-
-You can set options either by passing them to the `svelte` integration in `astro.config.mjs` or in `svelte.config.js`. Either of these would override the default `preprocess` setting:
-
-```js
-// astro.config.mjs
+```js title="astro.config.mjs" "extensions: ['.svelte']"
 import { defineConfig } from 'astro/config';
 import svelte from '@astrojs/svelte';
 
 export default defineConfig({
-  integrations: [svelte({ preprocess: [] })],
+  integrations: [svelte({ extensions: ['.svelte'] })],
 });
 ```
 
-```js
-// svelte.config.js
+```js title="svelte.config.js"
 export default {
-  preprocess: [],
+  extensions: ['.svelte'],
 };
 ```
 
-## Intellisense for TypeScript
+## Preprocessors
 
-**Added in:** `@astrojs/svelte@2.0.0`
+<Since v="2.0.0" pkg="@astrojs/svelte" />
 
-If you're using a preprocessor like TypeScript or SCSS in your Svelte files, you can create a `svelte.config.js` file so that the Svelte IDE extension can correctly parse the Svelte files.
+If you're using SCSS or Stylus in your Svelte files, you can create a `svelte.config.js` file so that they are preprocessed by Svelte, and the Svelte IDE extension can correctly parse the Svelte files.
 
-```js
-// svelte.config.js
+```js title="svelte.config.js"
 import { vitePreprocess } from '@astrojs/svelte';
 
 export default {
@@ -150,4 +146,8 @@ export default {
 };
 ```
 
-This config file will be automatically added for you when you run `astro add svelte`.
+This config file will be automatically added for you when you run `astro add svelte`. See the [`@sveltejs/vite-plugin-svelte` docs](https://github.com/sveltejs/vite-plugin-svelte/blob/HEAD/docs/preprocess.md) for more details about `vitePreprocess`.
+
+[astro-integration]: /en/guides/integrations-guide/
+
+[astro-ui-frameworks]: /en/guides/framework-components/#using-framework-components

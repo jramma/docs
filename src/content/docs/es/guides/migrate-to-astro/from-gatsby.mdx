@@ -6,6 +6,7 @@ stub: false
 framework: Gatsby
 i18nReady: true
 ---
+import { Steps } from '@astrojs/starlight/components';
 import AstroJSXTabs from '~/components/tabs/AstroJSXTabs.astro'
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
@@ -15,26 +16,25 @@ Aquí hay algunos conceptos clave y estrategias de migración para ayudarte a co
 
 Gatsby y Astro comparten algunas similitudes que te ayudarán a migrar tu proyecto:
 
-- La [sintaxis de los archivos `.astro` es similar a JSX](/es/core-concepts/astro-syntax/#expresiones-similares-a-jsx). Escribir en Astro debería sentirse familiar.
+- La [sintaxis de los archivos `.astro` es similar a JSX](/es/reference/astro-syntax/#expresiones-similares-a-jsx). Escribir en Astro debería sentirse familiar.
 
-- Astro has built-in support for [Markdown](/es/guides/markdown-content/) and an integration for using MDX files. Also, you can configure and continue to use many of your existing Markdown plugins.
+- Astro tiene soporte integrado para [Markdown](/es/guides/markdown-content/) y una integración para utilizar archivos MDX. Además, puedes configurar y seguir utilizando muchos de tus plugins de Markdown existentes.
 
 - Astro también cuenta con una [integración oficial para usar componentes de React](/es/guides/integrations-guide/react/). Ten en cuenta que en Astro, los archivos de React **deben** tener una extensión `.jsx` o `.tsx`.
 
 - Astro tiene soporte para [instalar paquetes de NPM](/es/guides/imports/#paquetes-npm), incluyendo bibliotecas de React. Muchas de tus dependencias existentes funcionarán en Astro.
 
-- Al igual que en Gatsby, los proyectos de Astro pueden SSG o [SSR con prerrenderizado a nivel de página](/es/guides/server-side-rendering/#configuración-de-rutas-individuales).
+- Al igual que en Gatsby, los proyectos de Astro pueden SSG o [SSR con prerrenderizado a nivel de página](/es/guides/on-demand-rendering/).
 
 ## Principales diferencias entre Gatsby y Astro
 
 Cuando reconstruyes tu sitio de Gatsby en Astro, notarás algunas diferencias importantes:
 
-- [MPA vs SPA](/es/concepts/mpa-vs-spa/): Los proyectos de Gatsby son aplicaciones de una sola página (SPA) de React y utilizan `index.js` como raíz del proyecto. Los proyectos de Astro son sitios multipágina y `index.astro` es tu página de inicio.
+- Los proyectos de Gatsby son aplicaciones de una sola página (SPA) de React y utilizan `index.js` como raíz del proyecto. Los proyectos de Astro son sitios multipágina y `index.astro` es tu página de inicio.
 
-- [Componentes Astro](/es/core-concepts/astro-components/) No se escriben como funciones exportadas que devuelven plantillas de páginas. En su lugar, dividirás tu código en un "bloque de codigo" para tu JavaScript y un cuerpo exclusivamente para el HTML que generes.
+- [Componentes Astro](/es/basics/astro-components/) No se escriben como funciones exportadas que devuelven plantillas de páginas. En su lugar, dividirás tu código en un "bloque de codigo" para tu JavaScript y un cuerpo exclusivamente para el HTML que generes.
 
 - [Datos de archivos locales](/es/guides/imports/): Gatsby utiliza GraphQL para recuperar datos de los archivos de tu proyecto. Astro utiliza importaciones de ESM y funciones de espera en el nivel superior (p. ej. [`Astro.glob()`](/es/guides/imports/#astroglob), [`getCollection()`](/es/guides/content-collections/#consultando-colecciones)) para importar datos de los archivos de tu proyecto. Puedes agregar manualmente GraphQL a tu proyecto de Astro, pero no está incluido de forma predeterminada.
-
 
 ## Convierte tu proyecto de Gatsby
 
@@ -43,7 +43,7 @@ Cada migración de proyecto será diferente, pero hay algunas acciones comunes q
 ### Crear un nuevo proyecto de Astro
 Utiliza el comando `create astro` en tu gestor de paquetes para iniciar el asistente de línea de comandos de Astro o elige un tema de la comunidad desde el [Catálogo de Temas de Astro](https://astro.build/themes).
 
-Puedes pasar el argumento `--template` al comando `create astro` para iniciar un nuevo proyecto de Astro con uno de nuestros inicios oficiales (p. ej. `docs`, `blog`, `portfolio`). Alternativamente, puedes [iniciar un nuevo proyecto a partir de cualquier repositorio de Astro existente en GitHub](/es/install/auto/#plantillas-de-inicio).
+Puedes pasar el argumento `--template` al comando `create astro` para iniciar un nuevo proyecto de Astro con uno de nuestros inicios oficiales (p. ej. `docs`, `blog`, `portfolio`). Alternativamente, puedes [iniciar un nuevo proyecto a partir de cualquier repositorio de Astro existente en GitHub](/es/install-and-setup/#usa-un-tema-o-una-plantilla-de-inicio).
 
   <PackageManagerTabs>
     <Fragment slot="npm">
@@ -87,15 +87,13 @@ Puede resultarte útil instalar algunas de las [integraciones opcionales de Astr
 
 - **@astrojs/react**: para reutilizar algunos componentes UI de React existentes en tu nuevo sitio Astro o seguir escribiendo con componentes de React.
 
-- **@astrojs/image**: para reemplazar el complemento de imagen de Gatsby con los propios componentes de optimización de imagen de Astro. (Experimental: funciona solo en archivos `.astro` y `.mdx`)
-
 - **@astrojs/mdx**: para llevar los archivos MDX existentes de tu proyecto de Gatsby o utilizar MDX en tu nuevo sitio Astro.
-
 
 ### Pon tu código en `src`
 
-Siguiendo la [estructura de proyecto de Astro](/es/core-concepts/project-structure/):
+Siguiendo la [estructura de proyecto de Astro](/es/basics/project-structure/):
 
+<Steps>
 1. **Elimina** la carpeta `public/` de Gatsby. 
     
     Gatsby utiliza el directorio `public/` dpara la salida de compilación, por lo que puedes descartar de forma segura esta carpeta. Ya no necesitarás una versión compilada de tu sitio de Gatsby. (Astro utiliza `dist/` de forma predeterminada para la salida de compilación)
@@ -104,11 +102,12 @@ Siguiendo la [estructura de proyecto de Astro](/es/core-concepts/project-structu
 
     Astro utiliza una carpeta llamada `public/` para los activos estáticos. Como alternativa, puedes copiar el contenido de `static/` ien la carpeta `public/` existente de Astro.
 
-3. **Copia o mueve** los otros archivos y carpetas de Gatsby (p. ej. `components`, `pages`, etc.) según sea necesario en tu carpeta `src/` de Astro a medida que reconstruyes tu sitio, siguiendo la [estructura de proyecto de Astro](/es/core-concepts/project-structure/).
+3. **Copia o mueve** los otros archivos y carpetas de Gatsby (p. ej. `components`, `pages`, etc.) según sea necesario en tu carpeta `src/` de Astro a medida que reconstruyes tu sitio, siguiendo la [estructura de proyecto de Astro](/es/basics/project-structure/).
 
-La carpeta `src/pages/` de Astro es una carpeta especial utilizada para la creación de páginas y publicaciones de tu sitio mediante enrutamiento basado en archivos a partir de archivos `.astro`, `.md` y `.mdx`. No será necesario configurar ningún comportamiento de enrutamiento para tus archivos Astro, Markdown y MDX en Astro.
+    La carpeta `src/pages/` de Astro es una carpeta especial utilizada para la creación de páginas y publicaciones de tu sitio mediante enrutamiento basado en archivos a partir de archivos `.astro`, `.md` y `.mdx`. No será necesario configurar ningún comportamiento de enrutamiento para tus archivos Astro, Markdown y MDX en Astro.
 
-Todas las demás carpetas son opcionales y puedes organizar el contenido de tu carpeta `src/` de la forma que desees. Otras carpetas comunes en proyectos de Astro incluyen `src/layouts/`, `src/components`, `src/styles`, y `src/scripts`.
+    Todas las demás carpetas son opcionales y puedes organizar el contenido de tu carpeta `src/` de la forma que desees. Otras carpetas comunes en proyectos de Astro incluyen `src/layouts/`, `src/components`, `src/styles`, y `src/scripts`.
+</Steps>
 
 ### Consejos: Convierte archivos JSX a archivos `.astro`
 
@@ -116,15 +115,15 @@ Aquí tienes algunos consejos para convertir un componente de Gatsby con extensi
 
 1. Utiliza únicamente el bloque `return()` de la función del componente de Gatsby existente como tu plantilla HTML en Astro.
 
-1. Cambia cualquier [sintaxis de Gatsby o JSX a la sintaxis de Astro](#referencia-convertir-a-sintaxis-de-astro) o a los estándares web de HTML. Esto incluye `<Link to="">`, `{children}`, y `className`, por ejemplo.
+2. Cambia cualquier [sintaxis de Gatsby o JSX a la sintaxis de Astro](#referencia-convertir-a-sintaxis-de-astro) o a los estándares web de HTML. Esto incluye `<Link to="">`, `{children}`, y `className`, por ejemplo.
 
-1. Mueve cualquier JavaScript necesario, incluyendo las declaraciones de importación, a un ["bloque de código" (`---`)](/es/core-concepts/astro-components/#script-de-un-componente). Nota: JavaScript para [renderizar contenido condicionalmente](/es/core-concepts/astro-syntax/#html-dinamico) a menudo se escribe directamente dentro de la plantilla HTML en Astro.
+3. Mueve cualquier JavaScript necesario, incluyendo las declaraciones de importación, a un ["bloque de código" (`---`)](/es/basics/astro-components/#script-de-un-componente). Nota: JavaScript para [renderizar contenido condicionalmente](/es/reference/astro-syntax/#html-dinamico) a menudo se escribe directamente dentro de la plantilla HTML en Astro.
 
 4. Utiliza [`Astro.props`](/es/reference/api-reference/#astroprops) para acceder a cualquier prop adicional que se haya pasado previamente a tu función de Gatsby.
 
-4. Decide si también es necesario convertir a Astro los componentes importados. Con la integración oficial de React instalada, puedes utilizar los componentes de React existentes en tus archivos de Astro](/es/core-concepts/framework-components/). Sin embargo, es posible que desees convertirlos en componentes `.astro`, ¡especialmente si no necesitan ser interactivos!
+5. Decide si también es necesario convertir a Astro los componentes importados. Con la integración oficial de React instalada, puedes utilizar los componentes de React existentes en tus archivos de Astro](/es/guides/framework-components/). Sin embargo, es posible que desees convertirlos en componentes `.astro`, ¡especialmente si no necesitan ser interactivos!
 
-4. Elimina cualquier consulta de GraphQL. En su lugar, utiliza declaraciones de importación y [`Astro.glob()`](/es/reference/api-reference/#astroglob) para realizar consultas en tus archivos locales.
+6. Elimina cualquier consulta de GraphQL. En su lugar, utiliza declaraciones de importación y [`Astro.glob()`](/es/reference/api-reference/#astroglob) para realizar consultas en tus archivos locales.
 
 Consulta [un ejemplo de la plantilla de inicio del blog de Gatsby convertido paso a paso](#ejemplo-guiado-convertir-un-diseño-de-gatsby-a-astro)
 
@@ -186,9 +185,9 @@ Compara el siguiente componente de Gatsby con su equivalente en Astro:
 
 ### Migrando archivos de diseño
 
-Puede resultarte útil comenzar convirtiendo tus diseños y plantillas de Gatsby en [componentes de diseño de Astro](/es/core-concepts/layouts/).
+Puede resultarte útil comenzar convirtiendo tus diseños y plantillas de Gatsby en [componentes de diseño de Astro](/es/basics/layouts/).
 
-Cada página en Astro requiere explícitamente las etiquetas `<html>`, `<head>`, y `<body>` para estar presentes, por lo que es común reutilizar un archivo de diseño en varias páginas. Astro utiliza un elemento [`<slot />`](/es/core-concepts/astro-components/#slots) en lugar de la prop `{children}` de React para el contenido de la página, y no se requiere ninguna declaración de importación. Tus archivos `layout.js` y plantillas de Gatsby no incluirán esto.
+Cada página en Astro requiere explícitamente las etiquetas `<html>`, `<head>`, y `<body>` para estar presentes, por lo que es común reutilizar un archivo de diseño en varias páginas. Astro utiliza un elemento [`<slot />`](/es/basics/astro-components/#slots) en lugar de la prop `{children}` de React para el contenido de la página, y no se requiere ninguna declaración de importación. Tus archivos `layout.js` y plantillas de Gatsby no incluirán esto.
 
 Ten en cuenta la plantilla HTML estándar y el acceso directo a  `<head>`:  
 
@@ -211,17 +210,17 @@ También puedes reutilizar el código del archivo `src/components/seo.js` de Gat
 
 ### Migrando páginas y publicaciones
 
-En Gatsby, tus [páginas y publicaciones](/es/core-concepts/astro-pages/) pueden existir en `src/pages/` o fuera de `src` en otra carpeta, como `content`. En Astro, **todo el contenido de tu página debe estar dentro de `src/`**.
+En Gatsby, tus [páginas y publicaciones](/es/basics/astro-pages/) pueden existir en `src/pages/` o fuera de `src` en otra carpeta, como `content`. En Astro, **todo el contenido de tu página debe estar dentro de `src/`**.
 
 #### Páginas de React
 
 Tus páginas existentes de Gatsby en formato JSX (`.js`) deberán ser [convertidas de archivos JSX a páginas `.astro`](#consejos-convierte-archivos-jsx-a-archivos-astro). No puedes utilizar un archivo de página JSX existente en Astro.
 
-Estas [páginas `.astro`](/es/core-concepts/astro-pages/) deben estar ubicadas dentro de `src/pages/` y tendrán rutas de página generadas automáticamente en función de la ruta de su archivo.
+Estas [páginas `.astro`](/es/basics/astro-pages/) deben estar ubicadas dentro de `src/pages/` y tendrán rutas de página generadas automáticamente en función de la ruta de su archivo.
 
 #### Páginas Markdown y MDX
 
-Astro tiene soporte integrado para Markdown y una integración opcional para archivos MDX. Tus archivos existentes de [Markdown y MDX](/es/guides/markdown-content/) pueden ser reutilizados, pero pueden requerir algunos ajustes en su frontmatter, como agregar [la propiedad especial de frontmatter de Astro `layout`](/es/core-concepts/layouts/#plantillas-de-markdownmdx). TTambién puedes colocarlos dentro de `src/pages/` para aprovechar el enrutamiento automático basado en archivos.
+Astro tiene soporte integrado para Markdown y una integración opcional para archivos MDX. Tus archivos existentes de [Markdown y MDX](/es/guides/markdown-content/) pueden ser reutilizados, pero pueden requerir algunos ajustes en su frontmatter, como agregar [la propiedad especial de frontmatter de Astro `layout`](/es/basics/layouts/#plantillas-de-markdown). TTambién puedes colocarlos dentro de `src/pages/` para aprovechar el enrutamiento automático basado en archivos.
 
 Alternativamente, puedes utilizar [colecciones de contenido](/es/guides/content-collections/) en Astro para almacenar y gestionar tu contenido. Cuando forman parte de una colección, los archivos Markdown y MDX estarán ubicados en carpetas dentro de `src/content/`. Deberás recuperar el contenido tú mismo y [generar esas páginas dinámicamente](/es/guides/content-collections/#generando-rutas-desde-el-contenido).
 
@@ -241,11 +240,11 @@ Gatsby tiene varios archivos de configuración de nivel superior que también in
 
 - `gatsby-node.js`: No necesitarás crear tus propios nodos en Astro, pero ver el esquema en este archivo puede ayudarte a definir tipos en tu proyecto de Astro.
 
-- `gatsby-ssr.js`: Si decides utilizar SSR en Astro, deberás [añadir y configurar el adaptador SSR](/es/guides/server-side-rendering/#habilitando-ssr-en-tu-proyecto) de tu elección directamente en `astro.config.mjs`.
+- `gatsby-ssr.js`: Si decides utilizar SSR en Astro, deberás [añadir y configurar el adaptador SSR](/es/guides/on-demand-rendering/) de tu elección directamente en `astro.config.mjs`.
 
 ## Referencia: Convertir a Sintaxis de Astro
 
-A continuación se presentan algunos ejemplos de sintaxis específica de Gatsby que deberás convertir a Astro. Consulta más [diferencias entre Astro y JSX](/es/core-concepts/astro-syntax/#diferencias-entre-astro-y-jsx) en la guía para escribir componentes de Astro.
+A continuación se presentan algunos ejemplos de sintaxis específica de Gatsby que deberás convertir a Astro. Consulta más [diferencias entre Astro y JSX](/es/reference/astro-syntax/#diferencias-entre-astro-y-jsx) en la guía para escribir componentes de Astro.
 
 ### Links de Gatsby a Astro
 
@@ -298,9 +297,9 @@ export default function MyComponent(props) {
 </div>
 ```
 
-Los componentes de React que pasan múltiples conjuntos de hijos se pueden migrar a un componente Astro utilizando [slots con nombre](/es/core-concepts/astro-components/#slots-con-nombre). 
+Los componentes de React que pasan múltiples conjuntos de hijos se pueden migrar a un componente Astro utilizando [slots con nombre](/es/basics/astro-components/#slots-con-nombre). 
 
-Puedes obtener más información sobre [el uso específico de `<slot />` uen Astro](/es/core-concepts/astro-components/#slots).
+Puedes obtener más información sobre [el uso específico de `<slot />` uen Astro](/es/basics/astro-components/#slots).
 
 ### Estilos de Gatsby a Astro
 
@@ -321,36 +320,28 @@ Ver más sobre [Estilizando en Astro](/es/guides/styling/).
 
 ### Plugin de imágenes de Gatsby a Astro
 
-:::note
-Astro v3.0 incluirá un nuevo módulo `astro:assets` y descontinuará la integración existente `@astrojs/image`.
-
-Accede a `astro:assets` actualmente está disponible bajo una flag experimental, y es la forma recomendada de comenzar un nuevo proyecto de Astro. Si estás migrando a Astro pre-v3.0, recomendamos [habilitar la flag experimental para usar assets](/es/guides/assets/) como solución de imagen.
-:::
-
-Convierte los componentes `<StaticImage />` y `<GatsbyImage />` de Gatsby con la [integración de imágenes de Astro](/es/guides/images/#integración-image-de-astro), o utiliza una etiqueta HTML `<img>` / JSX `<img />` estándar según corresponda.
+Convierte los componentes `<StaticImage />` y `<GatsbyImage />` de Gatsby a [los propios componentes de integración de imágenes de Astro](/es/guides/images/#image--astroassets), o a una etiqueta [estándar de HTML `<img>` / JSX `<img />`](/es/guides/images/#imágenes-en-componentes-de-frameworks-ui) según corresponda en tus componentes de React.
 
 ```astro title="src/pages/index.astro"
 ---
-import { Image } from '@astrojs/image/components';
-import localImage from "../images/brand/logo.png";
-import rocket from '../images/rocket.svg';
+import { Image } from 'astro:assets';
+import rocket from '../assets/rocket.png';
 ---
-<Image src={localImage} alt="The Astro Logo" />
-<img src={rocket} alt="A rocketship in space.">
+<Image src={rocket} alt="Un cohete en el espacio." />
+<img src={rocket.src} alt="Un cohete en el espacio.">
 ```
 
-Los componentes `<Image />` y `<Picture />` de Astro son experimentales y actualmente solo funcionan en archivos `.astro` y `.mdx` files only. Puedes ver una [lista completa de atributos de componente](/es/guides/integrations-guide/image/#uso) disponibles para estos componentes, y debes tener en cuenta que varios atributos difieren de los atributos de Gatsby.
+El componente `<Image />` de Astro funciona solo en archivos `.astro` y `.mdx`. Consulta una [lista completa de sus atributos de componente](/es/guides/images/#propiedades) y ten en cuenta que varios serán diferentes de los atributos de Gatsby.
 
-Para continuar utilizando imágenes locales en archivos Markdown (`.md`) utilizando la sintaxis estándar de Markdown (`![]()`),mueve tus imágenes a la carpeta `public/`. Es posible que debas actualizar el enlace a la URL relativa. También puedes utilizar la etiqueta `<img>` estándar en estos archivos. Ten en cuenta que estas [imágenes en `public/` no serán optimizadas por Astro](/es/guides/images/#public).
+Para seguir utilizando [imágenes en archivos Markdown (`.md`)](/es/guides/images/#imágenes-en-archivos-markdown) utilizando la sintaxis estándar de Markdown (`![]()`), es posible que necesites actualizar el enlace. El uso de la etiqueta HTML `<img>` no es compatible en archivos `.md` para imágenes locales, y debe ser convertido a la sintaxis de Markdown.
 
 ```md
 <!-- src/pages/post-1.md -->
 
 # Mi página Markdown
 
-<!-- Imagen local almacenada en public/assets/stars.png -->
-![Un cielo estrellado en la noche.](/assets/stars.png)
-<img src="/assets/stars.png" alt="Un cielo estrellado en la noche.">
+<!-- Imagen local almacenada en src/assets/stars.png -->
+![Un cielo estrellado en la noche.](../assets/stars.png)
 ```
 
 En componentes de React (`.jsx`), utiliza la sintaxis estándar de JSX para imágenes (`<img />`). Astro no optimizará estas imágenes, pero puedes instalar y utilizar paquetes de NPM para obtener más flexibilidad.
@@ -402,174 +393,178 @@ Este ejemplo convierte el diseño principal del proyecto (`layout.js`) del inici
 
 Este diseño de página muestra un encabezado cuando se visita la página de inicio y un encabezado diferente con un enlace de regreso a Home para todas las demás páginas.
 
+<Steps>
 1. Identifica el JSX de return().
 
-  ```jsx {21-29} title="layout.js"
-  import * as React from "react"
-  import { Link } from "gatsby"
-  const Layout = ({ location, title, children }) => {
-    const rootPath = `${__PATH_PREFIX__}/`
-    const isRootPath = location.pathname === rootPath
-    let header
-    if (isRootPath) {
-      header = (
-        <h1 className="main-heading">
-          <Link to="/">{title}</Link>
-        </h1>
-      )
-    } else {
-      header = (
-        <Link className="header-link-home" to="/">
-          Home
-        </Link>
+    ```jsx {21-29} title="layout.js"
+    import * as React from "react"
+    import { Link } from "gatsby"
+    const Layout = ({ location, title, children }) => {
+      const rootPath = `${__PATH_PREFIX__}/`
+      const isRootPath = location.pathname === rootPath
+      let header
+      if (isRootPath) {
+        header = (
+          <h1 className="main-heading">
+            <Link to="/">{title}</Link>
+          </h1>
+        )
+      } else {
+        header = (
+          <Link className="header-link-home" to="/">
+            Home
+          </Link>
+        )
+      }
+      return (
+        <div className="global-wrapper" data-is-root-path={isRootPath}>
+          <header className="global-header">{header}</header>
+          <main>{children}</main>
+          <footer>
+            © {new Date().getFullYear()}, Built with
+            {` `}
+            <a href="https://www.gatsbyjs.com">Gatsby</a>
+          </footer>
+        </div>
       )
     }
-    return (
-      <div className="global-wrapper" data-is-root-path={isRootPath}>
-        <header className="global-header">{header}</header>
-        <main>{children}</main>
-        <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.com">Gatsby</a>
-        </footer>
-      </div>
-    )
-  }
-  export default Layout
-  ```
+    export default Layout
+    ```
 
 2. Crea `Layout.astro` y agrega este valor de `return`, [convertido a la sintaxis de Astro](#referencia-convertir-a-sintaxis-de-astro). 
 
-  Note that:
+    Toma en cuenta que:
 
-  - `{new Date().getFullYear()}` funciona 🎉
-  - `{children}` se convierte en `<slot />` 🦥
-  - `className` se convierte en `class` 📛
-  - `Gatsby` se convierte en `Astro` 🚀
+    - `{new Date().getFullYear()}` funciona 🎉
+    - `{children}` se convierte en `<slot />` 🦥
+    - `className` se convierte en `class` 📛
+    - `Gatsby` se convierte en `Astro` 🚀
 
-  ```astro title="src/layouts/Layout.astro" "<slot />" "class" "Astro" "astro.build"
-  ---
-  ---
-  <div class="global-wrapper" data-is-root-path={isRootPath}>
-    <header class="global-header">{header}</header>
-    <main><slot /></main>
-    <footer>
-      © {new Date().getFullYear()}, Built with
-      {` `}
-      <a href="https://www.astro.build">Astro</a>
-    </footer>
-  </div>
-  ```
+    ```astro title="src/layouts/Layout.astro" "<slot />" "class" "Astro" "astro.build"
+    ---
+    ---
+    <div class="global-wrapper" data-is-root-path={isRootPath}>
+      <header class="global-header">{header}</header>
+      <main><slot /></main>
+      <footer>
+        © {new Date().getFullYear()}, Construido con
+        {` `}
+        <a href="https://www.astro.build">Astro</a>
+      </footer>
+    </div>
+    ```
 
 3. Agrega una estructura de página para que tu diseño proporcione a cada página las partes necesarias de un documento HTML:
 
-  ```astro title="src/layouts/Layout.astro" ins={3-10,22-23}
-  ---
-  ---
-  <html>
-    <head>
-      <meta charset="utf-8" />
-      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-      <meta name="viewport" content="width=device-width" />
-      <title>Astro</title>
-    </head>
-    <body>
-      <div class="global-wrapper" data-is-root-path={isRootPath}>
-        <header class="global-header">{header}</header>
-        <main>
-          <slot />
-        </main>
-        <footer>
-          &#169; {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.astro.build">Astro</a>
-        </footer>
-      </div>
-    </body>
-  </html>
-  ```
+    ```astro title="src/layouts/Layout.astro" ins={3-10,22-23}
+    ---
+    ---
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Astro</title>
+      </head>
+      <body>
+        <div class="global-wrapper" data-is-root-path={isRootPath}>
+          <header class="global-header">{header}</header>
+          <main>
+            <slot />
+          </main>
+          <footer>
+            &#169; {new Date().getFullYear()}, Construido con
+            {` `}
+            <a href="https://www.astro.build">Astro</a>
+          </footer>
+        </div>
+      </body>
+    </html>
+    ```
 
 4. Agrega las importaciones, propiedades y código JavaScript necesarios
   
-  Para renderizar condicionalmente un encabezado en Astro según la ruta de la página y el título:
+    Para renderizar condicionalmente un encabezado en Astro según la ruta de la página y el título:
 
-  - Proporciona las propiedades a través de `Astro.props`. (Recuerda: en Astro, las plantillas acceden a las propiedades desde sus metadatos, no se pasan a través de una función.)
-  - Utiliza el operador ternario para mostrar un encabezado si esta es la página de inicio y otro encabezado en caso contrario.
-  - Elimina las variables `{header}` y `{isRootPath}` ya que ya no son necesarias.
-  - Reemplaza las etiquetas `<Link/>` de Gatsby con etiquetas de anclaje `<a>`.
-  - Utiliza `class` en lugar de `className`. 
-  - Importa una hoja de estilo local de tu proyecto para que los nombres de clase tengan efecto.
+    - Proporciona las propiedades a través de `Astro.props`. (Recuerda: en Astro, las plantillas acceden a las propiedades desde sus metadatos, no se pasan a través de una función.)
+    - Utiliza el operador ternario para mostrar un encabezado si esta es la página de inicio y otro encabezado en caso contrario.
+    - Elimina las variables `{header}` y `{isRootPath}` ya que ya no son necesarias.
+    - Reemplaza las etiquetas `<Link/>` de Gatsby con etiquetas de anclaje `<a>`.
+    - Utiliza `class` en lugar de `className`. 
+    - Importa una hoja de estilo local de tu proyecto para que los nombres de clase tengan efecto.
 
-  ```astro title="src/layouts/Layout.astro" ins={2-3, 15, 16, 20, 24} "class" "<a" "</a>"
-  ---
-  import '../styles/style.css';
-  const { title, pathname } = Astro.props
-  ---
-  <html>
-    <head>
-      <meta charset="utf-8" />
-      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-      <meta name="viewport" content="width=device-width" />
-      <title>Astro</title>
-    </head>
-    <body>
-      <div class="global-wrapper">
-        <header class="global-header">
-          { pathname === "/" 
-          ? 
-            <h1 class="main-heading">
-            <a href="/">{title}</a>
-            </h1>
-          : 
-            <h1 class="main-heading">
-            <a class="header-link-home" href="/">Home</a>
-            </h1>
-          }  
-        </header>
-        <main>
-          <slot />
-        </main>
-        <footer>
-          &#169; {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.astro.build">Astro</a>
-        </footer>
-      </div>
-    </body>
-  </html>
-  ```
+    ```astro title="src/layouts/Layout.astro" ins={2-3, 15, 16, 20, 24} "class" "<a" "</a>"
+    ---
+    import '../styles/style.css';
+    const { title, pathname } = Astro.props
+    ---
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Astro</title>
+      </head>
+      <body>
+        <div class="global-wrapper">
+          <header class="global-header">
+            { pathname === "/" 
+            ? 
+              <h1 class="main-heading">
+              <a href="/">{title}</a>
+              </h1>
+            : 
+              <h1 class="main-heading">
+              <a class="header-link-home" href="/">Inicio</a>
+              </h1>
+            }  
+          </header>
+          <main>
+            <slot />
+          </main>
+          <footer>
+            &#169; {new Date().getFullYear()}, Construido con
+            {` `}
+            <a href="https://www.astro.build">Astro</a>
+          </footer>
+        </div>
+      </body>
+    </html>
+    ```
 
 5. Actualiza `index.astro` para usar este nuevo diseño y pasarle las propiedades necesarias `title` y `pathname`:
 
-  ```astro title="src/pages/index.astro"
-  ---
-  import Layout from '../layouts/Layout.astro';
-  const pagePathname = Astro.url.pathname
-  ---
-  <Layout title="Home Page" pathname={pagePathname}>
-      <p>Astro</p>
-  </Layout>
-  ```
-  :::tip
-  Puedes [obtener la ruta de la página actual utilizando `Astro.url`](/es/reference/api-reference/#astrourl).
-  :::
+    ```astro title="src/pages/index.astro"
+    ---
+    import Layout from '../layouts/Layout.astro';
+    const pagePathname = Astro.url.pathname
+    ---
+    <Layout title="Página de inicio" pathname={pagePathname}>
+        <p>Astro</p>
+    </Layout>
+    ```
+    :::tip
+    Puedes [obtener la ruta de la página actual utilizando `Astro.url`](/es/reference/api-reference/#astrourl).
+    :::
 
 6. Para probar el encabezado condicional, crea una segunda página llamada `about.astro` utilizando el mismo patrón:
 
-  ```astro title="src/pages/about.astro"
-  ---
-  import Layout from '../layouts/Layout.astro';
-  const pagePathname = Astro.url.pathname
-  ---
-  <Layout title="About" pathname={pagePathname}>
-      <p>About</p>
-  </Layout>
-  ```
+    ```astro title="src/pages/about.astro"
+    ---
+    import Layout from '../layouts/Layout.astro';
+    const pagePathname = Astro.url.pathname
+    ---
+    <Layout title="Acerca de" pathname={pagePathname}>
+        <p>Acerca de</p>
+    </Layout>
+    ```
 
-  Sólo deberías ver un enlace a "Home" cuando visites la página About.
+    Sólo deberías ver un enlace a "Home" cuando visites la página About.
+</Steps>
 
 ## Recursos de la comunidad 
+
+- Artículo de blog: [Migrando de Gatsby a Astro](https://loige.co/migrating-from-gatsby-to-astro/)
 
 - Artículo de blog: [Migrar a Astro fue muy fácil](https://joelhooks.com/migrating-to-astro-was-ez).
 
@@ -579,6 +574,10 @@ Este diseño de página muestra un encabezado cuando se visita la página de ini
 
 - Artículo de blog: [Migrando mi sitio web de Gatsby a Astro](https://dev.to/flashblaze/migrating-my-website-from-gatsby-to-astro-2ej5).
 
-:::note[¿Tienes algún recurso que compartir?]
-Si encontraste (¡o hiciste!) un video o publicación de blog útil sobre cómo convertir un sitio de Gatsby a Astro, [edita esta página](https://github.com/withastro/docs/blob/main/src/pages/en/guides/migrate-to-astro/from-gatsby.md) y agrégalo aquí.
+- Artículo de blog: [Otra migración: de Gatsby a Astro](https://logarithmicspirals.com/blog/migrating-from-gatsby-to-astro).
+
+- Artículo de blog: [Porqué y cómo moví mi blog de Gatsby con React a Astro y Preact](https://www.helmerdavila.com/blog/es/porque-y-como-movi-mi-blog-de-gatsby-con-react-a-astro-js-y-preact)
+
+:::note[¿Tienes algún recurso que compartir?] 
+Si encontraste (¡o hiciste!) un video o publicación de blog útil sobre cómo convertir un sitio de Gatsby a Astro, [edita esta página](https://github.com/withastro/docs/edit/main/src/content/docs/es/guides/migrate-to-astro/from-gatsby.mdx) y agrégalo aquí.
 :::

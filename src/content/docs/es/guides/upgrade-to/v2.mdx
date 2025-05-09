@@ -4,7 +4,7 @@ description: Como actualizar tu proyecto a la última versión de Astro.
 i18nReady: true
 ---
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-import FileTree from '~/components/FileTree.astro'
+import { FileTree } from '@astrojs/starlight/components';
 
 Esta guía te ayudará a migrar de la versión Astro v1 a la Astro v2.
 
@@ -27,10 +27,10 @@ Actualiza la versión de tu proyecto Astro a la última versión usando el gesto
   <Fragment slot="pnpm">
   ```shell
   # Actualiza a la versión Astro v2.x
-  pnpm install astro@latest
+  pnpm add astro@latest
 
   # Ejemplo: actualiza las integraciones de React y Tailwind
-  pnpm install @astrojs/react@latest @astrojs/tailwind@latest
+  pnpm add @astrojs/react@latest @astrojs/tailwind@latest
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -385,13 +385,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 ### Actualizado: Vite 4
 
-Astro v2.0 actualiza de Vite 3 a [Vite 4](https://vitejs.dev/), lanzado en Diciembre de 2022.
+Astro v2.0 actualiza de Vite 3 a [Vite 4](https://vite.dev/), lanzado en Diciembre de 2022.
 
 #### ¿Qué debería hacer?
 
 No deberías tener que hacer cambios en tu código. ¡Hemos manejado la mayoría de la actualización para ti dentro de Astro; sin embargo, algunos comportamientos sutiles de Vite aún pueden cambiar entre versiones.
 
-Refierete a la [guía oficial de migración de Vite](https://vitejs.dev/guide/migration.html) si tienes problemas.
+Refierete a la [guía oficial de migración de Vite](https://vite.dev/guide/migration.html) si tienes problemas.
 
 ## Astro v2.0 Opciones Experimentales Eliminados
 
@@ -413,7 +413,7 @@ export default defineConfig({
 Estas características ahora están disponibles por defecto:
 
 - [Colecciones de Contenido](/es/guides/content-collections/) como una forma de administrar tus archivos Markdown y MDX con tipado.
-- [Prerenderizado individual de páginas a HTML estático](/es/guides/server-side-rendering/#configuración-de-rutas-individuales) cuando se usa SSR para mejorar la velocidad y la caché.
+- [Prerenderizado individual de páginas a HTML estático](/es/guides/on-demand-rendering/) cuando se usa SSR para mejorar la velocidad y la caché.
 - Un overlay de mensajes de error rediseñado.
 
 ## Problemas Identificados

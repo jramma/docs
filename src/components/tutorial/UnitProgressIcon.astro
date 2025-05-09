@@ -1,5 +1,4 @@
 ---
-import { useTranslations } from '../../i18n/util';
 import { SectorPath } from './geometry';
 
 export interface Props {
@@ -31,15 +30,14 @@ for (let i = 0; i < numberOfLessons; i++) {
 }
 
 const size = 32;
-const t = useTranslations(Astro);
 ---
 
 <unit-progress-icon data-paths={JSON.stringify(paths)}>
 	<span class="sr-only">
-		{t('tutorial.unit')}
+		{Astro.locals.t('tutorial.unit')}
 		{unitNumber}
 		(<span class="sr-done-count">0</span>/{numberOfLessons}
-		{t('progress.done')})
+		{Astro.locals.t('progress.done')})
 	</span>
 	<svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true">
 		{segments.map(({ d }) => <path d={d} class="segment" />)}
@@ -54,7 +52,6 @@ const t = useTranslations(Astro);
 		private readonly loaded: boolean;
 		private readonly paths: string[];
 		private readonly doneCount: HTMLSpanElement;
-		// eslint-disable-next-line no-undef
 		private readonly segments: NodeListOf<SVGPathElement>;
 
 		constructor() {
@@ -101,8 +98,7 @@ const t = useTranslations(Astro);
 <style>
 	unit-progress-icon {
 		display: block;
-		padding: 0.5em 0.25em 0.2em;
-		fill: var(--theme-text-lighter);
+		padding: 0.5em 0.2em 0.2em;
 	}
 
 	text {
@@ -118,7 +114,7 @@ const t = useTranslations(Astro);
 	:global([data-initial]:not([role='tab'])) unit-progress-icon, /* 1 */
 	:global([aria-selected='true']) unit-progress-icon /* 2 */ {
 		font-weight: bold;
-		fill: var(--theme-text);
+		fill: var(--sl-theme-white);
 		background-color: var(--theme-bg-offset);
 	}
 
@@ -140,6 +136,6 @@ const t = useTranslations(Astro);
 	}
 
 	.done {
-		stroke: hsl(var(--color-green));
+		stroke: var(--sl-color-green);
 	}
 </style>

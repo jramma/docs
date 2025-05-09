@@ -1,9 +1,9 @@
 ---
 type: tutorial
-title: Создание страницы индекса тегов
+title: Создайте страницу индекса тегов
 description: |-
-  Руководство: Создайте свой первый блог в Astro —
-  Используйте все, что вы узнали до сих пор, чтобы создать страницу индекса тегов
+  Руководство: Создайте свой первый блог на Astro —
+  Используйте всё, что вы узнали до сих пор, чтобы создать страницу индекса тегов
 i18nReady: true
 ---
 import Box from '~/components/tutorial/Box.astro';
@@ -11,36 +11,36 @@ import Checklist from '~/components/Checklist.astro';
 import MultipleChoice from '~/components/tutorial/MultipleChoice.astro';
 import Option from '~/components/tutorial/Option.astro';
 import PreCheck from '~/components/tutorial/PreCheck.astro';
-
-
+import { Steps } from '@astrojs/starlight/components';
 
 Теперь, когда у вас есть отдельные страницы для каждого тега, давайте создадим ссылки на них.
 
 <PreCheck>
-  - Добавить новую страницу, используя шаблон маршрутизации `/my-folder/index.astro`
+  - Добавить новую страницу, используя шаблон маршрутизации `/pages/folder/index.astro`
   - Отобразить список всех ваших уникальных тегов, сделав ссылку на каждую страницу тега
-  - Обновить ваш сайт, добавив навигационные ссылки на эту новую страницу Теги
+  - Обновить ваш сайт, добавив навигационные ссылки на новую страницу «Теги»
 </PreCheck>
 
-## Используйте шаблон маршрутизации `/folder/index.astro`
+## Используйте шаблон маршрутизации `/pages/folder/index.astro`
 
-Чтобы добавить страницу индекса тегов на ваш веб-сайт, вы можете создать новый файл `src/pages/tags.astro`.
+Чтобы добавить страницу индекса тегов на ваш веб-сайт, вы могли бы создать новый файл `src/pages/tags.astro`.
 
-Однако, поскольку у вас уже есть каталог `/tags/`, вы можете воспользоваться другим шаблоном маршрутизации в Astro и хранить все свои файлы, связанные с тегами, вместе.
+Однако, поскольку у вас уже есть каталог `/tags/`, можно воспользоваться другим шаблоном маршрутизации в Astro и хранить все свои файлы, связанные с тегами, вместе.
 
 <Box icon="puzzle-piece">
 
 ## Попробуйте сами - Создайте страницу индекса тегов
 
+<Steps>
 1. Создайте новый файл `index.astro` в каталоге `src/pages/tags/`.
 
-2. Перейдите по адресу `localhost:3000/tags` и убедитесь, что ваш сайт теперь содержит страницу по этому URL. Она будет пустой, но она будет существовать.
+2. Перейдите по адресу `http://localhost:4321/tags` и убедитесь, что ваш сайт теперь содержит страницу по этому URL. Она будет пустой, но она будет существовать.
 
 3. Создайте минимальную страницу в `src/pages/tags/index.astro`, которая использует ваш макет. Вы уже делали это раньше!
 
     <details>
-      <summary>Раскройте, чтобы увидеть шаги</summary>
-
+      <summary>Развернуть, чтобы увидеть шаги</summary>
+      <Steps>
       1. Создайте новый компонент страницы в `src/pages/tags/`.
 
           <details>
@@ -74,10 +74,11 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
           <BaseLayout pageTitle={pageTitle}></BaseLayout>
           ```
           </details>
+      </Steps>
     </details>
 
-4. Проверьте предварительный просмотр в браузере еще раз, и у вас должна быть отформатированная страница, готовая к добавлению контента!
-
+4. Проверьте предварительный просмотр в браузере ещё раз — у вас должна быть отформатированная страница, готовая к добавлению контента!
+</Steps>
 </Box>
 
 ## Создайте массив тегов
@@ -85,12 +86,12 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 Ранее вы отображали элементы в списке из массива с помощью `map()`. Как бы вы определили массив всех ваших тегов и затем отобразили их в списке на этой странице?
 
 <details>
-    <summary>Посмотрите код</summary>
+    <summary>Посмотреть код</summary>
 
     ```astro title="src/pages/tags/index.astro"
     ---
     import BaseLayout from '../../layouts/BaseLayout.astro';
-    const tags = ["astro", "successes", "community", "setbacks", "learning in public"];
+    const tags = ["astro", "успехи", "сообщество", "неудачи", "обучение в открытом доступе"];
     const pageTitle = "Индекс тегов";
     ---
     <BaseLayout pageTitle={pageTitle}>
@@ -105,15 +106,15 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 
 К счастью, у вас уже есть способ получить данные из всех ваших файлов Markdown в одной строке кода, а затем вернуть список всех ваших тегов.
 
-
-1. В файле `src/pages/tags/index.astro` добавьте строку кода в скрипт frontmatter, которая даст вашей странице доступ к данным из каждого файла блога `.md`.
+<Steps>
+1. В файле `src/pages/tags/index.astro` добавьте строку кода в блок метаданных, которая даст вашей странице доступ к данным из каждого файла `.md` блога.
 
     <details>
-    <summary>Посмотрите код</summary>
+    <summary>Посмотреть код</summary>
     ```astro title = "src/pages/tags/index.astro" ins={3}
     ---
     import BaseLayout from '../../layouts/BaseLayout.astro';
-    const allPosts = await Astro.glob('../posts/*.md');
+    const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
     const pageTitle = "Индекс тегов";
     ---
     ```
@@ -124,17 +125,19 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
     ```astro title = "src/pages/tags/index.astro" ins={4}
     ---
     import BaseLayout from '../../layouts/BaseLayout.astro';
-    const allPosts = await Astro.glob('../posts/*.md');
-    const tags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())];
+    const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
+    const tags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).flat())];
     const pageTitle = "Индекс тегов";
     ---
 
     ```
+</Steps>
 
 ## Создайте свой список тегов
 
 Вместо создания элементов в неупорядоченном списке на этот раз создайте один `<p>` для каждого элемента внутри `<div>`. Шаблон должен вам быть знакомым!
 
+<Steps>
 1. Добавьте следующий код в ваш шаблон компонента:
 
     ```astro title="src/pages/tags/index.astro" ins={2}
@@ -142,7 +145,7 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
         <div>{tags.map((tag) => <p>{tag}</p>)}</div>
       </BaseLayout>
     ```
-   В предварительном просмотре в браузере убедитесь, что вы видите свои теги в списке.
+   В предварительном просмотре браузера убедитесь, что вы видите список ваших тегов. Если какие-либо записи в блоге не имеют тегов или они неправильно отформатированы, встроенная поддержка TypeScript в Astro покажет вам ошибки, чтобы вы могли проверить и исправить свой код.
 
 2. Чтобы сделать каждый тег ссылкой на свою собственную страницу, добавьте следующую ссылку `<a>` для каждого имени тега:
 
@@ -155,10 +158,12 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
       </div>
     </BaseLayout>
     ```
+</Steps>
 
 ## Добавьте стили к вашему списку тегов
 
-1. Добавьте следующие CSS-классы, чтобы стилизовать как ваш `<div>`, так и каждый `<p>`, который будет сгенерирован. Примечание: Astro использует синтаксис HTML для добавления имен классов!
+<Steps>
+1. Добавьте следующие CSS-классы, чтобы стилизовать как ваш `<div>`, так и каждый `<p>`, который будет сгенерирован. Примечание: Astro использует синтаксис HTML для добавления имён классов!
 
     ```astro title="src/pages/tags/index.astro" 'class="tags"' 'class="tag"'
     <BaseLayout pageTitle={pageTitle}>
@@ -181,7 +186,6 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
       .tags {
         display: flex;
         flex-wrap: wrap;
-        margin: 0 auto;
       }
 
       .tag {
@@ -195,7 +199,8 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
     </style>
     ```
 
-3. Проверьте предварительный просмотр в браузере по адресу `localhost:3000/tags`, чтобы убедиться, что у вас есть новые стили и что каждый из тегов на странице имеет рабочую ссылку на свою собственную страницу тега.
+3. Проверьте предварительный просмотр в браузере по адресу `http://localhost:4321/tags`, чтобы убедиться, что у вас есть новые стили и что каждый из тегов на странице имеет рабочую ссылку на свою собственную страницу.
+</Steps>
 
 ### Проверка кода
 
@@ -204,8 +209,8 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 ```astro title="src/pages/tags/index.astro"
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-const allPosts = await Astro.glob('../posts/*.md');
-const tags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())];
+const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
+const tags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).flat())];
 const pageTitle = "Tag Index";
 ---
 <BaseLayout pageTitle={pageTitle}>
@@ -223,7 +228,6 @@ const pageTitle = "Tag Index";
   .tags {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 auto;
   }
 
   .tag {
@@ -239,74 +243,78 @@ const pageTitle = "Tag Index";
 
 ## Добавьте эту страницу в вашу навигацию
 
-В данный момент вы можете перейти по адресу `localhost:3000/tags` и увидеть эту страницу. С этой страницы вы можете переходить по ссылкам на отдельные страницы тегов.
+В данный момент вы можете перейти по адресу `http://localhost:4321/tags` и увидеть эту страницу. С этой страницы вы можете переходить по ссылкам на отдельные страницы тегов.
 
-Но вам все еще нужно сделать эти страницы доступными с других страниц вашего веб-сайта.
+Но вам всё ещё нужно сделать эти страницы доступными с других страниц вашего веб-сайта.
 
+<Steps>
 1. В вашем компоненте `Navigation.astro` добавьте ссылку на эту новую страницу индекса тегов.
 
     <details>
     <summary>Покажи мне код</summary>
     ```astro title="src/components/Navigation.astro" ins={4}
     <a href="/">Главная</a>
-    <a href="/about/">О нас</a>
+    <a href="/about/">О сайте</a>
     <a href="/blog/">Блог</a>
     <a href="/tags/">Теги</a>
     ```
     </details>
+</Steps>
 
 <Box icon="puzzle-piece">
 
-## Задание: Включите теги в макет вашей записи блога
+## Задача: Включите теги в макет вашей записи блога
 
 Теперь у вас есть весь необходимый код, чтобы также отображать список тегов на каждой странице блога и связывать их со страницами тегов. У вас уже есть готовая работа, которую вы можете использовать повторно!
 
-Следуйте инструкциям ниже, а затем проверьте свою работу, сравнив ее с [финальным образцом кода](#проверка-кода-разметкапостаmarkdown).
+Следуйте инструкциям ниже, а затем проверьте свою работу, сравнив её с [финальным образцом кода](#проверка-кода-markdownpostlayout).
 
+<Steps>
 1. Скопируйте `<div class="tags">`... `</div>` и `<style>...</style>` из `src/pages/tags/index.astro` и используйте их внутри `MarkdownPostLayout.astro`:
 
-  ```astro title="src/layouts/MarkdownPostLayout.astro" ins={13-17, 21-40}
-  ---
-  import BaseLayout from './BaseLayout.astro';
-  const { frontmatter } = Astro.props;
-  ---
-  <BaseLayout pageTitle={frontmatter.title}>
-    <p><em>{frontmatter.description}</em></p>
-    <p>{frontmatter.pubDate.slice(0,10)}</p>
+    ```astro title="src/layouts/MarkdownPostLayout.astro" ins={13-17, 21-40}
+    ---
+    import BaseLayout from './BaseLayout.astro';
+    const { frontmatter } = Astro.props;
+    ---
+    <BaseLayout pageTitle={frontmatter.title}>
+      <p><em>{frontmatter.description}</em></p>
+      <p>{frontmatter.pubDate.toString().slice(0,10)}</p>
 
-    <p>Написал: {frontmatter.author}</p>
+      <p>Автор: {frontmatter.author}</p>
 
-    <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} />
+      <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} />
 
-    <div class="tags">
-      {tags.map((tag) => (
-        <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
-      ))}
-    </div>
+      <div class="tags">
+        {tags.map((tag) => (
+          <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
+        ))}
+      </div>
 
-    <slot />
-  </BaseLayout>
-  <style>
-    a {
-      color: #00539F;
-    }
+      <slot />
+    </BaseLayout>
+    <style>
+      a {
+        color: #00539F;
+      }
 
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      margin: 0 auto;
-    }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+      }
 
-    .tag {
-      margin: 0.25em;
-      border: dotted 1px #a1a1a1;
-      border-radius: .5em;
-      padding: .5em 1em;
-      font-size: 1.15em;
-      background-color: #F8FCFD;
-    }
-  </style>
-```
+      .tag {
+        margin: 0.25em;
+        border: dotted 1px #a1a1a1;
+        border-radius: .5em;
+        padding: .5em 1em;
+        font-size: 1.15em;
+        background-color: #F8FCFD;
+      }
+    </style>
+    ```
+
+</Steps>
 
 Перед тем, как этот код заработает, вам нужно внести **одну небольшую правку** в код, который вы вставили в `MarkdownPostLayout.astro`. Можете понять, что это за правка?
 
@@ -317,7 +325,7 @@ const pageTitle = "Tag Index";
 </details>
 
 <details>
-<summary>Дайте мне еще одну подсказку!</summary>
+<summary>Дайте мне ещё одну подсказку!</summary>
 
 Чтобы использовать свойства (переданные значения) из файла `.md` в вашем макете, например, теги, вам нужно добавить префикс к значению.
 
@@ -333,10 +341,9 @@ const pageTitle = "Tag Index";
 ```
 </details>
 </details>
-
 </Box>
 
-### Проверка кода: РазметкаПостаMarkdown
+### Проверка кода: MarkdownPostLayout
 
 Чтобы проверить свою работу, или если вы просто хотите скопировать полный, корректный код в `MarkdownPostLayout.astro`, вот как должен выглядеть ваш компонент Astro:
 
@@ -347,14 +354,14 @@ const { frontmatter } = Astro.props;
 ---
 <BaseLayout pageTitle={frontmatter.title}>
   <p><em>{frontmatter.description}</em></p>
-  <p>{frontmatter.pubDate.slice(0,10)}</p>
+  <p>{frontmatter.pubDate.toString().slice(0,10)}</p>
 
   <p>Автор: {frontmatter.author}</p>
 
   <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} />
 
   <div class="tags">
-    {frontmatter.tags.map((tag) => (
+    {frontmatter.tags.map((tag: string) => (
       <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
     ))}
   </div>
@@ -369,7 +376,6 @@ const { frontmatter } = Astro.props;
   .tags {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 auto;
   }
 
   .tag {
@@ -422,7 +428,7 @@ const { frontmatter } = Astro.props;
 
 <Box icon="check-list">
 
-## Чек-лист
+## Контрольный список
 
 <Checklist>
 - [ ] Я умею использовать функцию маршрутизации Astro `/pages/folder/index.astro`.
@@ -431,4 +437,4 @@ const { frontmatter } = Astro.props;
 
 ### Ресурсы
 
-- [Статическая маршрутизация в Astro](/ru/core-concepts/routing/#статические-маршруты)
+- [Статическая маршрутизация в Astro](/ru/guides/routing/#статические-маршруты)

@@ -6,14 +6,13 @@ description: |-
   Connect your tutorial project's GitHub repo to Netlify and deploy to the web
 i18nReady: true
 ---
-import Badge from '~/components/Badge.astro';
 import Checklist from '~/components/Checklist.astro';
 import Box from '~/components/tutorial/Box.astro';
 import MultipleChoice from '~/components/tutorial/MultipleChoice.astro';
 import Option from '~/components/tutorial/Option.astro';
 import PreCheck from '~/components/tutorial/PreCheck.astro';
-
-
+import { Steps } from '@astrojs/starlight/components';
+import Badge from "~/components/Badge.astro"
 
 <PreCheck>
   - Add your GitHub repository as a new Netlify app
@@ -22,12 +21,13 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 
 Here, you will connect your GitHub repository to Netlify. Netlify will use that project to build and deploy your site live on the web every time you commit a change to your code. 
 
-:::tip[we'll use...]
+:::tip[We'll use...]
 This tutorial will use **Netlify**, but you are welcome to use your preferred hosting service for deploying your site to the internet.
 :::
 
 ## Create a new Netlify site
 
+<Steps>
 1. Create a free account at [Netlify](https://netlify.com) if you do not already have one.
 
     Make a note of your username. You will view your dashboard and any sites you create at `https://app.netlify.com/teams/username`
@@ -37,6 +37,7 @@ This tutorial will use **Netlify**, but you are welcome to use your preferred ho
     You will be asked to connect to a Git provider. Choose GitHub and follow the steps onscreen to authenticate your GitHub account. Then, choose your Astro project's GitHub repository from the list provided.
 
 3. At the final step, Netlify will show you your app's site settings. The defaults should be correct for your Astro project, so you can scroll down and click <kbd>Deploy site</kbd>.
+</Steps>
 
 Congratulations, you have an Astro website!
 
@@ -63,7 +64,7 @@ You want to update the home page of your existing website. What steps do you tak
       I open a terminal, run `create astro`, and then visit my Netlify URL.
     </Option>
     <Option>
-      I change a setting in my Netlify app, then fork a new Astro project on StackBlitz.
+      I change a setting in my Netlify app, then start a new Astro project on astro.new.
     </Option>
     <Option isCorrect>
       I make an edit to `index.astro`. I commit and push my changes to GitHub. Netlify will handle the rest!
@@ -82,4 +83,4 @@ You want to update the home page of your existing website. What steps do you tak
 
 ### Resources
 
-- <p>[A step-by-step guide to deploying on Netlify](https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/) <Badge>external</Badge></p>
+- <p>[A step-by-step guide to deploying on Netlify](https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/) <Badge class="neutral-badge" text="external" /></p>

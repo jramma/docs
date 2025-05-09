@@ -4,8 +4,7 @@ i18nReady: true
 ---
 import Since from '~/components/Since.astro';
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-
-
+import ReadMore from '~/components/ReadMore.astro'
 
 Vous pouvez utiliser l'interface en ligne de commande (CLI) fournie par Astro pour développer, construire et prévisualiser votre projet à partir d'une fenêtre de terminal.
 
@@ -61,40 +60,84 @@ Le message suivant s'affichera dans votre terminal :
 ```bash
 astro [commande] [...options]
 
-Commandes
-              add  Ajouter une intégration.
-            build  Build votre projet et l'écrire sur le disque.
-            check  Vérifier votre projet pour les erreurs.
-              dev  Démarrer le serveur de développement.
-             docs  Ouvrir la documentation dans votre navigateur Web.
-          preview  Prévisualiser votre Build localement.
-             sync  Générer les types de collection de contenu.
-        telemetry  Configurer les paramètres de télémétrie.
-        
-Options globales
---config <chemin>  Spécifier votre fichier de configuration.
-  --root <chemin>  Spécifier le dossier racine de votre projet.
-     --site <url>  Spécifier le site de votre projet.
---base <pathname>  Spécifier la base de votre projet.
-        --verbose  Activer l'enregistrement détaillé.
-         --silent  Désactiver tous les journaux.
-        --version  Afficher le numéro de version et quitter.
-           --help  Afficher ce message d'aide.
+Commands
+              add  Add an integration.
+            build  Build your project and write it to disk.
+            check  Check your project for errors.
+       create-key  Create a cryptography key
+              dev  Start the development server.
+             docs  Open documentation in your web browser.
+             info  List info about your current Astro setup.
+          preview  Preview your build locally.
+             sync  Generate TypeScript types for all Astro modules.
+      preferences  Configure user preferences.
+        telemetry  Configure telemetry settings.
+
+Global Flags
+  --config <path>  Specify your config file.
+    --root <path>  Specify your project root folder.
+     --site <url>  Specify your project site.
+--base <pathname>  Specify your project base.
+        --verbose  Enable verbose logging.
+         --silent  Disable all logging.
+        --version  Show the version number and exit.
+           --help  Show this help message.
 ```
+
+
+Vous pouvez ajouter l'option `--help` après n'importe quelle commande pour obtenir une liste de toutes les options pour cette commande.
+
+<PackageManagerTabs>
+  <Fragment slot="npm">
+  ```shell
+  # obtenir une liste de toutes les options pour la commande `dev`
+  npm run dev -- --help
+  ```
+  </Fragment>
+  <Fragment slot="pnpm">
+  ```shell
+  # obtenir une liste de toutes les options pour la commande `dev`
+  pnpm dev --help
+  ```
+  </Fragment>
+  <Fragment slot="yarn">
+  ```shell
+  # obtenir une liste de toutes les options pour la commande `dev`
+  yarn dev --help
+  ```
+  </Fragment>
+</PackageManagerTabs>
+
+Le message suivant s'affichera dans votre terminal :
+
+```bash
+astro dev [...flags]
+
+Flags
+                 --port  Specify which port to run on. Defaults to 4321.
+                 --host  Listen on all addresses, including LAN and public addresses.
+--host <custom-address>  Expose on a network IP address at <custom-address>
+                 --open  Automatically open the app in the browser on server start
+                --force  Clear the content layer cache, forcing a full rebuild.
+            --help (-h)  See all available flags.
+```
+
+:::note
+Le `--` supplémentaire avant chaque option est nécessaire pour que `npm` transmette vos options à la commande `astro`.
+:::
 
 ### Scripts `package.json`
 
 Vous pouvez également utiliser des scripts dans `package.json` pour des versions plus courtes de ces commandes. L'utilisation d'un script vous permet d'utiliser les mêmes commandes avec lesquelles vous pourriez être familier dans d'autres projets, telles que `npm run build`.
 
-Pour les commandes `astro` les plus courantes (`astro dev`, `astro build` et `astro preview`), les scripts suivants sont ajoutés automatiquement lorsque vous créez un projet en utilisant [l'assistant d'installation `create astro`](/fr/install/auto/#1-utiliser-lassistant-dinstallation).
+Pour les commandes `astro` les plus courantes (`astro dev`, `astro build` et `astro preview`), les scripts suivants sont ajoutés automatiquement lorsque vous créez un projet en utilisant [l'assistant d'installation `create astro`](/fr/install-and-setup/).
 
-Lorsque vous suivez les instructions pour [installer Astro manuellement](/fr/install/manual/#2-installer-astro), vous êtes invité à ajouter vous-même ces scripts. Vous pouvez également ajouter manuellement d'autres scripts à cette liste pour toute commande que vous utilisez fréquemment. 
+Lorsque vous suivez les instructions pour [installer Astro manuellement](/fr/install-and-setup/#configuration-manuelle), vous êtes invité à ajouter vous-même ces scripts. Vous pouvez également ajouter manuellement d'autres scripts à cette liste pour toute commande que vous utilisez fréquemment. 
 
 ```json title="package.json"
 {
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview"
   }
@@ -106,18 +149,17 @@ Vous utiliserez souvent ces commandes `astro`, ou les scripts qui les exécutent
 <PackageManagerTabs>
   <Fragment slot="npm">
   ```shell
-  # lance le serveur de développement sur le port 8080 en utilisant le script `start` dans `package.json`
-  npm run start -- --port 8080
+  # lance le serveur de développement sur le port 8080 en utilisant le script `dev` dans `package.json`
+  npm run dev -- --port 8080
     
   # Build votre site en incluant les pages de brouillon en utilisant le script `build` dans `package.json`
   npm run build -- --drafts
   ```
-  (Le `--` supplémentaire avant l'option `--port` est nécessaire pour que `npm` transmette vos options à la commande `astro`.)
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-  # lance le serveur de développement sur le port 8080 en utilisant le script `start` dans `package.json`
-  pnpm start --port 8080
+  # lance le serveur de développement sur le port 8080 en utilisant le script `dev` dans `package.json`
+  pnpm dev --port 8080
     
   # Build votre site en incluant les pages de brouillon en utilisant le script `build` dans `package.json`
   pnpm build --drafts
@@ -125,8 +167,8 @@ Vous utiliserez souvent ces commandes `astro`, ou les scripts qui les exécutent
   </Fragment>
   <Fragment slot="yarn">
   ```shell
-  # lance le serveur de développement sur le port 8080 en utilisant le script `start` dans `package.json`
-  yarn start --port 8080
+  # lance le serveur de développement sur le port 8080 en utilisant le script `dev` dans `package.json`
+  yarn dev --port 8080
     
   # Build votre site en incluant les pages de brouillon en utilisant le script `build` dans `package.json`
   yarn build --drafts
@@ -134,102 +176,37 @@ Vous utiliserez souvent ces commandes `astro`, ou les scripts qui les exécutent
   </Fragment>
 </PackageManagerTabs>
 
-{/*
-
-CONTENU ORIGINAL Sur Lequel Nous Pouvons Toujours revenir si le nouveau contenu est trop amical
-
-Vous pouvez utiliser l'interface en ligne de commande (CLI) fournie par Astro pour développer, construire et prévisualiser votre projet à partir d'une fenêtre de terminal.
-
-Utilisez le CLI en exécutant l'une des **commandes** documentées sur cette page, suivie éventuellement de toutes les **options**. Les options personnalisent le comportement d'une commande. Par exemple, pour démarrer le serveur de développement sur le port `8080`, vous combineriez la commande `astro dev` avec l'option `--port` : `astro dev --port 8080`.
-
-Dans la plupart des cas, vous utiliserez le CLI via votre gestionnaire de paquets :
-
-<PackageManagerTabs>
-  <Fragment slot="npm">
-  ```shell
-  npx astro dev --port 8080
-  ```
-  </Fragment>
-  <Fragment slot="pnpm">
-  ```shell
-  pnpm astro dev --port 8080
-  ```
-  </Fragment>
-  <Fragment slot="yarn">
-  ```shell
-  yarn astro dev --port 8080
-  ```
-  </Fragment>
-</PackageManagerTabs>
-
-Si vous avez démarré votre projet en utilisant [l'assistant `create astro`](/fr/install/auto/#1-utiliser-lassistant-dinstallation), vous pouvez également utiliser les scripts dans `package.json` pour une version abrégée de ces commandes. Consultez le fichier README.md de votre projet pour savoir quelles commandes sont disponibles.
-
-<PackageManagerTabs>
-  <Fragment slot="npm">
-  ```shell
-  # démarre le serveur de développement sur le port 8080 en utilisant le script `start` dans `package.json`
-  npm run start -- --port 8080
-  ```
-  (Le `--` supplémentaire avant l'option `--port` est nécessaire pour que `npm` transmette vos options à la commande `astro`.)
-  </Fragment>
-  <Fragment slot="pnpm">
-  ```shell
-  # démarre le serveur de développement sur le port 8080 en utilisant le script `start` dans `package.json`
-  pnpm start --port 8080
-  ```
-  </Fragment>
-  <Fragment slot="yarn">
-  ```shell
-  # démarre le serveur de développement sur le port 8080 en utilisant le script `start` dans `package.json`
-  yarn start --port 8080
-  ```
-  </Fragment>
-</PackageManagerTabs>
-
-*/}
-
 ## `astro dev`
 
 Lance le serveur de développement d'Astro. Il s'agit d'un serveur HTTP local qui ne regroupe pas les fichiers et les ressources. Il utilise le Remplacement de Modules à Chaud (HMR) pour mettre à jour votre navigateur lorsque vous enregistrez des modifications dans votre éditeur.
 
-<h3>Options</h3>
+Les raccourcis clavier suivants peuvent être utilisés dans le terminal où le serveur de développement d'Astro est exécuté :
 
-Utilisez ces options pour personnaliser le comportement du serveur de développement d'Astro. Pour les options partagées avec d'autres commandes Astro, voir les [options courantes](#options-courantes) ci-dessous.
-
-#### `--port <nombre>`
-
-Spécifie le port sur lequel se démarrer. Il est défini par défaut sur `3000`.
-
-#### `--host [adresse IP facultative]`
-
-Définit les adresses IP réseau sur lesquelles le serveur de développement doit écouter (c'est-à-dire les adresses IP autres que localhost). Cela peut être utile pour tester votre projet durant le développement sur des périphériques locaux tels qu'un téléphone portable.
-
-- `--host` — écoute sur toutes les adresses, y compris les adresses LAN et publiques
-- `--host <adresse-personnalisée>` — expose une adresse IP réseau à `<adresse-personnalisée>`
-
-:::caution
-N'utilisez pas l'option `--host` pour exposer le serveur de développement à un environnement de production. Le serveur de développement est conçu pour une utilisation locale durant le développement de votre site uniquement.
-:::
+- `s + enter` pour synchroniser les données de la couche de contenu (contenu et types).
+- `o + enter` pour ouvrir votre site Astro dans le navigateur.
+- `q + enter` pour quitter le serveur de développement.
 
 ## `astro build`
 
-Compile votre site pour le déploiement. Par défaut, cela générera des fichiers statiques et les placera dans un répertoire `dist/`. Si le [SSR est activé](/fr/guides/server-side-rendering/), cela générera les fichiers serveur nécessaires à votre site.
+Compile votre site pour le déploiement. Par défaut, cela générera des fichiers statiques et les placera dans un répertoire `dist/`. Si des routes sont [rendues à la demande](/fr/guides/on-demand-rendering/), cela générera les fichiers serveur nécessaires pour servir votre site.
 
-<h3>Options</h3>
+### Options
 
-Utilisez ces options pour personnaliser votre Build. Pour les options partagées avec les autres commandes Astro, voir les [options courantes](#options-courantes) ci-dessous.
+La commande accepte les [options courantes](#options-courantes) et les options supplémentaires suivantes :
 
-#### `--drafts`
+#### `--devOutput`
 
-Inclut les [pages de brouillon Markdown](/fr/guides/markdown-content/#pages-brouillons) dans le Build.
+<p><Since v="5.0.0" /></p>
+
+Produit une version basée sur le développement similaire au code transformé avec `astro dev`. Cela peut être utile pour tester les problèmes de construction uniquement avec des informations de débogage supplémentaires incluses.
 
 ## `astro preview`
 
-Démarre un serveur local pour servir votre répertoire statique `dist/`.
+Démarre un serveur local pour servir le contenu de votre répertoire statique (`dist/` par défaut) créé en exécutant `astro build`.
 
-Cette commande est utile pour prévisualiser votre Build localement avant de le déployer. Elle n'est pas conçue pour être exécutée en production. Pour obtenir de l'aide sur l'hébergement en production, consultez notre guide sur [Déployer un site Astro](/fr/guides/deploy/).
+Cette commande vous permet de prévisualiser votre site localement [après la construction](#astro-build) afin de détecter d'éventuelles erreurs dans le résultat de la construction avant de le déployer. Elle n'est pas conçue pour être exécutée en production. Pour obtenir de l'aide sur l'hébergement en production, consultez notre guide sur [Déployer un site Astro](/fr/guides/deploy/).
 
-Depuis Astro 1.5.0, `astro preview` fonctionne également pour les Builds SSR si vous utilisez un adaptateur qui le supporte. Actuellement, seul [l'adaptateur Node](/fr/guides/integrations-guide/node/) prend en charge `astro preview`.
+Depuis Astro 1.5.0, l'[adaptateur Node](/fr/guides/integrations-guide/node/) prend en charge `astro preview` pour les constructions générées avec le rendu à la demande.
 
 Peut être combiné avec les [options courantes](#options-courantes) documentées ci-dessous.
 
@@ -247,35 +224,134 @@ Utilisez ces options pour personnaliser le comportement d'une commande.
 
 La commande surveillera toute modification apportée aux fichiers `.astro` et signalera toute erreur.
 
-:::note
-Cette commande ne vérifie les types que dans les fichiers `.astro`.
-:::
+#### `--root <path-to-dir>`
 
-📚 En savoir plus sur le [support de TypeScript dans Astro](/fr/guides/typescript/).
+Spécifie un autre répertoire racine à vérifier. Par défaut, le répertoire de travail actuel est utilisé.
+
+#### `--tsconfig <path-to-file>`
+
+Spécifie un fichier `tsconfig.json` à utiliser manuellement. S'il n'est pas fourni, Astro essaiera de trouver une configuration, ou déduira automatiquement la configuration du projet.
+
+#### `--minimumFailingSeverity <error|warning|hint>`
+
+Spécifie la gravité minimale nécessaire pour sortir avec un code d'erreur. La valeur par défaut est `error`.
+
+Par exemple, l'exécution de `astro check --minimumFailingSeverity warning` entraînera la sortie de la commande avec une erreur si des avertissements sont détectés.
+
+#### `--minimumSeverity <error|warning|hint>`
+
+Spécifie la gravité minimale à afficher. La valeur par défaut est `hint`.
+
+Par exemple, l'exécution de `astro check --minimumSeverity warning` montrera les erreurs et les avertissements, mais pas les indices.
+
+#### `--preserveWatchOutput`
+
+Spécifie qu'il ne faut pas effacer la sortie entre les contrôles lorsqu'on est en mode de surveillance.
+
+#### `--noSync`
+
+Spécifie de ne pas exécuter `astro sync` avant de vérifier le projet.
+
+<ReadMore>En savoir plus sur la [vérification des types dans Astro](/fr/guides/typescript/#vérification-des-types).</ReadMore>
 
 ## `astro sync`
 
-<p>
-  <Since v="2.0.0" />
-</p>
+<p><Since v="2.0.0" /></p>
 
 :::tip
 Exécuter `astro dev`, `astro build` ou `astro check` exécutera également la commande `sync`.
 :::
 
-Génère des types TypeScript pour tous les modules Astro. Cela configure un [fichier `src/env.d.ts`](/fr/guides/typescript/#mise-en-place) pour l'inférence de type et définit le module `astro:content` pour [l'API de Collections de Contenu](/fr/guides/content-collections/).
+Génère des types TypeScript pour tous les modules Astro. Cela configure un [fichier `.astro/types.d.ts`](/fr/guides/typescript/#configuration) pour l'inférence de type et définit le module `astro:content` pour [l'API de Collections de Contenu](/fr/guides/content-collections/).
+- Le module `astro:content` pour l'[API des Collections de contenus](/fr/guides/content-collections/).
+- Le module `astro:db` pour [Astro DB](/fr/guides/astro-db/).
+- Le module `astro:env` pour [la fonctionnalité expérimentale Astro Env](/fr/guides/environment-variables/).
+- Le module `astro:actions` pour [Astro Actions](/fr/guides/actions/)
 
 ## `astro add`
 
-Ajoute une intégration à votre configuration. En savoir plus dans [le guide des intégrations](/fr/guides/integrations-guide/#configuration-dintégration-automatique).
+Ajoute une intégration à votre configuration. En savoir plus dans [le guide des intégrations](/fr/guides/integrations-guide/#configuration-automatique-des-intégrations).
 
 ## `astro docs`
 
 Lance directement le site web Astro Docs depuis le terminal.
 
+## `astro info`
+
+Rapporte des informations utiles sur votre environnement Astro actuel. Utile pour fournir des informations lors de l'ouverture d'un problème.
+
+```shell
+astro info
+```
+
+Exemple de sortie :
+
+```
+Astro                    v3.0.12
+Node                     v20.5.1
+System                   macOS (arm64)
+Package Manager          pnpm
+Output                   server
+Adapter                  @astrojs/vercel/serverless
+Integrations             none
+```
+
+## `astro preferences`
+
+Gérer les préférences des utilisateurs avec la commande `astro preferences`. Les préférences utilisateur sont spécifiques à chaque utilisateur d'Astro, contrairement au fichier `astro.config.mjs` qui modifie le comportement de toutes les personnes travaillant sur un projet.
+
+Par défaut, les préférences de l'utilisateur sont limitées au projet en cours, et sont stockées dans un fichier local `.astro/settings.json`..
+
+En utilisant l'option `--global`, les préférences utilisateur peuvent aussi être appliquées à tous les projets Astro sur la machine courante. Les préférences utilisateur globales sont stockées dans un emplacement spécifique au système d'exploitation.
+
+<h3> Préférences disponibles </h3>
+
+- `devToolbar` — Active ou désactive la barre d'outils de développement dans le navigateur. (Défaut : `true`)
+- `checkUpdates` — Active ou désactive les vérifications automatiques des mises à jour pour l'Astro CLI. (Défaut : `true`)
+
+La commande `list` affiche les paramètres actuels de toutes les préférences configurables de l'utilisateur. Elle supporte également une sortie `--json` lisible par la machine.
+
+```shell
+astro preferences list
+```
+
+Exemple de sortie du terminal :
+
+| Preference               | Value |
+| ------------------------ | ----- |
+| devToolbar.enabled       | true  <tr></tr>|
+| checkUpdates.enabled     | true  |
+
+
+Vous pouvez `enable`, `disable`, ou `reset` les préférences à leur valeur par défaut.
+
+Par exemple, pour désactiver la devToolbar dans un projet Astro spécifique :
+
+```shell
+astro preferences disable devToolbar
+```
+
+Pour désactiver la devToolbar dans tous les projets Astro sur la machine actuelle :
+
+```shell
+astro preferences disable --global devToolbar
+```
+
+La devToolbar peut ensuite être activée avec :
+
+```shell
+astro preferences enable devToolbar
+```
+
+La commande `reset` réinitialise une préférence à sa valeur par défaut :
+
+```shell
+astro preferences reset devToolbar
+```
+
 ## `astro telemetry`
 
-Configure la télémétrie pour l'utilisateur actuel du CLI. La télémétrie est une donnée anonyme qui fournit à l'équipe Astro des informations sur les fonctionnalités Astro les plus souvent utilisées.
+Configure la télémétrie pour l'utilisateur actuel du CLI. La télémétrie est une donnée anonyme qui fournit à l'équipe Astro des informations sur les fonctionnalités Astro les plus souvent utilisées. Pour en savoir plus, voir la [page télémetrie d'Astro'](https://astro.build/telemetry/).
 
 La télémétrie peut être désactivée avec cette commande CLI :
 
@@ -289,10 +365,10 @@ La télémétrie peut être réactivée ultérieurement avec :
 astro telemetry enable
 ```
 
-La commande `clear` réinitialise les données de télémétrie :
+La commande `reset` réinitialise les données de télémétrie :
 
 ```shell
-astro telemetry clear
+astro telemetry reset
 ```
 
 :::tip[Vous souhaitez désactiver la télémétrie dans les environnements IC ?]
@@ -319,15 +395,56 @@ Spécifie le chemin du fichier de configuration par rapport à la racine du proj
 astro --config config/astro.config.mjs dev
 ```
 
+### `--force <string>`
+
+<p><Since v="5.0.0" /></p>
+
+Vide le [cache de la couche de contenu](/fr/guides/content-collections/#définir-le-loader-de-collection), forçant une reconstruction complète.
+
+### `--mode <string>`
+
+<p><Since v="5.0.0" /></p>
+
+Configure la configuration en ligne [`mode`](/fr/reference/programmatic-reference/#mode) pour votre projet.
+
+### `--outDir <chemin>`
+
+<p><Since v="3.3.0" /></p>
+
+Configure le [`outDir`](/fr/reference/configuration-reference/#outdir) pour votre projet. Passer cette option remplacera la valeur de `outDir` dans votre fichier `astro.config.mjs`, s'il en existe un.
+
 ### `--site <url>`
 
 Configure le [`site`](/fr/reference/configuration-reference/#site) pour votre projet. Utiliser cette option remplacera, si elle existe, la valeur `site` de votre fichier `astro.config.mjs`.
 
 ### `--base <chemin>`
 
-<Since v="1.4.1" />
+<p><Since v="1.4.1" /></p>
 
 Configure la [`base`](/fr/reference/configuration-reference/#base) de votre projet. Utiliser cette option remplacera, si elle existe, la valeur `base` de votre fichier `astro.config.mjs`.
+
+### `--port <number>`
+
+Spécifie le port sur lequel le serveur de développement et le serveur de prévisualisation doivent être exécutés. La valeur par défaut est `4321`.
+
+### `--host [adresse d'hôte optionnelle]`
+
+Définit les adresses IP du réseau sur lesquelles le serveur de développement et le serveur de prévisualisation doivent écouter (c.-à-d. les adresses IP non locales). Cela peut être utile pour tester votre projet sur des appareils locaux comme un téléphone portable pendant le développement.
+
+- `--host` — écoute sur toutes les adresses, y compris les adresses LAN et publiques
+- `--host <adresse personnalisée>` - écoute sur une adresse IP du réseau à `<adresse personnalisée>`.
+
+:::caution
+N'utilisez pas l'option `--host` pour exposer le serveur de développement et le serveur de prévisualisation dans un environnement de production. Ces serveurs sont conçus pour une utilisation locale lors du développement de votre site uniquement.
+:::
+
+### `--allowed-hosts`
+
+<p><Since v="5.4.0" /></p>
+
+Spécifie les noms d'hôtes auxquels Astro est autorisé à répondre en mode `dev` ou `preview`. Peut recevoir une liste de noms d'hôtes séparés par des virgules ou `true` pour autoriser n'importe quel nom d'hôte.
+
+Reportez-vous à [la fonctionnalité `allowedHosts` de Vite](https://vite.dev/config/server-options.html#server-allowedhosts) pour plus d’informations, y compris les implications de sécurité de l’autorisation des noms d’hôtes.
 
 ### `--verbose`
 
@@ -336,6 +453,10 @@ Active les journaux verbeux, ce qui est utile pour déboguer un problème.
 ### `--silent`
 
 Active les journaux silencieux, ce qui lance le serveur sans aucune sortie dans la console.
+
+### `--open`
+
+Ouvre automatiquement l'application dans le navigateur au démarrage du serveur. Une chaîne d'URL complète (par exemple `--open http://example.com`) ou un chemin d'accès (par exemple `--open /about`) peut être transmis pour spécifier l'URL à ouvrir.
 
 ## Options globales
 

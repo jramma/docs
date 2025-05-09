@@ -7,7 +7,7 @@ stub: false
 i18nReady: true
 ---
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-import FileTree from '~/components/FileTree.astro'
+import { FileTree } from '@astrojs/starlight/components';
 
 
 [Xata](https://xata.io) es una **Plataforma de Datos sin Servidor** que combina las características de una base de datos relacional, un motor de búsqueda y un motor de análisis al exponer una única API REST consistente.
@@ -32,7 +32,7 @@ XATA_API_KEY=hash_key
 # Una rama de Xata que será usada
 # Si no existe una rama de xata con
 # el mismo nombre que tu rama git
-XATA_FALLBACK_BRANCH=main
+XATA_BRANCH=main
 ```
 
 Y la `databaseURL` definida:
@@ -50,7 +50,7 @@ Para habilitar IntelliSense y seguridad de tipos para tus variables de entorno, 
 ```ts title="src/env.d.ts"
 interface ImportMetaEnv {
   readonly XATA_API_KEY: string;
-  readonly XATA_FALLBACK_BRANCH?: string;
+  readonly XATA_BRANCH?: string;
 }
 
 interface ImportMeta {
@@ -70,7 +70,7 @@ Ahora, tu proyecto debería tener la siguiente estructura:
 
 <FileTree title="Project Structure">
 - src/
-  - **xata.codegen.ts**
+  - **xata.ts**
   - **env.d.ts**
 - **.env**
 - astro.config.mjs
@@ -80,14 +80,17 @@ Ahora, tu proyecto debería tener la siguiente estructura:
 
 ## Crea tus consultas
 
-Para consultar tus posts, importa y usa `getXataClient()` en un archivo `.astro`. El ejemplo de abajo consulta los primeros 50 posts de la base de datos de ejemplo de Xata.
-
+Para consultar tus posts, importa y usa la clase `XataClient` en un archivo `.astro`. El ejemplo de abajo consulta los primeros 50 posts de la base de datos de ejemplo de Xata.
 
 ```astro title="src/pages/blog/index.astro"
 ---
-import { getXataClient } from "../xata.codegen";
+import { XataClient } from '../../xata';
+ 
+const xata = new XataClient({
+  apiKey: import.meta.env.XATA_API_KEY,
+  branch: import.meta.env.XATA_BRANCH
+});
 
-const xata = getXataClient();
 const { records } = await xata.db.Posts.getPaginated({
   pagination: {
     size: 50
@@ -96,14 +99,14 @@ const { records } = await xata.db.Posts.getPaginated({
 ---
 
 <ul>
-  {records.map(post) => (
+  {records.map((post) => (
     <li>{post.title}</li>
-  )}
+  ))}
 </ul>
 ```
 Es importante tener en cuenta que el SDK necesita ser generado cada vez que tu esquema cambie. Así que, evita hacer cambios a los archivos generados que crea la CLI de Xata porque una vez que el esquema se actualice, tus cambios se sobrescribirán.
 
 
 ## Recursos Oficiales
-- [Xata Astro Starter](https://github.com/xataio/examples/tree/main/apps/starter-astro)
+- [Xata Astro Starter](https://github.com/xataio/examples/tree/main/apps/getting-started-astro)
 - [Xata Docs: Guía de Inicio Rápido](https://xata.io/docs/getting-started/quickstart-astro)

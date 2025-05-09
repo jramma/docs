@@ -1,57 +1,45 @@
 import { setOutput } from '@actions/core';
-import { join } from 'path';
-import languages from '../src/i18n/languages';
-import { TranslationStatusBuilder } from './lib/translation-status/builder';
-
-const PAGE_SOURCE_DIRECTORY = './src/content/docs';
+import { createLunaria } from '@lunariajs/core';
 
 await setDiscordMessage();
 
 async function setDiscordMessage() {
-	const builder = new TranslationStatusBuilder({
-		pageSourceDir: './src/content/docs',
-		htmlOutputFilePath: './dist/translation-status/index.html',
-		sourceLanguage: 'en',
-		targetLanguages: Object.keys(languages)
-			.filter((lang) => lang !== 'en')
-			.sort(),
-		languageLabels: languages,
-		githubRepo: process.env.GITHUB_REPOSITORY || 'withastro/docs',
-	});
+	const lunaria = await createLunaria();
+	const status = await lunaria.getFullStatus();
+	const allLanguages = [lunaria.config.sourceLocale, ...lunaria.config.locales].map((l) => l.lang);
+	const githubLinks = lunaria.gitHostingLinks();
 
-	const pages = await builder.createPageIndex();
-	const statusByPage = builder.getTranslationStatusByPage(pages);
-	const toTranslate = statusByPage.filter(
-		(s) => new Date(s.sourcePage.lastMajorChange) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+	if (!status) return;
+
+	const toTranslate = status.filter(
+		(s) =>
+			new Date(s.source.git.latestTrackedChange.date) >
+			new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 	);
 
 	const list = toTranslate
 		.filter(
 			(s) =>
-				Object.keys(s.translations).filter(
-					(l) => s.translations[l]?.isMissing || s.translations[l]?.isOutdated
-				).length > 0
+				s.localizations.filter((localization) => {
+					return localization.status === 'missing' || localization.status === 'outdated';
+				}).length > 0
 		)
 		.map((s) => {
-			const langs =
-				Object.keys(s.translations).filter(
-					(l) => s.translations[l]?.isMissing || s.translations[l]?.isOutdated
-				).length ===
-				Object.keys(languages).length - 1
-					? ['all']
-					: Object.keys(s.translations);
-			return `- [\`${s.subpath}\`](<https://github.com/withastro/docs/tree/main/${join(
-				PAGE_SOURCE_DIRECTORY,
-				'en',
-				s.subpath
-			)}>) (${
+			const outdatedLangs = s.localizations
+				.filter((localization) => {
+					return localization.status === 'missing' || localization.status === 'outdated';
+				})
+				.map((localization) => localization.lang);
+
+			const langs = outdatedLangs.length === allLanguages.length - 1 ? ['all'] : outdatedLangs;
+			return `- [\`${s.source.path}\`](<${githubLinks.source(s.source.path)}>) (${
 				langs[0] === 'all'
 					? 'all'
 					: langs
 							.filter((lang) => {
 								if (lang === 'en') return false;
-								const { isMissing, isOutdated } = s.translations[lang];
-								return isMissing || isOutdated;
+								const localization = s.localizations.find((l) => l.lang === lang);
+								return localization?.status === 'missing' || localization?.status === 'outdated';
 							})
 							.join(', ')
 			})`;

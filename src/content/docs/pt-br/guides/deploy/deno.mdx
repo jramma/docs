@@ -15,13 +15,13 @@ Este guia assume que você já tem [Deno](https://deno.land/) instalado.
 
 ## Configuração do Projeto
 
-Seu projeto Astro pode ter deploy feito no [Deno Deploy](https://deno.com/deploy) como um site renderizado no lado do servidor (SSR). Deno Deploy não suporta sites estáticos.
+Seu projeto Astro pode ter deploy feito no [Deno Deploy][Deno adapter] como um site renderizado no lado do servidor (SSR). Deno Deploy não suporta sites estáticos.
 
 ### Adaptador para SSR
 
 Para habilitar SSR no seu projeto Astro para fazer deploy no Deno Deploy:
 
-Adicione [o adaptador para Deno](/pt-br/guides/integrations-guide/deno/) para habilitar SSR no seu projeto Astro com o seguinte comando `astro add`. Ele irá instalar o adaptador e fazer as mudanças apropriadas para seu arquivo `astro.config.mjs` de uma vez.
+Adicione [o adaptador para Deno][Deno adapter] para habilitar SSR no seu projeto Astro com o seguinte comando `astro add`. Ele irá instalar o adaptador e fazer as mudanças apropriadas para seu arquivo `astro.config.mjs` de uma vez.
 
 ```bash
 npx astro add deno
@@ -29,10 +29,10 @@ npx astro add deno
 
 Se você prefere instalar o adaptador manualmente, complete as duas etapas a seguir:
 
- 1. Instale [o adaptador `@astrojs/deno`](https://github.com/withastro/astro/tree/main/packages/integrations/deno) nas dependências do seu projeto utilizando seu gerenciador de pacotes de preferência. Se você estiver utilizando npm ou não tiver certeza, execute isso no terminal:
+ 1. Instale [o adaptador `@deno/astro-adapter`](https://github.com/withastro/astro/tree/main/packages/integrations/deno) nas dependências do seu projeto utilizando seu gerenciador de pacotes de preferência. Se você estiver utilizando npm ou não tiver certeza, execute isso no terminal:
 
     ```bash
-      npm install @astrojs/deno
+      npm install @deno/astro-adapter
     ```
 
 1. Atualize o arquivo de configuração do seu projeto `astro.config.mjs` com as mudanças abaixo.
@@ -40,7 +40,7 @@ Se você prefere instalar o adaptador manualmente, complete as duas etapas a seg
     ```js ins={3,6-7}
     // astro.config.mjs
     import { defineConfig } from 'astro/config';
-    import deno from '@astrojs/deno';
+    import deno from '@deno/astro-adapter';
 
     export default defineConfig({
       output: 'server',
@@ -100,7 +100,7 @@ Se o seu projeto está armazenado no GitHub, o [website do Deno Deploy](https://
 
         steps:
           - name: Clone repository
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
 
           # Não está utilizando npm? Mude `npm ci` para `yarn install` ou `pnpm i`
           - name: Install dependencies
@@ -170,4 +170,6 @@ Se o seu projeto está armazenado no GitHub, o [website do Deno Deploy](https://
     ```
 
 
-📚 Leia mais sobre [SSR no Astro](/pt-br/guides/server-side-rendering/).
+📚 Leia mais sobre [SSR no Astro](/pt-br/guides/on-demand-rendering/).
+
+[Deno adapter]: https://github.com/denoland/deno-astro-adapter

@@ -5,9 +5,10 @@ i18nReady: true
 ---
 
 import Since from '~/components/Since.astro'
-import FileTree from '~/components/FileTree.astro'
+import { FileTree } from '@astrojs/starlight/components';
+import RecipeLinks from "~/components/RecipeLinks.astro";
 
-[Markdown](https://daringfireball.net/projects/markdown/)は、ブログ投稿やドキュメントのようなテキストを多用するコンテンツのオーサリングによく使います。Astroは標準的なMarkdownファイルをビルトインでサポートしています。
+[Markdown](https://daringfireball.net/projects/markdown/)は、ブログ投稿やドキュメントのようなテキストを多用するコンテンツのオーサリングによく使います。Astroは標準的なMarkdownファイルをビルトインでサポートしており、タイトルや説明文、タグなどのカスタムメタデータを定義するための[フロントマターYAML](https://dev.to/paulasantamaria/introduction-to-yaml-125f)も使用できます。
 
 [@astrojs/mdxインテグレーション](/ja/guides/integrations-guide/mdx/)をインストールすると、[MDX](https://mdxjs.com/)（`.mdx`）ファイルにも対応し、MarkdownコンテンツでのJavaScript式やコンポーネントのサポートなどの追加機能を提供します。
 
@@ -54,61 +55,7 @@ title: Hello, World
 - などなど
 ```
 
-📚 Astroの[ファイルベースルーティング](/ja/core-concepts/routing/)や、[動的ルーティング](/ja/core-concepts/routing/#動的ルーティング)を作成するオプションについてもっと読む。
-
-### 下書きページ
-
-`draft: true`はオプションのフロントマターの値で、個々のMarkdownまたはMDXページや投稿を「非公開」としてマークできます。デフォルトでは、マークされたページは次の動作になります。
-- サイトのビルド対象から外す（**ページはビルドされない**）
-- [`Astro.glob()`](/ja/reference/api-reference/#astroglob)によって返される (**投稿の一覧で表示されます**)
-
-```markdown {5}
----
-# src/pages/post/blog-post.md
-layout: ../../layouts/BaseLayout.astro
-title: ブログ記事
-draft: true
----
-
-これは、作成中のブログ記事です。
-
-この記事のためにページは作成されません。
-
-この記事をビルドして公開するには
-
-- フロントマターを`draft: false`に更新する。
-- または、`draft`プロパティ全体を削除してください。
-
-しかし、このページは `Astro.glob()` にマッチするすべてのリクエストで返されます。
-```
-
-下書きの投稿を、投稿アーカイブや最新投稿のリストに含めないようにするには、`Astro.glob()`が返す結果をフィルタリングしてください。
-
-```js
-const posts = await Astro.glob('../pages/post/*.md');
-const nonDraftPosts = posts.filter((post) => !post.frontmatter.draft);
-```
-
-#### 下書きページのビルドを有効にする
-
-デフォルトで下書きページもビルドするには、`markdown`または`mdx`インテグレーションに`drafts: true`を追加して`astro.config.mjs`を更新します。
-
-```js title="astro.config.mjs" ins={5, 8}
-import { defineConfig } from 'astro/config';
-
-export default defineConfig({
-  markdown: {
-    drafts: true,
-  },
-  integrations: [mdx({
-    drafts: true,
-  })],
-});
-```
-
-:::tip
-`astro build`を実行する際に`--drafts`フラグを渡すことでも、下書きページをビルドできます！
-:::
+📚 Astroの[ファイルベースルーティング](/ja/guides/routing/)や、[動的ルーティング](/ja/guides/routing/#動的ルーティング)を作成するオプションについてもっと読む。
 
 ## Markdownの機能
 
@@ -116,7 +63,7 @@ Astroは、MarkdownとMDXファイルを使用する際に利用できる、追�
 
 ### フロントマター `layout`
 
-Astroは、MarkdownおよびMDXページに、Astro[レイアウトコンポーネント](/ja/core-concepts/layouts/#markdownとmdxのレイアウト)への相対パス（または[エイリアス](/ja/guides/aliases/)）を指定できる特別なフロントマター用の`layout`プロパティを提供します。
+Astroは、MarkdownおよびMDXページに、Astro[レイアウトコンポーネント](/ja/basics/layouts/#markdownのレイアウト)への相対パス（または[エイリアス](/ja/guides/imports/#importエイリアス)）を指定できる特別なフロントマター用の`layout`プロパティを提供します。
 
 ```markdown {3}
 ---
@@ -129,7 +76,7 @@ description: Astroの凄さを知ってください！
 これはMarkdownで書かれた記事です。
 ```
 
-[特定のプロパティは、`Astro.props`を通してレイアウトコンポーネントで利用できます](/ja/core-concepts/layouts/#markdownレイアウトのprops)。たとえば、`Astro.props.frontmatter`を通して、フロントマターのプロパティにアクセスできます。
+[特定のプロパティは、`Astro.props`を通してレイアウトコンポーネントで利用できます](/ja/basics/layouts/#markdownレイアウトのprops)。たとえば、`Astro.props.frontmatter`を通して、フロントマターのプロパティにアクセスできます。
 
 ```astro /frontmatter(?:.\w+)?/
 ---
@@ -148,7 +95,7 @@ const {frontmatter} = Astro.props;
 
 また、レイアウトコンポーネントで[Markdownをスタイリング](/ja/guides/styling/#markdownのスタイル)することもできます。
 
-📚 [Markdownのレイアウト](/ja/core-concepts/layouts/#markdownとmdxのレイアウト)の詳細を見る。
+📚 [Markdownのレイアウト](/ja/basics/layouts/#markdownのレイアウト)の詳細を見る。
 
 
 ### 見出しID
@@ -178,7 +125,7 @@ URL`https://my-domain.com/page-1/#イントロダクション`を使って、ペ
 
 Astroの[MDXインテグレーション](/ja/guides/integrations-guide/mdx/)を追加すると、JSX変数、式、コンポーネントによってMarkdownオーサリングを強化できます。
 
-また、[MDXにおけるMarkdownスタイルのフロントマター](https://mdxjs.com/guides/frontmatter/)のサポートなど、標準的なMDXにさらに機能を追加しています。これにより、[フロントマター `layout`](#フロントマター-layout)プロパティや[下書きページ](#下書きページ)の設定など、Astroの組み込みMarkdown機能のほとんどを使用できます。
+また、[MDXにおけるMarkdownスタイルのフロントマター](https://mdxjs.com/guides/frontmatter/)のサポートなど、標準的なMDXにさらに機能を追加しています。これにより、[フロントマター `layout`](#フロントマター-layout)プロパティなど、Astroの組み込みMarkdown機能のほとんどを使用できます。
 
 `.mdx`ファイルは、AstroのHTMLライクな構文ではなく、[MDX構文](https://mdxjs.com/docs/what-is-mdx/#mdx-syntax)で記述する必要があります。
 
@@ -208,7 +155,7 @@ title: 'はじめてのMDXの投稿'
 
 ### MDXでコンポーネントを使用
 
-MDXインテグレーションをインストールすると、[Astroコンポーネント](/ja/core-concepts/astro-components/#コンポーネントのprops)と[UIフレームワークコンポーネント](/ja/core-concepts/framework-components/#フレームワークコンポーネントを利用)の両方をMDX（`.mdx`）ファイルにインポートして、他のAstroコンポーネントと同じように使用できるようになります。
+MDXインテグレーションをインストールすると、[Astroコンポーネント](/ja/basics/astro-components/#コンポーネントのprops)と[UIフレームワークコンポーネント](/ja/guides/framework-components/#フレームワークコンポーネントを利用)の両方をMDX（`.mdx`）ファイルにインポートして、他のAstroコンポーネントと同じように使用できるようになります。
 
 必要であれば、UIフレームワークのコンポーネントに`client:directive`をつけ忘れないよう注意してください。
 
@@ -339,7 +286,7 @@ const posts = await Astro.glob<Frontmatter>('../pages/post/*.md');
 ### エクスポートしたプロパティ
 
 :::note[Astroレイアウトをお使いですか？]
-Astroの特別な[フロントマターレイアウト](#フロントマター-layout)を使用する際に、[Astroレイアウトコンポーネントにエクスポートされるプロパティ](/ja/core-concepts/layouts/#markdownとmdxのレイアウト)を参照してください。
+Astroの特別な[フロントマターレイアウト](#フロントマター-layout)を使用する際に、[Astroレイアウトコンポーネントにエクスポートされるプロパティ](/ja/basics/layouts/#markdownのレイアウト)を参照してください。
 :::
 
 `.astro`コンポーネントで`import`文または`Astro.glob()`を使用した場合、以下のプロパティが使用できます。
@@ -368,7 +315,7 @@ import {Content as PromoBanner} from '../components/promoBanner.md';
 
 #### 例：動的ページルーティング
 
-Markdown/MDXファイルを`src/pages/`ディレクトリに置いてページルートを作成する代わりに、ページを[動的に生成できます](/ja/core-concepts/routing/#動的ルーティング)。
+Markdown/MDXファイルを`src/pages/`ディレクトリに置いてページルートを作成する代わりに、ページを[動的に生成できます](/ja/guides/routing/#動的ルーティング)。
 
 Markdownコンテンツにアクセスするには、Astroページの`props`に`<Content/>`コンポーネントを渡します。そして、`Astro.props`からコンポーネントを取得し、ページテンプレートにレンダリングできます。
 
@@ -457,7 +404,8 @@ import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 export default {
   markdown: {
     // .md と .mdx ファイルに適用
-    remarkPlugins: [remarkToc, rehypeAccessibleEmojis],
+    remarkPlugins: [remarkToc],
+    rehypePlugins: [rehypeAccessibleEmojis],
   },
 }
 ```
@@ -508,6 +456,10 @@ export default {
 
 ### プログラムによるフロントマターの変更
 
+:::note
+[コンテンツコレクション](/ja/guides/content-collections/)を使用している場合は、[「Remarkでフロントマターを修正」](/ja/guides/content-collections/#remarkでフロントマターを修正)を参照してください。
+:::
+
 [remarkやrehypeのプラグイン](#markdownプラグイン)を使用することで、すべてのMarkdownファイルやMDXファイルにfrontmatterプロパティを追加できます。
 
 1. プラグインの`file`引数の`data.astro.frontmatter`プロパティに`customProperty`を追加してください。
@@ -557,61 +509,7 @@ export default {
 
 これで、すべてのMarkdownまたはMDXファイルは、フロントマターに`customProperty`を持ち、[Markdownのインポート](#markdownのインポート)時や[レイアウトの`Astro.props.frontmatter`プロパティ](#フロントマター-layout)から利用できるようになります。
 
-#### 例：読書時間の計算
-
- [remark plugin](https://github.com/remarkjs/remark)プラグインを使用すると、frontmatterに読了時刻を追加できます。次の2つのヘルパーがおすすめです。
-- [`reading-time`](https://www.npmjs.com/package/reading-time)で読書時間（分）を計算します。
-- [`mdast-util-to-string`](https://www.npmjs.com/package/mdast-util-to-string)はMarkdownからすべてのテキストを抽出します。
-
-```shell
-npm install reading-time mdast-util-to-string
-```
-
-これらのパッケージをremarkプラグインに適用すると、以下のようになります。
-
-```js title="remark-reading-time.mjs"
-import getReadingTime from 'reading-time';
-import { toString } from 'mdast-util-to-string';
-
-export function remarkReadingTime() {
-  return function (tree, { data }) {
-    const textOnPage = toString(tree);
-    const readingTime = getReadingTime(textOnPage);
-    // readingTime.textは、読書時間（分）をフレンドリーな文字列として出力します。
-    // たとえば、"3 min read"
-    data.astro.frontmatter.minutesRead = readingTime.text;
-  };
-}
-```
-
-このプラグインを設定ファイルに適用します。
-
-```js title="astro.config.mjs" "import { remarkReadingTime } from './remark-reading-time.mjs';" "remarkPlugins: [remarkReadingTime],"
-import { remarkReadingTime } from './remark-reading-time.mjs';
-
-export default {
-  markdown: {
-    remarkPlugins: [remarkReadingTime]
-  },
-};
-
-```
-
-これにより、すべてのMarkdownドキュメントは計算された`minutesRead`を持つようになります。これを使用して、たとえば[Markdownレイアウト](#markdownページとmdxページ)に読書時間を表示するバナーを含められます。
-
-```astro title="src/layouts/BlogLayout.astro" "const { minutesRead } = Astro.props.frontmatter;" "<p>{minutesRead}</p>"
----
-const { minutesRead } = Astro.props.frontmatter;
----
-
-<html>
-  <head>...</head>
-  <body>
-    <p>{minutesRead}</p>
-    <slot />
-  </body>
-</html>
-```
+<RecipeLinks slugs={["ja/recipes/reading-time"]} />
 
 ### MDXからMarkdown設定を継承
 
@@ -669,8 +567,8 @@ export default defineConfig({
 Astroは、[Shiki](https://shiki.matsu.io/)と[Prism](https://prismjs.com/)をビルトインでサポートしています。これは、次のようなシンタックスハイライトを提供します。
 
 - MarkdownまたはMDXファイルで使用されているすべてのコードフェンス(```)。
-- [組み込みの`<Code />`コンポーネント](/ja/reference/api-reference/#code-)内のコンテンツ (Shikiを使用）。
-- [`<Prism />`コンポーネント](/ja/reference/api-reference/#prism-)内のコンテンツ (Prismを使用）。
+- [組み込みの`<Code />`コンポーネント](/ja/guides/syntax-highlighting/#code-)内のコンテンツ (Shikiを使用）。
+- [`<Prism />`コンポーネント](/ja/guides/syntax-highlighting/#prism-)内のコンテンツ (Prismを使用）。
 
 Shikiはデフォルトで有効になっており、`github-dark`テーマであらかじめ設定されています。コンパイルされた出力は、余計なCSSクラス、スタイルシート、クライアントサイドJSのないインライン`style`に限定されます。
 
@@ -735,14 +633,14 @@ export default defineConfig({
 Prismの使用を選択した場合、AstroはPrismのCSSクラスを代わりに適用します。なお、シンタックスハイライトを表示させるには、**独自のCSSスタイルシートを用意する必要があります**。
 
 1. 利用可能な[Prismテーマ](https://github.com/PrismJS/prism-themes)から、あらかじめ用意されたスタイルシートを選択します。
-2. このスタイルシートを[プロジェクトの`public/`ディレクトリ](/ja/core-concepts/project-structure/#public)に追加します。
-3. これを[レイアウトコンポーネント](/ja/core-concepts/layouts/)の`<head>`に`<link>`タグで読み込みます。（[Prismの基本的な使い方](https://prismjs.com/#basic-usage)を参照してください）
+2. このスタイルシートを[プロジェクトの`public/`ディレクトリ](/ja/basics/project-structure/#public)に追加します。
+3. これを[レイアウトコンポーネント](/ja/basics/layouts/)の`<head>`に`<link>`タグで読み込みます。（[Prismの基本的な使い方](https://prismjs.com/#basic-usage)を参照してください）
 
 また、オプションや使い方については、[Prismの対応言語一覧](https://prismjs.com/#supported-languages)をご覧ください。
 
 ## リモートにあるMarkdownの取得
 
-Astroは主にプロジェクトディレクトリ内に保存されるローカルのMarkdownファイル用に設計されています。しかし、リモートソースからMarkdownを取得する必要がある特定のケースもあるかもしれません。たとえば、ウェブサイトを構築するとき（または[SSR](/ja/guides/server-side-rendering/)を使用している場合、ユーザーがウェブサイトにリクエストを行うとき）、リモートAPIからMarkdownを取得してレンダリングする必要があるかもしれません。
+Astroは主にプロジェクトディレクトリ内に保存されるローカルのMarkdownファイル用に設計されています。しかし、リモートソースからMarkdownを取得する必要がある特定のケースもあるかもしれません。たとえば、ウェブサイトを構築するとき（または[SSR](/ja/guides/on-demand-rendering/)を使用している場合、ユーザーがウェブサイトにリクエストを行うとき）、リモートAPIからMarkdownを取得してレンダリングする必要があるかもしれません。
 
 **Astroは、標準でリモートのMarkdownをサポートしていません！** リモートのMarkdownを取得し、それをHTMLにレンダリングするには、npmから独自のMarkdownパーサーをインストールし、設定する必要があります。これは、カスタマイズしたAstroのビルトインMarkdownとMDXの設定をいずれからも**継承しません**。プロジェクトでこれを実装する前に、これらの制限を理解しておいてください。
 

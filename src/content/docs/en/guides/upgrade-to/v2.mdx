@@ -1,11 +1,13 @@
 ---
 title: Upgrade to Astro v2
 description: How to upgrade your project to the latest version of Astro.
+sidebar:
+  label: v2.0
 i18nReady: true
 ---
-import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-import FileTree from '~/components/FileTree.astro'
-
+import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro';
+import { FileTree } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
 
 This guide will help you migrate from Astro v1 to Astro v2.
 
@@ -28,10 +30,10 @@ Update your project's version of Astro to the latest version using your package 
   <Fragment slot="pnpm">
   ```shell
   # Upgrade to Astro v2.x
-  pnpm install astro@latest
+  pnpm add astro@latest
 
   # Example: upgrade React and Tailwind integrations
-  pnpm install @astrojs/react@latest @astrojs/tailwind@latest
+  pnpm add @astrojs/react@latest @astrojs/tailwind@latest
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -61,6 +63,7 @@ Astro v2.0 drops Node 14 support entirely, so that all Astro users can take adva
 
  Check that both your development environment and your deployment environment are using **Node `16.12.0` or later**.
 
+<Steps>
 1. Check your local version of Node using:
 
     ```sh
@@ -69,11 +72,10 @@ Astro v2.0 drops Node 14 support entirely, so that all Astro users can take adva
     ```
     If your local development environment needs upgrading, [install Node](https://nodejs.org/en/download/).
 
-
 2. Check your [deployment environment's](/en/guides/deploy/) own documentation to verify that they support Node 16. 
 
     You can specify Node `16.12.0` for your Astro project either in a dashboard configuration setting, or a `.nvmrc` file.
-
+</Steps>
 
 ### Reserved: `src/content/`
 
@@ -131,7 +133,6 @@ In v1.x, Astro used `markdown.extendDefaultPlugins` to re-enable Astro's default
 Astro v2.0 removes this configuration option entirely because its behavior is now the default.
 
 Applying remark and rehype plugins in your Markdown configuration  **no longer disables Astro's default plugins**. GitHub-Flavored Markdown and Smartypants are now applied whether or not custom `remarkPlugins` or `rehypePlugins` are configured.
-
 
 ##### What should I do?
 
@@ -250,13 +251,11 @@ export default defineConfig({
 
 Revisit your Markdown and MDX configuration and compare your existing config with the new options available.
 
-
 ### Changed: Plugin access to frontmatter
 
 In v1.x, remark and rehype plugins did not have access to user frontmatter. Astro merged plugin frontmatter with your file's frontmatter, without passing the file frontmatter to your plugins.
 
 Astro v2.0 gives remark and rehype plugins access to user frontmatter via frontmatter injection. This allows plugin authors to modify a user's existing frontmatter, or compute new properties based on other properties.
-
 
 #### What should I do?
 
@@ -267,7 +266,6 @@ Check any remark and rehype plugins you have written to see whether their behavi
 In v1.x, Astro's RSS package allowed you to use `items: import.meta.glob(...)` to generate a list of RSS feed items. This usage is now deprecated and will eventually be removed.
 
 Astro v2.0 introduces a `pagesGlobToRssItems()` wrapper to the `items` property.
-
 
 #### What should I do?
 
@@ -357,7 +355,7 @@ Astro v2.0 removes this option entirely. `Astro.fetchContent()` in your code wil
 
 #### What should I do?
 
-Use [`Astro.glob()`](/en/guides/imports/#astroglob) to fetch Markdown files, or convert to the [Content Collections](/en/guides/content-collections/) feature.
+Use `Astro.glob()` to fetch Markdown files, or convert to the [Content Collections](/en/guides/content-collections/) feature.
 
 ```astro
 ---
@@ -369,7 +367,6 @@ const allPosts = await Astro.glob('./posts/*.md');
 ### Removed: `Astro.canonicalURL`
 
 In v1.0, Astro deprecated `Astro.canonicalURL` for constructing a canonical URL. 
-
 
 Astro v2.0 removes this option entirely. `Astro.canonicalURL` in your code will cause an error.
 
@@ -387,13 +384,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 ### Updated: Vite 4
 
-Astro v2.0 upgrades from Vite 3 to [Vite 4](https://vitejs.dev/), released in December 2022.
+Astro v2.0 upgrades from Vite 3 to [Vite 4](https://vite.dev/), released in December 2022.
 
 #### What should I do?
 
 There should be no changes to your code necessary! We've handled most of the upgrade for you inside of Astro; however, some subtle Vite behaviors may still change between versions. 
 
-Refer to the official [Vite Migration Guide](https://vitejs.dev/guide/migration.html) if you run into trouble.
+Refer to the official [Vite Migration Guide](https://vite.dev/guide/migration.html) if you run into trouble.
 
 ## Astro v2.0 Experimental Flags Removed
 
@@ -415,7 +412,7 @@ export default defineConfig({
 These features are now available by default:
 
 - [Content collections](/en/guides/content-collections/) as a way to manage your Markdown and MDX files with type-safety.
-- [Prerendering individual pages to static HTML](/en/guides/server-side-rendering/#configuring-individual-routes) when using SSR to improve speed and cacheability.
+- [Prerendering individual pages to static HTML](/en/guides/on-demand-rendering/) when using SSR to improve speed and cacheability.
 - A redesigned error message overlay.
 
 ## Known Issues

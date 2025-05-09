@@ -3,6 +3,9 @@ title: Referencia de directivas de maquetado
 i18nReady: true
 ---
 
+import Since from '~/components/Since.astro';
+import ReadMore from '~/components/ReadMore.astro'
+
 **Las directivas de maquetado** son atributos especiales de HTML disponibles dentro del maquetado de los componentes de Astro (archivos `.astro`), algunas de ellas también pueden usarse en archivos `.mdx`.
 
 Las directivas de maquetado se utilizan para controlar el comportamiento de un elemento o componente de cierta forma. Una directiva de maquetado puede habilitar alguna característica del compilador que te haga la vida más fácil (como usar `class:list` en lugar de `class`). O bien, una directiva puede decirle al compilador de Astro que haga algo especial con ese componente (como hidratar con `client:load`).
@@ -26,29 +29,26 @@ Una directiva de maquetado nunca se incluye directamente en el HTML del compilad
 
 ### `class:list`
 
-`class:list={...}` toma un array de clases y los convierte en un string. Esto está inspirado en la popular biblioteca auxiliar [clsx](https://github.com/lukeed/clsx) de @lukeed, pero integrado directamente en Astro.
+`class:list={...}` toma un array de clases y los convierte en un string. Esto está impulsado por la popular biblioteca auxiliar de [@lukeed](https://github.com/lukeed/clsx) llamada [clsx](https://github.com/lukeed/clsx).
 
 `class:list` toma un array de varios tipos de valores posibles diferentes:
 - `string`: Agregado al elemento `class`
 - `Object`: Todas las keys verdaderas se agregan al elemento `class`
 - `Array`: aplanado
-- `Set`: aplanado
-- `false` o `null`: omitido
+- `false`, `null`, o `undefined`: Omitido
 
 ```astro
 <!-- Esto -->
-<span class:list={[ 'hello goodbye', { hello: true, world: true }, new Set([ 'hello', 'friend' ]) ]} />
+<span class:list={[ 'hello goodbye', { world: true }, [ 'friend' ] ]} />
 <!-- Se convierte en -->
 <span class="hello goodbye world friend"></span>
 ```
-
-Los valores duplicados se eliminan automáticamente.
 
 ### `set:html`
 
 `set:html={string}` inyecta un string de HTML en un elemento, similar a la opción `el.innerHTML`.
 
-**¡Astro no verifica automáticamente el valor!** Asegúrese que confía en el valor o verificarlo manualmente antes de pasarlo al maquetado. Olvidar hacer esto lo expondrá a ataques de [Cross Site Scripting (XSS)](https://owasp.org/www-community/attacks/xss/).
+**¡Astro no verifica automáticamente el valor!** Asegúrate que confías en el valor o verificalo manualmente antes de pasarlo al maquetado. Olvidar hacer esto te expondrá a ataques de [Cross Site Scripting (XSS)](https://owasp.org/www-community/attacks/xss/).
 
 ```astro
 ---
@@ -69,6 +69,40 @@ const cmsContent = await fetchHTMLFromMyCMS();
 <Fragment set:html={cmsContent}>
 ```
 
+`set:html={Promise<string>}` inyecta una cadena HTML en un elemento que está envuelto en una Promise.
+
+Puede utilizarse para inyectar HTML almacenado externamente, como en una base de datos.
+
+```astro
+---
+import api from '../db/api.js';
+---
+<article set:html={api.getArticle(Astro.props.id)}></article>
+```
+
+`set:html={Promise<Response>}` inyecta una [Respuesta](https://developer.mozilla.org/es/docs/Web/API/Response) en un elemento.
+
+Esto es más útil cuando se usa `fetch()`. Por ejemplo, recuperar publicaciones antiguas de un anterior generador de sitios estáticos.
+
+```astro
+<article set:html={fetch('http://example/old-posts/making-soup.html')}></article>
+```
+
+`set:html` se puede utilizar en cualquier etiqueta y no es necesario incluir HTML. Por ejemplo, puede utilizarse con [`JSON.stringify()`](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) en una etiqueta `<script>` para agregar un esquema [JSON-LD](https://json-ld.org/) a su página.
+
+```astro
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  name: "Houston",
+  hasOccupation: {
+    "@type": "Occupation",
+    name: "Astronaut"
+  }
+})}/>
+```
+
+
 ### `set:text`
 
 `set:text={string}` inyecta un string de texto en un elemento, similar a `el.innerText`. A diferencia de `set:html`, Astro verifica automáticamente al valor `string` que se pasa.
@@ -77,11 +111,11 @@ Esto equivale a pasar una variable a una expresión de maquetado de forma direct
 
 ## Directivas del cliente
 
-Estas directivas controlan cómo se hidratan los [componentes de framework](/es/core-concepts/framework-components/) en la página.
+Estas directivas controlan cómo se hidratan los [componentes de framework](/es/guides/framework-components/) en la página.
 
 De forma predeterminada, un componente de framework no está hidratado en el cliente. Si no se proporciona la directiva `client:*`, su HTML se representa en la página sin JavaScript.
 
-Una directiva de cliente puede ser usada solamente en un componente de framework UI que sea directamente importado en un componente `.astro`. Las directivas de hidratación no son compatibles cuando se usan [etiquetas dinámicas](/es/core-concepts/astro-syntax/#etiquetas-dinámicas) y [componentes personalizados pasados a través de la propiedad `components`](/es/guides/markdown-content/#componentes-personalizados-con-mdx-importado).
+Una directiva de cliente puede ser usada solamente en un componente de framework UI que sea directamente importado en un componente `.astro`. Las directivas de hidratación no son compatibles cuando se usan [etiquetas dinámicas](/es/reference/astro-syntax/#etiquetas-dinámicas) y [componentes personalizados pasados a través de la propiedad `components`](/es/guides/markdown-content/#componentes-personalizados-con-mdx-importado).
 
 ### `client:load`
 
@@ -105,6 +139,18 @@ Carga e hidrata el componente JavaScript una vez que la página haya terminado c
 <ShowHideButton client:idle />
 ```
 
+### `timeout`
+
+<p><Since v="4.15.0" /></p>
+
+El tiempo máximo de espera, en milisegundos, antes de hidratar el componente, incluso si la página aún no ha terminado su carga inicial.
+
+Esto te permite pasar un valor para [la opción `timeout` desde la especificación de `requestIdleCallback()`](https://www.w3.org/TR/requestidlecallback/#the-requestidlecallback-method). Esto significa que puedes retrasar la hidratación de elementos de la interfaz de usuario de menor prioridad con más control, asegurando que tu elemento sea interactivo dentro de un período de tiempo determinado.
+
+```astro
+<ShowHideButton client:idle={{timeout: 500}} />
+```
+
 ### `client:visible`
 
 - **Prioridad:** Baja
@@ -115,6 +161,17 @@ Carga e hidrata el JavaScript del componente una vez que haya ingresado al viewp
 ```astro
 <HeavyImageCarousel client:visible />
 ```
+
+#### `client:visible={{rootMargin}}`
+<p><Since v="4.1.0" /></p>
+
+Opcionalmente, se puede pasar un valor para `rootMargin` al `IntersectionObserver` subyacente. Cuando se especifica `rootMargin`, el componente de JavaScript se hidratará cuando un margen especificado (en píxeles) alrededor del componente entre en el viewport, en lugar del propio componente.
+
+```astro
+<HeavyImageCarousel client:visible={{rootMargin: "200px"}} />
+```
+
+Especificar un valor de `rootMargin` puede reducir los desplazamientos de diseño (CLS), permitir más tiempo para que un componente se hidrate en conexiones a internet más lentas y hacer que los componentes sean interactivos antes, mejorando la estabilidad y la capacidad de respuesta de la página.
 
 ### `client:media`
 
@@ -143,6 +200,17 @@ Si el componente ya está oculto y se muestra mediante media queries de CSS, ent
 <SomeSvelteComponent client:only="svelte" />
 <SomeVueComponent client:only="vue" />
 <SomeSolidComponent client:only="solid-js" />
+<SomeLitComponent client:only="lit" />
+```
+
+#### Mostrar contenido de carga
+
+Para los componentes que se renderizan solo en el cliente, también es posible mostrar contenido alternativo mientras se están cargando. Usa `slot="fallback"` en cualquier elemento hijo para crear contenido que se mostrará solo hasta que tu componente en el cliente esté disponible:
+
+```astro {2}
+<ClientComponent client:only="vue">
+  <div slot="fallback">Cargando</div>
+</ClientComponent>
 ```
 
 ### Directivas de cliente personalizadas
@@ -151,6 +219,19 @@ Desde Astro 2.6.0, las integraciones también pueden agregar directivas `client:
 
 Consulta la [API `addClientDirective`](/es/reference/integrations-reference/#opción-addclientdirective) para saber más sobre cómo crear una directiva de cliente personalizada.
 
+## Directivas del Servidor
+
+Estas directivas controlan cómo se renderizan los componentes tipo isla de servidor.
+
+### `server:defer`
+
+La directiva `server:defer` transforma el componente en una isla de servidor, haciendo que se renderice bajo demanda, fuera del alcance del resto de la renderización de la página.
+
+<ReadMore>Consulta más sobre el uso de [componentes de isla de servidor](/es/guides/server-islands/).</ReadMore>
+
+```astro
+<Avatar server:defer />
+```
 
 ## Directivas Script & Style
 
@@ -164,7 +245,7 @@ De forma predeterminada, Astro aplica automáticamente las reglas CSS `<style>` 
 
 Puedes combinar `<style>` y `<style is:global>` juntos en el mismo componente para crear algunas reglas de estilo globales mientras mantienes la mayor parte del CSS con un alcance local dentro del componente de Astro.
 
-📚 Consulta la página [Estilos & CSS](/es/guides/styling/#estilos-globales) para obtener más detalles sobre cómo funcionan los estilos globales.
+<ReadMore>Consulta la página [Estilos & CSS](/es/guides/styling/#estilos-globales) para obtener más detalles sobre cómo funcionan los estilos globales.</ReadMore>
 
 ```astro
 <style is:global>
@@ -203,7 +284,7 @@ La directiva `is:inline` está implícita cada vez que se usa cualquier atributo
 </script>
 ```
 
-📚 Mira cómo funcionan los [scripts del lado del cliente](/es/guides/client-side-scripts/) en los componentes de Astro.
+<ReadMore>Mira cómo funcionan los [scripts del lado del cliente](/es/guides/client-side-scripts/) en los componentes de Astro.</ReadMore>
 
 ### `define:vars`
 

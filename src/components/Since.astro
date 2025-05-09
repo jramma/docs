@@ -1,8 +1,6 @@
 ---
-import UIString from './UIString.astro';
-import Badge from './Badge.astro';
-import { cachedFetch } from '../util-server';
-
+import { cachedFetch } from '~/util/cachedFetch';
+import Badge from '~/components/Badge.astro';
 export interface Props {
 	pkg?: string;
 	v: string;
@@ -41,20 +39,8 @@ const featureStatus = await getFeatureStatus(v);
 ---
 
 <span>
-	<strong><UIString key="since.addedIn" /></strong>
+	<strong>{Astro.locals.t('since.addedIn')}</strong>
 	<code>{pkg}@{v}</code>
-	{
-		featureStatus === 'new' && (
-			<Badge variant="accent">
-				<UIString key="since.new" />
-			</Badge>
-		)
-	}
-	{
-		featureStatus === 'beta' && (
-			<Badge variant="accent">
-				<UIString key="since.beta" />
-			</Badge>
-		)
-	}
+	{featureStatus === 'new' && <Badge text={Astro.locals.t('since.new')} />}
+	{featureStatus === 'beta' && <Badge text={Astro.locals.t('since.beta')} />}
 </span>

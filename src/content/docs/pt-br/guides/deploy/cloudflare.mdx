@@ -40,7 +40,7 @@ Para começar, você vai precisar de:
 1. Instale a [CLI Wrangler](https://developers.cloudflare.com/workers/wrangler/get-started/).
 2. Autentique Wrangler com sua conta da Cloudflare utilizando `wrangler login`.
 3. Execute seu comando de build.
-4. Faça o deploy utilizando `npx wrangler pages publish dist`.
+4. Faça o deploy utilizando `npx wrangler pages deploy dist`.
 
 ```bash
 # Instale a CLI Wrangler
@@ -50,7 +50,7 @@ wrangler login
 # Execute seu comando de build
 npm run build
 # Crie um novo deploy
-npx wrangler pages publish dist
+npx wrangler pages deploy dist
 ```
 
 Depois dos seus assets serem enviados, Wrangler irá te dar uma URL de pré-visualização para inspecionar seu site. Quando você entrar no painel de controle da Cloudflare Pages, você verá o seu novo projeto.
@@ -60,7 +60,7 @@ Depois dos seus assets serem enviados, Wrangler irá te dar uma URL de pré-visu
 Para a pré-visualização funcionar, você precisa instalar `wrangler`
 
 ```bash
-pnpm install wrangler --save-dev
+pnpm add wrangler --save-dev
 ```
 
 Após, é possível atualizar o script "preview" para executar `wrangler` ao invés do comando "preview" integrado do Astro:
@@ -128,7 +128,7 @@ Há atualmente dois modos suportados ao utilizar Pages Functions com o adaptador
 
 Para começar, crie um diretório `/functions` na raiz do seu projeto. Escrevendo seus arquivos Functions nesse diretório automaticamente gera um Worker com funcionalidade customizada nas rotas pré-designadas. Para aprender mais sobre como escrever Functions, veja a [documentação de Pages Functions](https://developers.cloudflare.com/pages/platform/functions/).
 
-📚 Leia mais sobre [SSR no Astro](/pt-br/guides/server-side-rendering/).
+📚 Leia mais sobre [SSR no Astro](/pt-br/guides/on-demand-rendering/).
 
 ## Solução de Problemas
 

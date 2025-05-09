@@ -6,19 +6,21 @@ stub: false
 service: WordPress
 i18nReady: true
 ---
-import FileTree from '~/components/FileTree.astro'
+import { FileTree } from '@astrojs/starlight/components';
+import Grid from '~/components/FluidGrid.astro'
+import Card from '~/components/ShowcaseCard.astro'
 
 [WordPress](https://wordpress.org/) es una plataforma de gestión de contenidos que incluye su propio frontend, pero también puede ser usada como un CMS headless para proveer contenido a tu proyecto Astro.
 
 ## Integración con Astro
 
-WordPress viene con una [API REST de WordPress](https://developer.wordpress.org/rest-api/) integrada para conectar tus datos de WordPress a Astro. Opcionalmente puedes instalar [WPGraphQL](https://wordpress.org/plugins/wp-graphql/) en tu sitio para usar GraphQL.
+WordPress viene con una [API REST de WordPress](https://developer.wordpress.org/rest-api/) integrada para conectar tus datos de WordPress a Astro. Opcionalmente puedes instalar [WPGraphQL](https://wordpress.org/plugins/wp-graphql/) o [Gato GraphQL](https://wordpress.org/plugins/gatographql/) en tu sitio para usar GraphQL.
 
 ### Prerrequisitos
 
 Para empezar, necesitarás lo siguiente:
 
-1. **Un proyecto Astro** - Si no tienes un proyecto Astro aún, nuestra [guía de instalación](/es/install/auto/) te ayudará a empezar en cuestión de minutos.
+1. **Un proyecto Astro** - Si no tienes un proyecto Astro aún, nuestra [guía de instalación](/es/install-and-setup/) te ayudará a empezar en cuestión de minutos.
 2. **Un sitio WordPress** - La URL de la API REST es `[YOUR_SITE]/wp-json/wp/v2/` y está disponible por defecto con cualquier sitio WordPress. También es posible [configurar WordPress en un entorno local](https://wordpress.org/support/article/installing-wordpress-on-your-own-computer/).
 
 ### Configurando Credenciales
@@ -33,10 +35,10 @@ Obtén tus datos de WordPress a través de la URL única de tu API REST y la rut
 
 Por ejemplo, para mostrar una lista de títulos de post y su contenido:
 
-```astro title="src/pages/index.astro
+```astro title="src/pages/index.astro"
 ---
-const res = await fetch("https://[YOUR-SITE]/wp-json/wp/v2/posts")
-const posts = await res.json()
+const res = await fetch("https://[YOUR-SITE]/wp-json/wp/v2/posts");
+const posts = await res.json();
 ---
 <h1>Astro + WordPress 🚀</h1>
 {
@@ -69,7 +71,7 @@ En este ejemplo los datos se obtienen de un sitio WordPress cuyos tipos de conte
 
 Esta página `src/pages/index.astro` enlista cada dinosaurio, con una descripción y un enlace a su propia página.
 
-<FileTree title="Project Structure">
+<FileTree title="Estructura del proyecto">
 - src/
   - pages/
     - **index.astro**
@@ -87,14 +89,14 @@ Obteniendo los datos a través de la API devuelve un objeto que incluye las prop
 
 ```astro title="/src/pages/index.astro"
 ---
-import Layout from "../layouts/Layout.astro"
+import Layout from "../layouts/Layout.astro";
 
 let res = await fetch("https://norian.studio/wp-json/wp/v2/dinos")
 let posts = await res.json();
 ---
-<Layout title="Dinos!">
+<Layout title="¡Dinos!">
   <section>
-    <h1>List of Dinosaurs</h1>
+    <h1>Lista de Dinosaurios</h1>
     {
       posts.map((post) => (
         <article>
@@ -111,7 +113,7 @@ let posts = await res.json();
 
 ### Usando la API de WordPress para generar páginas
 
-La página `src/pages/dinos/[slug].astro` [genera dinámicamente una página](/es/core-concepts/routing/#rutas-dinámicas) para cada dinosaurio.
+La página `src/pages/dinos/[slug].astro` [genera dinámicamente una página](/es/guides/routing/#rutas-dinámicas) para cada dinosaurio.
 
 ```astro title="/src/pages/dinos/[slug].astro"
 ---
@@ -119,13 +121,13 @@ import Layout from '../../layouts/Layout.astro';
 
 const { slug } = Astro.params;
 
-let res = await fetch(`https://norian.studio/wp-json/wp/v2/dinos?slug=${slug}`)
+let res = await fetch(`https://norian.studio/wp-json/wp/v2/dinos?slug=${slug}`);
 let [post] = await res.json();
 
-// The getStaticPaths() is required for static Astro sites.
-// If using SSR, you will not need this function.
+// Se requiere la función getStaticPaths() para sitios estáticos en Astro.
+// Si estás utilizando SSR, no necesitarás esta función.
 export async function getStaticPaths() {
-  let data = await fetch("https://norian.studio/wp-json/wp/v2/dinos")
+  let data = await fetch("https://norian.studio/wp-json/wp/v2/dinos");
   let posts = await data.json();
 
   return posts.map((post) => ({
@@ -150,7 +152,7 @@ Los parámetros de consulta `_embed` indican al servidor que devuelva recursos r
 ---
 const { slug } = Astro.params;
 
-let res = await fetch(`https://norian.studio/wp-json/wp/v2/dinos?slug=${slug}&_embed`)
+let res = await fetch(`https://norian.studio/wp-json/wp/v2/dinos?slug=${slug}&_embed`);
 let [post] = await res.json();
 ---
 ```
@@ -176,11 +178,16 @@ Para desplegar tu sitio visita nuestras [guías de despliegue](/es/guides/deploy
 - [Construyendo un sitio web Astro con WordPress como CMS Headless](https://blog.openreplay.com/building-an-astro-website-with-wordpress-as-a-headless-cms/) por Chris Bongers.
 - [Construyendo con Astro x WordPress](https://www.youtube.com/watch?v=Jstqgklvfnc) en la transmisión de Ben Holmes.
 - [Construyendo un sitio WordPress Headless con Astro](https://developers.wpengine.com/blog/building-a-headless-wordpress-site-with-astro) por Jeff Everhart
-- [Astro y WordPress como API](https://darko.io/posts/astrojs-y-wordpress-como-api/)
+- [Astro y WordPress como API](https://darko.io/posts/wp-as-an-api/) por Darko Bozhinovski.
 
 ## Sitios en Producción
 
 Los siguientes sitios usan Astro + WordPress en producción:
 
-- [Soft Hard System](https://softhardsystem.com/) por Rafid Muhymin Wafi — [código fuente en GitHub](https://github.com/RafidMuhymin/softhardsystem)
 - [Dinos!](https://wc-dinos.netlify.app/) por Anindo Neel Dutta — [código fuente en GitHub](https://github.com/leen-neel/astro-wordpress)
+
+## Temas
+
+<Grid>
+  <Card title="Astro WordPress Starter" href="https://astro.build/themes/details/astro-wordpress-starter/" thumbnail="astro-wordpress-starter.png"/>
+</Grid>

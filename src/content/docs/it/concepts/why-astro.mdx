@@ -1,44 +1,55 @@
 ---
 title: Perché Astro?
-description: "Astro è un framework web completo per la creazione di siti web veloci e incentrati sul contenuto. Scopri di più."
+description: "Astro è il framework web per la creazione di siti web basati su contenuti come blog, marketing ed e-commerce. Scopri perché Astro potrebbe essere una buona scelta per il tuo prossimo sito web."
 i18nReady: true
 ---
 
-Astro è un **web framework completo** per la creazione di **siti web veloci e incentrati sul contenuto**.
+**Astro** è il framework web per la creazione di **siti web basati su contenuti** come blog, marketing ed e-commerce. Astro è meglio conosciuto per aver introdotto una nuova [architettura frontend](/it/concepts/islands/) per ridurre l'overhead e la complessità del JavaScript rispetto ad altri framework. Se hai bisogno di un sito web che carichi velocemente e abbia un'ottima SEO, allora Astro fa al caso tuo.
 
-Perché scegliere Astro rispetto ad un altro web framework? Ecco cinque principi di progettazioni fondamentali per spiegare perché abbiamo creato Astro, i problemi che si propone di risolvere e perché Astro potrebbe essere la scelta migliore per il tuo progetto o il tuo team.
+## Caratteristiche
 
-#### Astro è...
+**Astro è un framework web all-in-one**. Include tutto ciò di cui hai bisogno per creare un sito web, già integrato. Ci sono anche centinaia di diverse [integrazioni](https://astro.build/integrations/) e [hook API](/it/reference/integrations-reference/) disponibili per personalizzare un progetto in base alle tue esigenze e al tuo caso d'uso specifico.
 
-1. [Orientato al contenuto](#orientato-al-contenuto): Astro è stato progettato per siti web ricchi di contenuti.
-2. [Server-first](#server-first): I siti web sono più veloci quando renderizzano l'HTML sul server.
-3. [Veloce per default](#veloce-per-default): Dovrebbe essere impossibile creare un sito web lento con Astro.
-4. [Facile da usare](#facile-da-usare): Non devi essere un esperto per creare qualcosa con Astro.
-5. [Completo, ma flessibile](#completo-ma-flessibile): Oltre 100+ integrazioni Astro tra cui scegliere.
+Alcune caratteristiche principali includono:
 
-## Orientato al contenuto
+- **[Isole](/it/concepts/islands/):** Un'architettura web basata su componenti ottimizzata per siti web incentrati sui contenuti.
+- **[UI-agnostic](/it/guides/framework-components/):** Supporta React, Preact, Svelte, Vue, Solid, Lit, HTMX, componenti web e altro ancora.
+- **[Server-first](/it/guides/on-demand-rendering/):** Sposta il rendering dispendioso fuori dai dispositivi dei visitatori.
+- **[Zero JS, di default](/it/basics/astro-components/):** Meno JavaScript lato client per rallentare il tuo sito.
+- **[Collezioni di contenuti](/it/guides/content-collections/):** Organizza, convalida e fornisce sicurezza di tipo TypeScript per i tuoi contenuti in Markdown.
+- **[Personalizzabile](/it/guides/integrations-guide/):** Tailwind, MDX e centinaia di integrazioni tra cui scegliere.
+
+## Principi di Design
+
+Ecco cinque principi di design fondamentali che aiutano a spiegare perché abbiamo costruito Astro, i problemi che si propone di risolvere e perché Astro potrebbe essere la scelta migliore per il tuo progetto o team.
+
+Astro è...
+
+1. **[Orientato al contenuto](#orientato-al-contenuto):** Astro è stato progettato per siti web ricchi di contenuti.
+2. **[Server-first](#server-first):** I siti web sono più veloci quando renderizzano l'HTML sul server.
+3. **[Veloce di default](#veloce-di-default):** Dovrebbe essere impossibile creare un sito web lento con Astro.
+4. **[Facile da usare](#facile-da-usare):** Non devi essere un esperto per creare qualcosa con Astro.
+5. **[Focalizzato sullo sviluppatore](#focalizzato-sullo-sviluppatore):** Dovresti avere le risorse necessarie per avere successo.
+
+### Orientato al contenuto
 
 **Astro è stato progettato per la creazione di siti web ricchi di contenuti.** Ciò include la maggior parte dei siti di marketing, siti di pubblicazione, siti di documentazione, blog, portfolio e alcuni siti di e-commerce.
 
 Al contrario, la maggior parte dei moderni web framework sono progettati per la creazione di *applicazioni web*. Questi framework funzionano meglio per la creazione di esperienze più complesse simili a quelle delle applicazioni nel browser: dashboard di amministrazione con accesso, caselle di posta, social networks, liste di attività e persino applicazioni simili a quelle native come [Figma](https://figma.com/) e [Ping](https://ping.gg/).
 
-Questa è una delle differenze più importanti da comprendere su Astro. L'attenzione unica di Astro al contenuto consente ad Astro di effettuare compromessi e offrire caratteristiche di prestazioni imbattibili che non avrebbero senso da implementare per web framework orientati alle applicazioni.
+L'attenzione di Astro sui contenuti fin dalle sue origini come costruttore di siti statici ha permesso ad Astro di **scalare in modo sensato verso applicazioni web dinamiche, potenti e performanti** che rispettano ancora i tuoi contenuti e il tuo pubblico. L'unico focus di Astro sui contenuti permette ad Astro di fare scelte e fornire caratteristiche di performance ineguagliate che non avrebbero senso per altri framework web più focalizzati sulle applicazioni.
 
-:::tip
-Se il tuo progetto rientra nella seconda categoria "applicazione", Astro potrebbe non essere la scelta giusta per il tuo progetto... **e va bene così!** Dai un'occhiata a [Next.js](https://nextjs.org/) per un'alternativa più orientata alle applicazioni rispetto ad Astro.
-:::
+### Server-first
 
-## Server-first
+**Astro sfrutta il [rendering lato server](/it/guides/on-demand-rendering/) il più possibile rispetto al rendering lato client.** Questo è lo stesso approccio che i tradizionali framework lato server come PHP, WordPress, Laravel, Ruby on Rails, ecc. hanno utilizzato per decenni. Ma non è necessario imparare un secondo linguaggio lato server per sfruttarlo. Con Astro, tutto è ancora solo HTML, CSS e JavaScript (o TypeScript, se preferisci).
 
-**Astro sfrutta il rendering lato server il più possibile rispetto al rendering lato client.** Questo è lo stesso approccio che i tradizionali framework lato server come PHP, WordPress, Laravel, Ruby on Rails, ecc. hanno utilizzato per decenni. Ma non è necessario imparare un secondo linguaggio lato server per sfruttarlo. Con Astro, tutto è ancora solo HTML, CSS e JavaScript (o TypeScript, se preferisci).
-
-Questo approccio si contrappone ad altri web framework JavaScript moderni come Next.js, SvelteKit, Nuxt, Remix e altri. Questi framework richiedono il rendering lato client di tutto il tuo sito web e includono il rendering lato server principalmente per affrontare problemi di prestazioni. Questo approccio è stato definito **Single Page App (SPA)**, in contrasto con l'approccio **Multi Page App (MPA)** di Astro.
+Questo approccio si contrappone ad altri web framework JavaScript moderni come Next.js, SvelteKit, Nuxt, Remix e altri. Questi framework richiedono il rendering lato client di tutto il tuo sito web e includono il rendering lato server principalmente per affrontare problemi di prestazioni. Questo approccio è stato definito **Single-Page App (SPA)**, in contrasto con l'approccio **Multi Page App (MPA)** di Astro.
 
 Il modello SPA ha i suoi vantaggi. Tuttavia, ciò comporta un maggiore livello di complessità e compromessi sulle prestazioni. Questi compromessi danneggiano le prestazioni delle pagine, comprese le metriche critiche come il [Time to Interactive (TTI)](https://web.dev/interactive/), il che non ha molto senso per siti web orientati al contenuto in cui le prestazioni del primo caricamento sono essenziali.
 
-📚 [Scopri di più su cosa rende unica l'architettura MPA di Astro.](/it/concepts/mpa-vs-spa/)
+L'approccio server-first di Astro ti permette di scegliere la renderizzazione lato client solo se necessario. Puoi scegliere di aggiungere componenti framework UI che funzionano sul client. Puoi sfruttare il router di transizione delle visualizzazioni di Astro per un controllo più accurato su specifiche transizioni di pagina e animazioni. La renderizzazione server-first di Astro, sia pre-renderizzata che su richiesta, fornisce impostazioni predefinite performanti che puoi migliorare ed estendere.
 
-## Veloce per default
+### Veloce di default
 
 Buone prestazioni sono sempre importanti, ma sono *particolarmente* critiche per i siti web orientati al contenuto. È stato ampiamente dimostrato che le prestazioni scadenti comportano una perdita di coinvolgimento, conversioni e denaro. Ad esempio:
 
@@ -55,22 +66,25 @@ La magia di Astro sta nel modo in cui combina i due valori spiegati sopra: un'at
 
 Un sito web Astro può [caricarsi più velocemente del 40% con il 90% in meno di JavaScript](https://twitter.com/t3dotgg/status/1437195415439360003) rispetto allo stesso sito costruito con il web framework React più utilizzato. Ma non fidarti delle nostre parole: guarda questo video in cui Ryan Carniato (creatore di Solid.js e Marko) rimane [senza parole](https://youtu.be/2ZEMb_H-LYE?t=8163) di fronte alle prestazioni di Astro.
 
-## Facile da usare
+
+### Facile da usare
 
 **L'obiettivo di Astro è essere accessibile a ogni sviluppatore web.** Astro è stato progettato per sembrare familiare e accessibile indipendentemente dal livello di competenza o dall'esperienza passata nello sviluppo web.
 
-Abbiamo iniziato assicurandoci che tu possa utilizzare qualsiasi linguaggio di componenti UI che già conosci. React, Preact, Svelte, Vue, Solid, Lit e diversi altri sono tutti supportati per la creazione di nuovi componenti UI in un progetto Astro.
+Il linguaggio UI `.astro` è un superset di HTML: qualsiasi HTML valido è valido anche come sintassi di templating Astro! Quindi, se sai scrivere HTML, puoi scrivere componenti Astro! Ma combina anche alcune delle nostre caratteristiche preferite prese in prestito da altri linguaggi di componenti come le espressioni JSX (React) e lo scoping CSS di default (Svelte e Vue). Questa vicinanza all'HTML facilita anche l'uso di progressive enhancement e modelli comuni di accessibilità senza alcun sovraccarico.
 
-Volevamo anche assicurarci che Astro avesse un ottimo linguaggio di componenti incorporato. Per farlo, abbiamo creato il nostro linguaggio di interfaccia utente `.astro`. È fortemente influenzato da HTML: qualsiasi frammento valido di HTML è già un componente Astro valido! Ma combina anche alcune delle nostre funzionalità preferite prese in prestito da altri linguaggi di componenti, come le espressioni JSX (React) e l'ambito CSS per impostazione predefinita (Svelte e Vue). Questa somiglianza con HTML semplifica anche l'utilizzo di miglioramenti progressivi e modelli di accessibilità comuni senza alcun sovraccarico.
+Ci siamo poi assicurati che potessi utilizzare anche i tuoi linguaggi di componenti UI preferiti che già conosci, e persino riutilizzare componenti che potresti già avere. React, Preact, Svelte, Vue, Solid, Lit e altri, inclusi i componenti web, sono tutti supportati per la creazione di componenti UI in un progetto Astro.
 
 Astro è stato progettato per essere meno complesso rispetto ad altri framework e linguaggi di interfaccia utente. Uno dei motivi principali è che Astro è stato progettato per il rendering sul server, non nel browser. Ciò significa che non devi preoccuparti di: hooks (React), stale closures (di nuovo, React), refs (Vue), observables (Svelte), atoms, selectors, reactions, o derivations. Non c'è reattività sul server, quindi tutta quella complessità svanisce.
 
-Uno dei nostri detti preferiti è: **aggiungi complessità solo se ne hai bisogno** Abbiamo progettato Astro per ridurre al minimo la "complessità richiesta" dall'esperienza dello sviluppatore, specialmente quando ti avvicini per la prima volta. Puoi creare un esempio di "Ciao, mondo" in Astro con solo HTML e CSS. Poi, quando hai bisogno di creare qualcosa di più potente, puoi raggiungere incrementalmente nuove funzionalità e API man mano che procedi.
+Uno dei nostri detti preferiti è: **aggiungi complessità solo se ne hai bisogno.** Abbiamo progettato Astro per ridurre al minimo la "complessità richiesta" dall'esperienza dello sviluppatore, specialmente quando ti avvicini per la prima volta. Puoi creare un esempio di "Hello World" in Astro con solo HTML e CSS. Poi, quando hai bisogno di creare qualcosa di più potente, puoi raggiungere incrementalmente nuove funzionalità e API man mano che procedi.
 
-## Completo, ma flessibile
+### Focalizzato sullo Sviluppatore
 
-**Astro è un framework web completo che include tutto il necessario per creare un sito web.** Astro include una sintassi di componenti, routing basato su file, gestione delle risorse, processo di compilazione, bundle, ottimizzazioni, recupero dei dati e altro ancora. Puoi creare ottimi siti web senza mai uscire dall'insieme di funzionalità di base di Astro.
+Crediamo fermamente che Astro sia un progetto di successo solo se le persone amano usarlo. Astro ha tutto ciò di cui hai bisogno per supportarti mentre costruisci con Astro.
 
-Se hai bisogno di maggiore controllo, puoi estendere Astro con oltre [100+ integrazioni](https://astro.build/integrations/) come [React](https://www.npmjs.com/package/@astrojs/react), [Svelte](https://www.npmjs.com/package/@astrojs/svelte), [Vue](https://www.npmjs.com/package/@astrojs/vue), [Tailwind CSS](https://www.npmjs.com/package/@astrojs/tailwind), [MDX](https://www.npmjs.com/package/@astrojs/mdx), ottimizzazioni delle immagini](https://www.npmjs.com/package/@astrojs/image) e altro ancora. [Connetti il tuo CMS preferito](/it/guides/cms/) o [effettua il deploy sul tuo host preferito](/it/guides/deploy/) con un singolo comando.
+Astro investe in strumenti per sviluppatori come un'ottima esperienza con la CLI dal momento in cui apri il tuo terminale, un'estensione ufficiale per VS Code per l'evidenziazione della sintassi, TypeScript e Intellisense, e documentazione attivamente mantenuta da centinaia di contributori della comunità e disponibile in 14 lingue.
 
-Astro è agnostico rispetto all'UI, il che significa che puoi **Portare il Tuo Framework UI**. React, Preact, Solid, Svelte, Vue e Lit sono tutti ufficialmente supportati in Astro. Puoi persino combinare diversi framework sulla stessa pagina, rendendo le future migrazioni più facili e evitando il blocco su un singolo framework.
+La nostra accogliente, rispettosa e inclusiva comunità su Discord è pronta a fornire supporto, motivazione e incoraggiamento. Apri un `#support` thread per ottenere aiuto con il tuo progetto. Visita il nostro canale dedicato `#showcase` per condividere i tuoi siti Astro, articoli, video e persino lavori in corso per ricevere feedback sicuro e critiche costruttive. Partecipa a eventi live regolari come la nostra chiamata settimanale della comunità, "Talking and Doc'ing," e sessioni di debug e test API.
+
+Come progetto open-source, diamo il benvenuto a contributi di tutti i tipi e dimensioni da parte dei membri della comunità di tutti i livelli di esperienza. Sei invitato a partecipare alle discussioni sulla roadmap per plasmare il futuro di Astro, e speriamo che contribuirai a correzioni e nuove funzionalità al codice principale, al compiler, alla documentazione, agli strumenti linguistici, ai siti web e ad altri progetti.

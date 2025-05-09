@@ -1,11 +1,14 @@
 ---
 title: Hygraph & Astro
 description: Add content to your Astro project using Hygraph as a CMS
+sidebar:
+  label: Hygraph
 type: cms
 service: Hygraph
 i18nReady: true
 ---
-import FileTree from '~/components/FileTree.astro'
+import { Steps } from '@astrojs/starlight/components';
+import { FileTree } from '@astrojs/starlight/components';
 
 [Hygraph](https://hygraph.com/) is a federated content management platform. It exposes a GraphQL endpoint for fetching content.
 
@@ -110,13 +113,15 @@ const posts: Post[] = json.data.blogPosts;
 
 To set up a webhook in Netlify:
 
-1. Deploy your site to Netlify with [this guide](/en/guides/deploy/netlify/). Remember to add your `HYGRAPH_ENDPOINT` to the enviroment variables.
+<Steps>
+1. Deploy your site to Netlify with [this guide](/en/guides/deploy/netlify/). Remember to add your `HYGRAPH_ENDPOINT` to the environment variables.
 
 2. Then Go to your Hygraph project dashboard and click on **Apps**. 
 
 3. Go to the marketplace and search for Netlify and follow the instructions provided.
 
 4. If all went good, now you can deploy your website with a click in the Hygraph interface.
+</Steps>
 
 ## Community Resources
 

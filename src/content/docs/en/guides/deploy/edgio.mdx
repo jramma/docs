@@ -1,9 +1,12 @@
 ---
 title: Deploy your Astro Site to Edgio
 description: How to deploy your Astro site to the web using Edgio.
+sidebar:
+  label: Edgio
 type: deploy
 i18nReady: true
 ---
+import { Steps } from '@astrojs/starlight/components';
 
 You can deploy your Astro project to [Edgio](https://www.edg.io/), an edge and CDN platform to deploy, protect and accelerate websites and APIs.
 
@@ -13,6 +16,7 @@ Check out [the Astro guide in Edgio’s docs](https://docs.edg.io/guides/astro)!
 
 ## How to deploy
 
+<Steps>
 1. Install [the Edgio CLI](https://docs.edg.io/guides/cli) globally from the Terminal, if you haven’t already.
 
     ```bash
@@ -47,3 +51,4 @@ Check out [the Astro guide in Edgio’s docs](https://docs.edg.io/guides/astro)!
     ```bash
     edgio deploy
     ```
+</Steps>

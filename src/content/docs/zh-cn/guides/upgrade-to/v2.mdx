@@ -1,19 +1,21 @@
 ---
 title: 升级到 Astro v2
-description: 如何将你的项目升级到 Astro 的最新版本.
+description: 如何将你的项目升级到 Astro 的最新版本。
+sidebar:
+  label: v2.0
 i18nReady: true
 ---
-import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
-import FileTree from '~/components/FileTree.astro'
+import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro';
+import { FileTree } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
 
-
-本指南将帮助您从 Astro v1 迁移到 Astro v2。
+本指南将帮助你从 Astro v1 迁移到 Astro v2。
 
 需要将旧项目升级到 v1 吗？请参阅我们的 [旧版本迁移指南](/zh-cn/guides/upgrade-to/v1/).
 
 ## 升级 Astro
 
-使用您的包管理器将项目的 Astro 版本更新到最新版本。如果您正在使用 Astro 集成，请同时将其更新到最新版本。
+使用你的包管理器将项目的 Astro 版本更新到最新版本。如果你正在使用 Astro 集成，请同时将其更新到最新版本。
 
 <PackageManagerTabs>
   <Fragment slot="npm">
@@ -28,10 +30,10 @@ import FileTree from '~/components/FileTree.astro'
   <Fragment slot="pnpm">
   ```shell
   # 升级到 Astro v2.x
-  pnpm install astro@latest
+  pnpm add astro@latest
 
   # 示例：升级 React 和 Tailwind 集成
-  pnpm install @astrojs/react@latest @astrojs/tailwind@latest
+  pnpm add @astrojs/react@latest @astrojs/tailwind@latest
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -53,14 +55,15 @@ Astro v2.0 包含一些破坏性更改，以及移除了一些以前被弃用的
 
 ### 移除：对 Node 14 的支持
 
-Node 14 计划在2023年4月结束其生命周期。 
+Node 14 计划在 2023 年 4 月结束其生命周期。 
 
 Astro v2.0 完全放弃对 Node 14 的支持，以便所有 Astro 用户都能利用 Node 的更现代化的功能。
 
 #### 我应该怎么做？
 
- 检查您的开发环境和部署环境是否都使用**Node `16.12.0` 或更高版本**。
+ 检查你的开发环境和部署环境是否都使用**Node `16.12.0` 或更高版本**。
 
+<Steps>
 1. 使用以下命令检查本地版本的 Node：
 
     ```sh
@@ -69,29 +72,28 @@ Astro v2.0 完全放弃对 Node 14 的支持，以便所有 Astro 用户都能�
     ```
     如果你的本地开发环境需要升级，[安装 Node](https://nodejs.org/en/download/).
 
+2. 查看你的 [部署环境](/zh-cn/guides/deploy/) 的文档，以确认它们是否支持 Node 16。
 
-2. 查看您的 [部署环境](/zh-cn/guides/deploy/) 的文档，以确认它们是否支持 Node 16。
-
-    您可以在仪表板配置设置或 `.nvmrc` 文件中为您的Astro项目指定 `Node 16.12.0`。
-
+    你可以在仪表板配置设置或 `.nvmrc` 文件中为你的 Astro 项目指定 `Node 16.12.0`。
+</Steps>
 
 ### 保留：`src/content/`
 
-Astro v2.0 现在包含了用于将Markdown和MDX文件整理到 [内容集合](/zh-cn/guides/content-collections/) 中的Collections API。此API将`src/content/`设定为一个特殊的文件夹。
+Astro v2.0 现在包含了用于将 Markdown 和 MDX 文件整理到 [内容集合](/zh-cn/guides/content-collections/) 中的 Collections API。此 API 将`src/content/`设定为一个特殊的文件夹。
 
 #### 我应该怎么做？
 
-重命名现有的`src/content/`文件夹以避免冲突。 如果该文件夹存在，现在只能用于 [内容集合](/zh-cn/guides/content-collections/).
+重命名现有的`src/content/`文件夹以避免冲突。如果该文件夹存在，现在只能用于 [内容集合](/zh-cn/guides/content-collections/).
 
 ### 变更：Astro.site 末尾斜线
 
-在 v1.x 中，Astro确保在使用 `Astro.site` 访问时，您在 `astro.config.mjs` 中设置的 `site` 始终带有末尾斜线。
+在 v1.x 中，Astro 确保在使用 `Astro.site` 访问时，你在 `astro.config.mjs` 中设置的 `site` 始终带有末尾斜线。
 
 Astro v2.0 不再修改 `site` 的值。`Astro.site` 将使用定义的准确值，如果需要，必须指定末尾斜线。
 
 #### 我应该怎么做？
 
- 在`astro.config.mjs`中，为`site`设置的URL添加末尾斜线。
+ 在`astro.config.mjs`中，为`site`设置的 URL 添加末尾斜线。
 
 ```js del={5} ins={6}
 // astro.config.mjs
@@ -105,9 +107,9 @@ export default defineConfig({
 
 ### 变更：用于构建资源的 `_astro/` 文件夹
 
-在v1.x版本中，资源被构建到各种不同的位置，包括  `assets/`, `chunks/`，以及构建输出的根目录。
+在 v1.x 版本中，资源被构建到各种不同的位置，包括  `assets/`, `chunks/`，以及构建输出的根目录。
 
-Astro v2.0将所有构建输出资源的位置移动并统一到一个新的 `_astro/` 文件夹。
+Astro v2.0 将所有构建输出资源的位置移动并统一到一个新的 `_astro/` 文件夹。
 
 <FileTree>
 - dist/
@@ -116,26 +118,25 @@ Astro v2.0将所有构建输出资源的位置移动并统一到一个新的 `_a
     - index.df3f880e0.css
 </FileTree>
 
-您可以通过 [新的 `build.assets` 配置项](/zh-cn/reference/configuration-reference/#buildassets) 来控制这个位置。
+你可以通过 [新的 `build.assets` 配置项](/zh-cn/reference/configuration-reference/#buildassets) 来控制这个位置。
 
 #### 我应该怎么做？
 
-如果您的部署平台配置依赖于这些资源的位置，请更新它。
+如果你的部署平台配置依赖于这些资源的位置，请更新它。
 
-### 变更：Markdown插件配置
+### 变更：Markdown 插件配置
 
 #### 移除：`extendDefaultPlugins`
 
-在v1.x版本中，Astro使用 `markdown.extendDefaultPlugins` 在添加您自己的Markdown插件时重新启用Astro的默认插件。
+在 v1.x 版本中，Astro 使用 `markdown.extendDefaultPlugins` 在添加你自己的 Markdown 插件时重新启用 Astro 的默认插件。
 
-Astro v2.0完全移除了这个配置选项，因为它已经变为默认配置。
+Astro v2.0 完全移除了这个配置选项，因为它已经变为默认配置。
 
-在您的Markdown配置中应用remark和rehype插件  **不再禁用Astro的默认插件**. 无论是否配置了自定义 `remarkPlugins` 或 `rehypePlugins`，现在都将应用GitHub风格的Markdown和Smartypants。
-
+在你的 Markdown 配置中应用 remark 和 rehype 插件  **不再禁用 Astro 的默认插件**. 无论是否配置了自定义 `remarkPlugins` 或 `rehypePlugins`，现在都将应用 GitHub 风格的 Markdown 和 Smartypants。
 
 ##### 我应该怎么做？
 
-在您的配置中移除 `extendDefaultPlugins`。 这已经成为Astro v2.0的默认配置，您可以删除这一行，无需任何替换。
+在你的配置中移除 `extendDefaultPlugins`。这已经成为 Astro v2.0 的默认配置，你可以删除这一行，无需任何替换。
 
 ```js del={6}
 // astro.config.mjs
@@ -150,15 +151,15 @@ export default defineConfig({
 
 #### 新增： `gfm` 和 `smartypants`
 
-在 v1.x 中，您可以通过设置 `markdown.extendDefaultPlugins: false` 来选择禁用Astro的两个默认Markdown插件（GitHub风格的Markdown和SmartyPants）。
+在 v1.x 中，你可以通过设置 `markdown.extendDefaultPlugins: false` 来选择禁用 Astro 的两个默认 Markdown 插件（GitHub 风格的 Markdown 和 SmartyPants）。
 
-Astro v2.0 用单独的布尔选项替换了 `markdown.extendDefaultPlugins: false`，以便单独控制每一个Astro内置的默认Markdown插件。这些插件默认是启用的，可以独立设置为 `false`。
+Astro v2.0 用单独的布尔选项替换了 `markdown.extendDefaultPlugins: false`，以便单独控制每一个 Astro 内置的默认 Markdown 插件。这些插件默认是启用的，可以独立设置为 `false`。
 
 ##### 我应该怎么做？
 
 删除 `extendDefaultPlugins: false`，并添加标志以单独禁用每个插件。
 
-- `markdown.gfm: false` 禁用 GitHub 风格的Markdown
+- `markdown.gfm: false` 禁用 GitHub 风格的 Markdown
 - `markdown.smartypants: false` 禁用 SmartyPants
 
 ```js del={6} ins={7-8}
@@ -178,7 +179,7 @@ export default defineConfig({
 
 #### 替换：`extendPlugins` 更改为 `extendMarkdownConfig`
 
-在 v1.x 中，MDX 集成的 `extendPlugins` 选项管理了你的 MDX 文件应如何继承你的 Markdown 配置：全部继承你的 Markdown 配置(`markdown`)，或者只继承 Astro 的默认插件(`default`)。
+在 v1.x 中，MDX 集成的 `extendPlugins` 选项管理了你的 MDX 文件应如何继承你的 Markdown 配置：全部继承你的 Markdown 配置 (`markdown`)，或者只继承 Astro 的默认插件 (`default`)。
 
 Astro v2.0 用三个新的、独立可配置的选项替换了 `mdx.extendPlugins` 控制的行为，这些选项默认都为 `true`：
 
@@ -225,7 +226,7 @@ export default defineConfig({
 
 #### 新增：更多的 MDX 配置选项以匹配 Markdown
 
-Astro v2.0 现在允许您在 MDX 集成配置中分别设置 [每一个可用的 Markdown 配置选项](/zh-cn/reference/configuration-reference/#markdown-选项)（除了 `drafts`）。
+Astro v2.0 现在允许你在 MDX 集成配置中分别设置 [每一个可用的 Markdown 配置选项](/zh-cn/reference/configuration-reference/#markdown-选项)（除了 `drafts`）。
 
 ```js
 // astro.config.mjs
@@ -248,12 +249,11 @@ export default defineConfig({
 
 ##### 我应该怎么做？
 
-请重新审视您的 Markdown 和 MDX 配置，并将您现有的配置与新的可用选项进行比较。
-
+请重新审视你的 Markdown 和 MDX 配置，并将你现有的配置与新的可用选项进行比较。
 
 ### 变更：插件对 frontmatter 的访问权限
 
-在 v1.x 中，remark 和 rehype 插件无法访问用户的 frontmatter。Astro 将插件的 frontmatter 与您的文件的 frontmatter 合并，而没有将文件 frontmatter 传递给您的插件。
+在 v1.x 中，remark 和 rehype 插件无法访问用户的 frontmatter。Astro 将插件的 frontmatter 与你的文件的 frontmatter 合并，而没有将文件 frontmatter 传递给你的插件。
 
 Astro v2.0 通过 frontmatter 注入，使 remark 和 rehype 插件能够访问用户的 frontmatter。这允许插件作者修改用户现有的 frontmatter，或者基于其他属性计算新的属性。
 
@@ -263,13 +263,13 @@ Astro v2.0 通过 frontmatter 注入，使 remark 和 rehype 插件能够访问�
 
 ### 变更：RSS 配置
 
-在 v1.x 中，Astro 的 RSS 包允许您使用 `items: import.meta.glob(...)` 来生成 RSS 订阅项列表。现在已弃用此用法，并将最终被移除。
+在 v1.x 中，Astro 的 RSS 包允许你使用 `items: import.meta.glob(...)` 来生成 RSS 订阅项列表。现在已弃用此用法，并将最终被移除。
 
 Astro v2.0 在 `items` 属性中引入了一个 `pagesGlobToRssItems()` 包装器。
 
 #### 我应该怎么做？
 
-导入，然后用 `pagesGlobToRssItems()` 包装您现有包含 `import.meta.glob()` 的函数。
+导入，然后用 `pagesGlobToRssItems()` 包装你现有包含 `import.meta.glob()` 的函数。
 
 ```js ins={3, 8, 10}
 // src/pages/rss.xml.js
@@ -347,7 +347,7 @@ import imageUrl from './image.png';
 <img src={imageUrl} />
 ```
 
-### 移除: `Astro.fetchContent()`
+### 移除：`Astro.fetchContent()`
 
 在 v0.26 版本中，Astro 废弃了用于从本地 Markdown 文件中获取数据的 `Astro.fetchContent()` 方法。
 
@@ -355,7 +355,7 @@ Astro v2.0 完全移除了这个选项。在你的代码中使用 `Astro.fetchCo
 
 #### 我应该怎么做？
 
-使用 [`Astro.glob()`](/zh-cn/guides/imports/#astroglob) 方法获取 Markdown 文件，或者转换为 [内容集合](/zh-cn/guides/content-collections/) 功能。
+使用 `Astro.glob()` 方法获取 Markdown 文件，或者转换为 [内容集合](/zh-cn/guides/content-collections/) 功能。
 
 ```astro
 // src/pages/index.astro
@@ -364,7 +364,7 @@ const allPosts = await Astro.glob('./posts/*.md');
 ---
 ```
 
-### 移除: `Astro.canonicalURL`
+### 移除：`Astro.canonicalURL`
 
 在 v1.0 版本中，Astro 废弃了用于构建规范 URL 的 `Astro.canonicalURL` 方法。
 
@@ -384,13 +384,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 ### 更新：Vite 4
 
-Astro v2.0 从 Vite 3 升级到 [Vite 4](https://vitejs.dev/)，该版本于 2022 年 12 月发布。
+Astro v2.0 从 Vite 3 升级到 [Vite 4](https://cn.vite.dev/)，该版本于 2022 年 12 月发布。
 
 #### 我应该怎么做？
 
 在你的代码中应该不需要做任何更改！我们已经在 Astro 内部处理了大部分的升级工作；然而，一些微妙的 Vite 行为在不同版本之间可能仍然有所变化。
 
-如果遇到问题，请参考官方的 [Vite 迁移指南](https://vitejs.dev/guide/migration.html)。
+如果遇到问题，请参考官方的 [Vite 迁移指南](https://cn.vite.dev/guide/migration)。
 
 ## Astro v2.0 实验性标志已移除
 
@@ -412,8 +412,7 @@ export default defineConfig({
 这些功能现在已默认可用：
 
 - [内容集合](/zh-cn/guides/content-collections/)，用于以类型安全的方式管理你的 Markdown 和 MDX 文件。
-{/* TO-DO: add #configuring-individual-routes to link after ssr page is updated */}
-- 在使用 SSR 时，将个别页面[预渲染为静态 HTML](/zh-cn/guides/server-side-rendering/)，以提高速度和缓存能力。详见 配置个别路由。
+- 在使用 SSR 时，将个别页面[预渲染为静态 HTML](/zh-cn/guides/on-demand-rendering/)，以提高速度和缓存能力。详见 配置个别路由。
 - 重新设计的错误消息覆盖层。
 
 ## 已知问题

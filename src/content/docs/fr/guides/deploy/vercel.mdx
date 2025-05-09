@@ -1,88 +1,106 @@
 ---
-title: Déployer votre Site Astro vers Vercel
+title: Déployer votre Site Astro avec Vercel
 description: Comment déployer votre site Astro vers le web sur Vercel.
+sidebar:
+  label: Vercel
 type: deploy
 i18nReady: true
 ---
+import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro';
+import ReadMore from '~/components/ReadMore.astro';
+import { Steps } from '@astrojs/starlight/components';
 
-Vous pouvez utiliser [Vercel](http://vercel.com/) pour déployer un site Astro vers son global edge network sans aucune configuration.
+Vous pouvez utiliser [Vercel](http://vercel.com/) pour déployer un site Astro vers son global edge network (réseau périphérique mondial) sans aucune configuration.
 
-Ce guide inclut des instructions pour déployer vers Vercel via l'IU du site web ou l'ILC de Vercel.
+Ce guide comprend des instructions pour le déploiement vers Vercel via l'interface utilisateur du site web ou le CLI de Vercel.
 
 ## Configuration du projet
 
-Votre projet Astro peut être déployé vers Vercel en tant que site statique, ou en tant que site rendu côté serveur (SSR).
+Votre projet Astro peut être déployé sur Vercel en tant que site statique, ou en tant que site rendu côté serveur (SSR).
 
-### Site Statique
+### Site statique
 
-Votre projet Astro est un site statique par défaut. Vous n'avez pas besoin de configuration supplémentaire pour déployer un site statique Astro vers Vercel. 
+Votre projet Astro est un site statique par défaut. Vous n'avez besoin d'aucune configuration supplémentaire pour déployer un site Astro statique sur Vercel. 
 
-:::note
-Il y a actuellement un problème Vercel affichant une page 404 sur les sites web Astro. Jusqu'à ce que ça soit corrigé, vous pouvez ajouter le fichier de configuration suivant à la racine de votre projet :
+### Adaptateur pour le rendu à la demande
 
-```json title="vercel.json"
-{
-  "cleanUrls": true
-}
-```
-:::
+Ajoutez [l'adaptateur Vercel](/fr/guides/integrations-guide/vercel/) pour activer [le rendu à la demande](/fr/guides/on-demand-rendering/) dans votre projet Astro avec la commande `astro add` suivante. Ceci installera l'adaptateur et apportera les changements appropriés à votre fichier `astro.config.mjs` en une seule étape.
 
-### Adapteur pour SSR
-
-Pour activer le SSR dans votre projet Astro et déployer sur Vercel:
-
-Ajoutez [l'adapteur Vercel](/fr/guides/integrations-guide/vercel/) pour activer le SSR dans votre projet Astro avec la commande `astro add`. Ceci installera l'adapteur et fera les changements appropriés dans votre fichier `astro.config.mjs` en une étape.
-
-```bash
-npx astro add vercel
-```
-
-Si vous préférez installer l'adapteur manuallement à la place, complétez les deux étapes suivantes :
-
-1. Installez [l'adapteur `@astrojs/vercel`](/fr/guides/integrations-guide/vercel/) dans les dépendances de votre projet en utilisant votre gestionnaire de package préféré. Si vous utilisez npm ou que vous n'êtes pas sûr, exécutez ceci dans le terminal:
-
-    ```bash
-      npm install @astrojs/vercel
+<PackageManagerTabs>
+  <Fragment slot="npm">
+    ```shell
+    npx astro add vercel
     ```
-
-1. Ajoutez deux nouvelles lignes à votre fichier de configuration de projet `astro.config.mjs`.
-
-    ```js title="astro.config.mjs" ins={2, 5-6}
-    import { defineConfig } from 'astro/config';
-    import vercel from '@astrojs/vercel/serverless';
-
-    export default defineConfig({
-      output: 'server',
-      adapter: vercel(),
-    });
+  </Fragment>
+  <Fragment slot="pnpm">
+    ```shell
+    pnpm astro add vercel
     ```
+  </Fragment>
+  <Fragment slot="yarn">
+    ```shell
+    yarn astro add vercel
+    ```
+  </Fragment>
+</PackageManagerTabs>
+
+<ReadMore>Consultez le [guide de l'adaptateur Vercel](/fr/guides/integrations-guide/vercel/) pour installer manuellement à la place, ou pour plus d'options de configuration, telles que le déploiement du middleware Astro de votre projet à l'aide des fonctions Vercel Edge.</ReadMore>
 
 ## Comment déployer
 
-Vous pouvez déployer vers Vercel via l'interface utilisateur du site web ou utiliser l'ILC (interface en ligne de commande) de Vercel. Le processus est le même pour les sites statiques et SSR Astro.
+Vous pouvez déployer Vercel via l'interface utilisateur du site web ou en utilisant l'interface de ligne de commande (CLI) de Vercel. Le processus est le même pour les sites Astro statiques et rendus à la demande.
 
 ### Déploiement via l'interface utilisateur du site web
 
+<Steps>
 1. Poussez votre code vers votre dépôt Git en ligne (GitHub, GitLab, BitBucket).
+
 2. [Importez votre projet](https://vercel.com/new) dans Vercel.
+
 3. Vercel détectera automatiquement Astro et configurera les bons paramètres.
+
 4. Votre application est déployée ! (ex : [astro.vercel.app](https://astro.vercel.app/))
+</Steps>
 
-Après que le projet a été importé et déployé, tous les pushes subséquents vers des bracnhes généreront des [Aperçus de déploiements](https://vercel.com/docs/concepts/deployments/environments#preview), et tous les changements effectués sur la Branche de Production (“main” habituellement) produiront un [Déploiement de Production](https://vercel.com/docs/concepts/deployments/environments#production).
+Une fois que votre projet a été importé et déployé, tous les pushes ultérieures vers les branches généreront des [Déploiements de prévisualisation (EN)](https://vercel.com/docs/concepts/deployments/environments#preview), et toutes les modifications apportées à la branche de production (communément appelée "main") donneront lieu à un [Déploiement de production (EN)](https://vercel.com/docs/concepts/deployments/environments#production).
 
-📚 Apprenez-en plus sur l'[Intégration Git](https://vercel.com/docs/concepts/git) de Vercel.
+<ReadMore>Apprenez-en plus sur l'[Intégration Git de Vercel (EN)](https://vercel.com/docs/concepts/git).</ReadMore>
 
+### Déploiement via CLI
 
-### Déploiement via ILC
+<Steps>
+1. Installez la [CLI de Vercel](https://vercel.com/cli) et exécutez `vercel` pour déployer.
 
-1. Installez l'[ILC Vercel](https://vercel.com/cli) et exécutez `vercel` pour déployer.
-
-    ```bash
-    npm install -g vercel
-    vercel
-    ```
+    <PackageManagerTabs>
+      <Fragment slot="npm">
+      ```shell
+      npm install -g vercel
+      vercel
+      ```
+      </Fragment>
+      <Fragment slot="pnpm">
+      ```shell
+      pnpm add -g vercel
+      vercel
+      ```
+      </Fragment>
+      <Fragment slot="yarn">
+      ```shell
+      yarn global add vercel
+      vercel
+      ```
+      </Fragment>
+    </PackageManagerTabs>
 
 2. Vercel détectera automatiquement Astro et configurera les bons paramètres.
-3. Lorsqu'il sera demandé `Want to override the settings? [y/N]`, sélectionner `N`.
-4. Votre application est déployée ! (ex : [astro.vercel.app](https://astro.vercel.app/))
 
+3. Lorsqu'il sera demandé `Want to override the settings? [y/N]` (Souhaitez-vous annuler les réglages), sélectionner `N`.
+
+4. Votre application est déployée ! (ex : [astro.vercel.app](https://astro.vercel.app/))
+</Steps>
+
+### Configuration du projet avec `vercel.json`
+
+Vous pouvez utiliser `vercel.json` pour remplacer le comportement par défaut de Vercel et pour configurer des paramètres supplémentaires. Par exemple, vous pouvez souhaiter attacher des en-têtes aux réponses HTTP de vos déploiements. 
+
+<ReadMore>En savoir plus sur [la configuration du projet Vercel (EN)](https://vercel.com/docs/project-configuration).</ReadMore>

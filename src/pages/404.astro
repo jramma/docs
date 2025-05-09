@@ -1,5 +1,8 @@
 ---
-import FourOhFour from './[lang]/404.astro';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import NotFound from '~/components/NotFound.astro';
 ---
 
-<FourOhFour />
+<StarlightPage frontmatter={{ title: '404', template: 'splash' }}>
+	<NotFound lang="en" />
+</StarlightPage>

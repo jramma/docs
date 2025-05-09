@@ -1,16 +1,18 @@
 ---
 title: Storyblok 与 Astro
 description: 将 Storyblok 作为 CMS 并为你的 Astro 项目添加内容
+sidebar:
+  label: Storyblok
 type: cms
 service: Storyblok
 stub: false
 i18nReady: true
 ---
-import FileTree from '~/components/FileTree.astro'
+import { Steps } from '@astrojs/starlight/components';
+import { FileTree } from '@astrojs/starlight/components';
 import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
-
-[Storyblok](https://www.storyblok.com/) 是一个基于组件的无头（headless） CMS，允许你使用可重用的组件（称为 Bloks）管理内容。
+[Storyblok](https://www.storyblok.com/) 是一个基于组件的无头（headless）CMS，允许你使用可重用的组件（称为 Bloks）管理内容。
 
 ## 与 Astro 集成
 
@@ -20,8 +22,8 @@ import PackageManagerTabs from '~/components/tabs/PackageManagerTabs.astro'
 
 开始前，你需要具备以下条件：
 
-1. **Astro 项目** - 如果你还没有 Astro 项目，我们的[安装指南](/zh-cn/install/auto/)将帮助你快速启动；
-2. **Storyblok 帐号和空间** - 如果你还没有帐号，可以[免费注册](https://app.storyblok.com/#/signup)并创建一个新的空间；
+1. **Astro 项目** - 如果你还没有 Astro 项目，我们的[安装指南](/zh-cn/install-and-setup/)将帮助你快速启动；
+2. **Storyblok 账号和空间** - 如果你还没有账号，可以[免费注册](https://app.storyblok.com/#/signup)并创建一个新的空间；
 3. **Storyblok 预览令牌** - 这个令牌将用于获取你的草稿内容和已发布版本。你可以在 Storyblok 空间设置的访问令牌选项卡中找到并生成你的 API 令牌。
 
 ### 配置凭据
@@ -55,7 +57,7 @@ STORYBLOK_TOKEN=YOUR_PREVIEW_TOKEN
   </Fragment>
   <Fragment slot="pnpm">
   ```shell
-  pnpm install @storyblok/astro vite
+  pnpm add @storyblok/astro vite
   ```
   </Fragment>
   <Fragment slot="yarn">
@@ -71,7 +73,7 @@ STORYBLOK_TOKEN=YOUR_PREVIEW_TOKEN
 
 ```js title="astro.config.mjs"
 import { defineConfig } from 'astro/config';
-import storyblok from '@storyblok/astro';
+import { storyblok } from '@storyblok/astro';
 import { loadEnv } from 'vite';
 
 const env = loadEnv("", process.cwd(), 'STORYBLOK');
@@ -168,7 +170,7 @@ const content = renderRichText(blok.content)
 
 ```js title="astro.config.mjs" ins={12}
 import { defineConfig } from 'astro/config';
-import storyblok from '@storyblok/astro';
+import { storyblok } from '@storyblok/astro';
 import { loadEnv } from 'vite';
 
 const env = loadEnv("", process.cwd(), 'STORYBLOK');
@@ -197,7 +199,7 @@ export default defineConfig({
 ```astro title="src/pages/test-post.astro"
 ---
 import { useStoryblokApi } from '@storyblok/astro'
-import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent';
 
 const storyblokApi = useStoryblokApi()
 
@@ -284,7 +286,7 @@ const { blok } = Astro.props
 
 `BlogPost.astro` 将渲染 `blogPost` Blok 的 `title`、`description` 和 `content` 属性。
 
-要将 `content` 属性从富文本字段转换为 HTML，您可以使用 `renderRichText` 辅助函数。
+要将 `content` 属性从富文本字段转换为 HTML，你可以使用 `renderRichText` 辅助函数。
 
 ```astro title="src/storyblok/BlogPost.astro"
 ---
@@ -344,7 +346,7 @@ const { blok } = Astro.props
 
 ```js title="astro.config.mjs" ins={12-14}
 import { defineConfig } from 'astro/config';
-import storyblok from '@storyblok/astro';
+import { storyblok } from '@storyblok/astro';
 import { loadEnv } from 'vite';
 
 const env = loadEnv("", process.cwd(), 'STORYBLOK');
@@ -394,11 +396,11 @@ const content = data.story.content;
 </html>
 ```
 
-为了给你的所有博客文章生成页面，你可以创建一个 `.astro` 页面来创建动态路由。不过取决于你使用的是**静态站点生成**（默认情况）还是**服务器端渲染**，这种方法会有所不同。
+为了给你的所有博客文章生成页面，你可以创建一个 `.astro` 页面来创建动态路由。不过取决于你的路由是预渲染（在 Astro 中默认）还是[按需渲染](/zh-cn/guides/on-demand-rendering/)，这种方法会有所不同。
 
 #### 静态站点生成
 
-如果你正在使用 Astro 的默认静态站点生成功能，你将使用[动态路由](/zh-cn/core-concepts/routing/#动态路由)和 `getStaticPaths` 函数来生成你的项目页面。
+如果你正在使用 Astro 的默认静态站点生成功能，你将使用[动态路由](/zh-cn/guides/routing/#动态路由)和 `getStaticPaths` 函数来生成你的项目页面。
 
 创建一个名为 `src/pages/blog/` 的新目录，并添加一个名为 `[...slug].astro` 的新文件，其中包含以下代码：
 
@@ -445,9 +447,13 @@ const story = data.story;
 
 这个文件将为每个故事生成一个页面，页面的 slug 和内容都从 Storyblok API 中获取。
 
-#### 服务器端渲染
+:::note
+当在 Storyblok 中添加文件夹时，请在与 Storyblok API 交互时将它们包含在 slug 中。例如，在上面的 GET 请求例子中，我们可以使用 **cdn/stories/blog**，其中包含一个 blog 文件夹，而不是在根目录中使用它们。
+:::
 
-如果你已经[启用了 SSR 模式](/zh-cn/guides/server-side-rendering/#启用-ssr)，你将使用动态路由从 Storyblok 获取页面数据。
+#### 按需渲染
+
+如果你已经[配置了适配器来按需渲染你的路由](/zh-cn/guides/on-demand-rendering/)，你将使用动态路由从 Storyblok 获取页面数据。
 
 在 `src/pages/blog/` 目录下创建一个名为 `[...slug].astro` 的新文件，并添加以下代码：
 
@@ -506,17 +512,25 @@ try {
 
 在 Netlify 中设置 Webhook 的步骤如下：
 
+<Steps>
 1. 进入你的站点仪表板，点击 **Build & deploy**；
+
 2. 在 **Continuous Deployment** 选项卡下，找到 **Build hooks** 部分，点击 **Add build hook**；
+
 3. 为你的 Webhook 提供一个名称，并选择要触发构建的分支。点击 **Save** 并复制生成的 URL。
+</Steps>
 
 ##### Vercel
 
 在 Vercel 中设置 Webhook 的步骤如下：
 
+<Steps>
 1. 进入你的项目仪表板，点击 **Settings**；
+
 2. 在 **Git** 选项卡下，找到 **Deploy Hooks** 部分；
+
 3. 为你的 Webhook 提供一个名称和要触发构建的分支。点击 **Add** 并复制生成的 URL。
+</Steps>
 
 ##### 将 Webhook 添加到 Storyblok
 

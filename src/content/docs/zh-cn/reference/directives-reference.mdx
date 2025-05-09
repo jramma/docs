@@ -2,6 +2,9 @@
 title: 模板指令参考
 ---
 
+import Since from '~/components/Since.astro';
+import ReadMore from '~/components/ReadMore.astro'
+
 **模板指令**是特殊的 HTML 属性，它可以在任一 Astro 组件模板（`.astro` 文件）中使用，也可以在 `.mdx` 文件中使用。
 
 模板指令用某种方式控制元素或组件行为。模板指令可以启用一些编译器功能，使你的生活更轻松（比如使用 `class:list` 而不是 `class`）。指令也可以让 Astro 编译器对该组件进行特殊处理（比如使用 `client:load` 激活组件）。
@@ -26,24 +29,21 @@ title: 模板指令参考
 
 ### `class:list`
 
-`class:list={...}` 接收 class 数组，并将其转换为 class 字符串。这是受流行的 @lukeed [clsx](https://github.com/lukeed/clsx)辅助库的启发，但直接内置在 Astro 里。
+`class:list={...}` 接收 class 数组，并将其转换为 class 字符串。这是受流行的 @lukeed [clsx](https://github.com/lukeed/clsx) 辅助库的启发。
 
 `class:list` 接收数组，其中有几种不同的可能值：
 
 - `string`：添加到 `class` 元素
 - `Object`：添加到键值对到 `class` 元素
 - `Array`：扁平化
-- `Set`：扁平化
-- `false` 或 `null`：被忽略
+- `false`, `null`, or `undefined`: 跳过
 
 ```astro
 <!-- 原先 -->
-<span class:list={[ 'hello goodbye', { hello: true, world: true }, new Set([ 'hello', 'friend' ]) ]} />
+<span class:list={[ 'hello goodbye', { world: true }, [ 'friend' ] ]} />
 <!-- 输出 -->
 <span class="hello goodbye world friend"></span>
 ```
-
-它会自动删除重复值。
 
 ### `set:html`
 
@@ -89,7 +89,7 @@ import api from '../db/api.js';
 <article set:html={fetch('http://example/old-posts/making-soup.html')}></article>
 ```
 
-`set:html` 可以用在任何标签上，不必包含 HTML。例如，在 `<script>` 标签上使用 [`JSON.stringify()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) 将 [JSON-LD](https://json-ld.org/) 模式添加到您的页面。
+`set:html` 可以用在任何标签上，不必包含 HTML。例如，在 `<script>` 标签上使用 [`JSON.stringify()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) 将 [JSON-LD](https://json-ld.org/) 模式添加到你的页面。
 
 ```astro
 <script type="application/ld+json" set:html={JSON.stringify({
@@ -111,11 +111,11 @@ import api from '../db/api.js';
 
 ## 客户端指令
 
-这些指令描述了如何激活 [UI 框架组件](/zh-cn/core-concepts/framework-components/)。
+这些指令描述了如何激活 [UI 框架组件](/zh-cn/guides/framework-components/)。
 
 默认情况下，UI 框架组件不会在客户端激活。如果没有 `client:*` 指令，它的 HTML 将被渲染到页面上，而无需 JavaScript。
 
-客户端指令只能用于直接引入到 `.astro` 组件中的 UI 框架组件。 使用[动态标签](/zh-cn/core-concepts/astro-syntax/#动态标签)和[通过 `components` prop 传递的自定义组件](/zh-cn/guides/markdown-content/#使用导入的-mdx-的自定义组件)时，不支持 Hydration 指令。
+客户端指令只能用于直接引入到 `.astro` 组件中的 UI 框架组件。 使用 [动态标签](/zh-cn/reference/astro-syntax/#动态标签) 和 [通过 `components` prop 传递的自定义组件](/zh-cn/guides/integrations-guide/mdx/#使用导入的-mdx-自定义组件) 时，不支持 Hydration 指令。
 
 ### `client:load`
 
@@ -139,6 +139,18 @@ import api from '../db/api.js';
 <ShowHideButton client:idle />
 ```
 
+#### `timeout`
+
+<p><Since v="4.15.0" /></p>
+
+最大等待时间（以毫秒为单位），在此时间内即使页面尚未完成初始加载，也会对组件进行水合。
+
+这允许你传递一个值给 [`requestIdleCallback()` 规范中的 `timeout` 选项](https://www.w3.org/TR/requestidlecallback/#the-requestidlecallback-method)。这意味着你可以更灵活地延迟低优先级 UI 元素的水合，以确保你的元素在指定的时间范围内可交互。
+
+```astro
+<ShowHideButton client:idle={{timeout: 500}} />
+```
+
 ### `client:visible`
 
 - **优先级**：低
@@ -149,6 +161,17 @@ import api from '../db/api.js';
 ```astro
 <HeavyImageCarousel client:visible />
 ```
+
+#### `client:visible={{rootMargin}}`
+<p><Since v="4.1.0" /></p>
+
+可选项，可以通过指定 `rootMargin`，为底层的 `IntersectionObserver` 传递 `rootMargin` 值。当指定了 `rootMargin` 时，组件 JavaScript 将在组件周围指定的边距（以像素为单位）进入视口时进行水合，而不是组件本身。
+
+```astro
+<HeavyImageCarousel client:visible={{rootMargin: "200px"}} />
+```
+
+指定 `rootMargin` 值可以减少布局移位（CLS），允许组件在较慢的互联网连接上进行更长时间的水合，并使组件更早地变得可交互，从而增强页面的稳定性和响应性。
 
 ### `client:media`
 
@@ -179,12 +202,36 @@ import api from '../db/api.js';
 <SomeSolidComponent client:only="solid-js" />
 ```
 
+#### 显示加载内容
+
+对于仅在客户端渲染的组件，还可以在加载时显示回退内容。在任何子元素上使用 `slot="fallback"` 来创建仅在客户端组件可用之前显示的内容：
+
+```astro {2}
+<ClientComponent client:only="vue">
+  <div slot="fallback">加载中</div>
+</ClientComponent>
+```
+
 ### 自定义客户端指令
 
 自 Astro 2.6.0 版本开始，集成还可以添加自定义的 `client:*` 指令，以更改组件的注水方式和时机。
 
 请访问 [`addClientDirective` API](/zh-cn/reference/integrations-reference/#addclientdirective-选项) 页面，了解如何创建自定义的客户端指令。
 
+
+## 服务器端指令
+
+这些指令用于控制如何渲染服务器岛屿组件。
+
+### `server:defer`
+
+`server:defer` 指令将组件转换为服务器岛屿，使其在页面渲染范围之外按需渲染。
+
+<ReadMore>了解更多关于使用 [服务器岛屿组件](/zh-cn/guides/server-islands/) 的内容。</ReadMore>
+
+```astro
+<Avatar server:defer />
+```
 
 ## 脚本和样式指令
 
@@ -198,7 +245,7 @@ import api from '../db/api.js';
 
 你可以在组件中同时使用 `<style>` 和 `<style is:global>`，创建一些全局样式规则，同时仍对大部分组件 CSS 进行作用域控制。
 
-📚 有关全局样式工作的更多细节，请参见[样式 & CSS](/zh-cn/guides/styling/#全局样式)页面。
+<ReadMore>有关全局样式工作的更多细节，请参见 [样式 & CSS](/zh-cn/guides/styling/#全局样式) 页面。</ReadMore>
 
 ```astro
 <style is:global>
@@ -223,6 +270,7 @@ import api from '../db/api.js';
 
 :::caution
 只要在 `<script>` 或 `<style>` 标签上使用除 `src` 以外的任何属性，就相当于使用 `is:inline` 指令。
+唯一例外的是在 `<style>` 标签上使用 [`define:vars` 指令](#definevars)，它不会自动应用 `is:inline`。
 :::
 
 ```astro
@@ -238,7 +286,7 @@ import api from '../db/api.js';
 </script>
 ```
 
-📚 查看[客户端脚本](/zh-cn/guides/client-side-scripts/)如何在 Astro 组件中工作。
+<ReadMore>查看 [客户端脚本](/zh-cn/guides/client-side-scripts/) 如何在 Astro 组件中工作。</ReadMore>
 
 ### `define:vars`
 

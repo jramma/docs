@@ -10,6 +10,7 @@ import Checklist from '~/components/Checklist.astro';
 import MultipleChoice from '~/components/tutorial/MultipleChoice.astro';
 import Option from '~/components/tutorial/Option.astro';
 import PreCheck from '~/components/tutorial/PreCheck.astro';
+import { Steps } from '@astrojs/starlight/components';
 
 <PreCheck>
   - 创建一个页面以生成多个页面
@@ -22,6 +23,7 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 
 ## 动态创建页面
 
+<Steps>
 1. 创建一个新文件：`src/pages/tags/[tag].astro`。（你需要创建一个新文件夹。）注意文件名（`[tag].astro`）使用方括号。将以下代码粘贴到文件中：
 
     ```astro title="src/pages/tags/[tag].astro"
@@ -42,7 +44,7 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
     const { tag } = Astro.params;
     ---
     <BaseLayout pageTitle={tag}>
-      <p>Posts tagged with {tag}</p>
+      <p>包含「{tag}」标签的文章</p>
     </BaseLayout>
     ```
 
@@ -52,20 +54,22 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 
 3. 确保每篇博客文章至少包含一个标签，以数组的形式编写，例如 `tags: ["blogging"]`。
 
-4. 在浏览器中访问 `localhost:3000/tags/astro`，你应该能看到一个页面，它是从 `[tag].astro` 动态生成的。检查是否还为每个标签创建了页面，例如 `/tags/successes`、`/tags/community`、`/tags/learning%20in%20public` 等，或者你自定义的标签。你可能需要先退出并重新启动开发服务器才能看到这些新页面。
+4. 在浏览器中访问 `http://localhost:4321/tags/astro`，你应该能看到一个页面，它是从 `[tag].astro` 动态生成的。检查是否还为每个标签创建了页面，例如 `/tags/successes`、`/tags/community`、`/tags/learning%20in%20public` 等，或者你自定义的标签。你可能需要先退出并重新启动开发服务器才能看到这些新页面。
+</Steps>
 
 ## 在动态路由中使用 props
 
+<Steps>
 1. 在你的 `getStaticPaths()` 函数中添加以下 props，以便使所有博客文章的数据对每个页面路由可用。
 
-   确保为数组中的每个路由都添加新的 props，并将这些 props 在函数之外的组件模板中可用。
+    确保为数组中的每个路由都添加新的 props，并将这些 props 在函数之外的组件模板中可用。
 
-    ```astro title="src/pages/tags/[tag].astro" ins={5,18} "props: {posts: allPosts}" 
+    ```astro title="src/pages/tags/[tag].astro" ins={5,18} ins="props: {posts: allPosts}" 
     ---
     import BaseLayout from '../../layouts/BaseLayout.astro';
 
     export async function getStaticPaths() {
-      const allPosts = await Astro.glob('../posts/*.md');
+      const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
 
       return [
         {params: {tag: "astro"}, props: {posts: allPosts}},
@@ -74,7 +78,7 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
         {params: {tag: "blogging"}, props: {posts: allPosts}},
         {params: {tag: "setbacks"}, props: {posts: allPosts}},
         {params: {tag: "learning in public"}, props: {posts: allPosts}}
-      ]
+      ];
     }
     
     const { tag } = Astro.params;
@@ -82,13 +86,13 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
     ---
     ```
 
-2. 将文章列表筛选为仅包含页面所属标签的文章。
+2. 过滤你的文章列表，使用 Astro 内置的 TypeScript 支持，筛选出仅包含页面所属标签的文章。
 
-    ```astro title="/src/pages/tags/[tag].astro" ins={4}
+    ```astro title="src/pages/tags/[tag].astro" ins={4}
     ---
     const { tag } = Astro.params;
     const { posts } = Astro.props;
-    const filteredPosts = posts.filter((post) => post.frontmatter.tags?.includes(tag));
+    const filteredPosts = posts.filter((post: any) => post.frontmatter.tags?.includes(tag));
     ---
     ```
 
@@ -96,9 +100,9 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 
     ```astro title="src/pages/tags/[tag].astro" ins={3-5}
     <BaseLayout pageTitle={tag}>   
-      <p>Posts tagged with {tag}</p>
+      <p>包含「{tag}」标签的文章</p>
       <ul>
-        {filteredPosts.map((post) => <li><a href={post.url}>{post.frontmatter.title}</a></li>)}
+        {filteredPosts.map((post: any) => <li><a href={post.url}>{post.frontmatter.title}</a></li>)}
       </ul>
     </BaseLayout>
     ```
@@ -107,15 +111,16 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 
     ```astro title="src/pages/tags/[tag].astro" del={4} ins={5}
     <BaseLayout pageTitle={tag}>
-      <p>Posts tagged with {tag}</p>
+      <p>包含「{tag}」标签的文章</p>
       <ul>
-        {filteredPosts.map((post) => <li><a href={post.url}>{post.frontmatter.title}</a></li>)}
-        {filteredPosts.map((post) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
+        {filteredPosts.map((post: any) => <li><a href={post.url}>{post.frontmatter.title}</a></li>)}
+        {filteredPosts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
       </ul>
     </BaseLayout>
     ```
 
 5. 在浏览器中的预览中查看各个标签页面，现在你应该能看到包含特定标签的所有博客文章列表。
+</Steps>
 
 <Box icon="question-mark">
 
@@ -123,7 +128,7 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 
 对于以下每个问题，请指出代码是在 `getStaticPath()` 函数的**内部**还是在其**外部**编写的。
 
-1. `Astro.glob()` 调用以接收有关所有 `.md` 文件的信息，并将其传递给每个页面路由。
+1. `import.meta.glob()` 调用以接收有关所有 `.md` 文件的信息，并将其传递给每个页面路由。
 
     <MultipleChoice>
     <Option isCorrect>在 `getStaticPaths` 内部</Option>
@@ -161,72 +166,74 @@ import PreCheck from '~/components/tutorial/PreCheck.astro';
 即使看起来有挑战性，你也可以尝试按照步骤自己构建此功能！如果你现在不想跟着编写所需的 JavaScript 代码，可以直接跳到[代码的最终版本](#最终代码示例)，并将其直接用于你的项目中，替换现有内容。
 :::
 
-### 1. 检查所有博客文章是否包含标签
+<Steps>
+1. 检查所有博客文章是否包含标签
 
-重新访问你的现有 Markdown 页面，确保每篇文章的前置数据中都包含一个 `tags` 数组。即使只有一个标签，它也应该被写成一个数组，例如 `tags: ["blogging"]`。
+    重新访问你的现有 Markdown 页面，确保每篇文章的前置数据中都包含一个 `tags` 数组。即使只有一个标签，它也应该被写成一个数组，例如 `tags: ["blogging"]`。
 
-### 2. 创建包含所有现有标签的数组
+2. 创建包含所有现有标签的数组，使用 Astro 内置的 TypeScript 支持。
 
-添加以下代码，以提供一个包含博客文章中使用的每个标签的列表。
+    添加以下代码，以提供一个包含博客文章中使用的每个标签的列表。
 
-  ```astro title="src/pages/tags/[tag].astro" ins={7}
-  ---
-  import BaseLayout from '../../layouts/BaseLayout.astro';
+    ```astro title="src/pages/tags/[tag].astro" ins={7}
+    ---
+    import BaseLayout from '../../layouts/BaseLayout.astro';
 
-  export async function getStaticPaths() {
-    const allPosts = await Astro.glob('../posts/*.md');
+    export async function getStaticPaths() {
+      const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
 
-    const uniqueTags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())];
-  ```
+      const uniqueTags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).flat())];
+    ```
 
-    <details>
-    <summary>请详细说明这行代码正在做什么！</summary>
+      <details>
+      <summary>请详细说明这行代码正在做什么！</summary>
 
-    毕竟这不是你自己编写的代码，看不懂是正常的！
+      毕竟这不是你自己编写的代码，看不懂是正常的！
 
-    它逐个处理每个 Markdown 文章，并将每个标签数组组合成一个更大的数组。然后，它从找到的所有标签创建一个新的 Set（以忽略重复值）。最后，它将该 Set 转换为一个数组（不重复的），你可以用它来显示页面上的标签列表。
-    </details>
+      它逐个处理每个 Markdown 文章，并将每个标签数组组合成一个更大的数组。然后，它从找到的所有标签创建一个新的 Set（以忽略重复值）。最后，它将该 Set 转换为一个数组（不重复的），你可以用它来显示页面上的标签列表。
+      </details>
 
-现在，你有一个名为 `uniqueTags` 的数组，其中包含元素项 `"astro"`、`"successes"`、`"community"`、`"blogging"`、`"setbacks"`、`"learning in public"`。
+    现在，你有一个名为 `uniqueTags` 的数组，其中包含元素项 `"astro"`、`"successes"`、`"community"`、`"blogging"`、`"setbacks"`、`"learning in public"`。
 
-### 3. 替换 `getStaticPaths` 函数的 `return` 值
+3. 替换 `getStaticPaths` 函数的 `return` 值
 
-```js title="src/pages/tags/[tag].astro" del={1-8} ins={10-16}
-  return [
-        {params: {tag: "astro"}, props: {posts: allPosts}},
-        {params: {tag: "successes"}, props: {posts: allPosts}},
-        {params: {tag: "community"}, props: {posts: allPosts}},
-        {params: {tag: "blogging"}, props: {posts: allPosts}},
-        {params: {tag: "setbacks"}, props: {posts: allPosts}},
-        {params: {tag: "learning in public"}, props: {posts: allPosts}}
-      ]
+   ```js title="src/pages/tags/[tag].astro" del={1-8} ins={10-16}
+   return [
+     {params: {tag: "astro"}, props: {posts: allPosts}},
+     {params: {tag: "successes"}, props: {posts: allPosts}},
+     {params: {tag: "community"}, props: {posts: allPosts}},
+     {params: {tag: "blogging"}, props: {posts: allPosts}},
+     {params: {tag: "setbacks"}, props: {posts: allPosts}},
+     {params: {tag: "learning in public"}, props: {posts: allPosts}}
+   ]
 
-  return uniqueTags.map((tag) => {
-    const filteredPosts = allPosts.filter((post) => post.frontmatter.tags.includes(tag));
-    return {
-      params: { tag },
-      props: { posts: filteredPosts },
-    };
-  });
-``` 
+   return uniqueTags.map((tag) => {
+     const filteredPosts = allPosts.filter((post: any) => post.frontmatter.tags.includes(tag));
+     return {
+       params: { tag },
+       props: { posts: filteredPosts },
+     };
+   });
+   ```
 
-`getStaticPaths` 函数应始终返回一个包含 `params`（用于每个页面路由的名称）的对象列表，并且可以选择包含任何 `props`（要传递给这些页面的数据）。之前，你为你所知道的每个博客中使用的标签名称定义了一个参数，并将整个文章列表作为 props 传递给每个页面。
+    `getStaticPaths` 函数应始终返回一个包含 `params`（用于每个页面路由的名称）的对象列表，并且可以选择包含任何 `props`（要传递给这些页面的数据）。之前，你为你所知道的每个博客中使用的标签名称定义了一个参数，并将整个文章列表作为 props 传递给每个页面。
 
-现在，你可以使用 `uniqueTags` 数组自动生成此对象列表，以定义每个参数。
+    现在，你可以使用 `uniqueTags` 数组自动生成此对象列表，以定义每个参数。
 
-现在，在将文章列表作为 props 发送到每个页面之前，应在此之前对其进行过滤。确保删除以前过滤文章的代码行，并更新 HTML 模板以使用 `posts` 而不是 `filteredPosts`。
+    现在，在将文章列表作为 props 发送到每个页面之前，应在此之前对其进行过滤。确保删除以前过滤文章的代码行，并更新 HTML 模板以使用 `posts` 而不是 `filteredPosts`。
 
-``` astro title="src/pages/tags/[tag].astro" del={3,7} ins={8}
-const { tag } = Astro.params;
-const { posts } = Astro.props;
-const filteredPosts = posts.filter((post) => post.frontmatter.tags.includes(tag));
----
-<!-- -->
-<ul>
-    {filteredPosts.map((post) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
-    {posts.map((post) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
-</ul>
-```
+    ``` astro title="src/pages/tags/[tag].astro" del={3,7} ins={8}
+    const { tag } = Astro.params;
+    const { posts } = Astro.props;
+    const filteredPosts = posts.filter((post) => post.frontmatter.tags?.includes(tag));
+    ---
+    <!-- -->
+    <ul>
+        {filteredPosts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
+        {posts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
+    </ul>
+    ```
+</Steps>
 
 ### 最终代码示例
 
@@ -238,12 +245,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogPost from '../../components/BlogPost.astro';
 
 export async function getStaticPaths() {
-  const allPosts = await Astro.glob('../posts/*.md');
+  const allPosts = Object.values(import.meta.glob('../posts/*.md', { eager: true }));
   
-  const uniqueTags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())];
+  const uniqueTags = [...new Set(allPosts.map((post: any) => post.frontmatter.tags).flat())];
 
   return uniqueTags.map((tag) => {
-    const filteredPosts = allPosts.filter((post) => post.frontmatter.tags.includes(tag));
+    const filteredPosts = allPosts.filter((post: any) => post.frontmatter.tags.includes(tag));
     return {
       params: { tag },
       props: { posts: filteredPosts },
@@ -257,14 +264,14 @@ const { posts } = Astro.props;
 <BaseLayout pageTitle={tag}>
   <p>包含「{tag}」标签的文章</p>
   <ul>
-    {posts.map((post) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
+    {posts.map((post: any) => <BlogPost url={post.url} title={post.frontmatter.title}/>)}
   </ul>
 </BaseLayout>
 ```
 
 现在，你应该能够在浏览器预览中访问任何一个标签页面。
 
-在浏览器中导航到 `localhost:3000/tags/community`，你应该看到一个包含标签为 `community` 的博文列表。同样地，`localhost:3000/tags/learning%20in%20public` 应该显示一个包含标签为 `learning in public` 的博文列表。
+在浏览器中导航到 `http://localhost:4321/tags/community`，你应该看到一个包含标签为 `community` 的博文列表。同样地，`http://localhost:4321/tags/learning%20in%20public` 应该显示一个包含标签为 `learning in public` 的博文列表。
 
 在接下来的部分，你将创建导航链接到这些页面。
 
@@ -296,7 +303,7 @@ const { posts } = Astro.props;
 
     <MultipleChoice>
       <Option isCorrect>params</Option>
-      <Option>dynamic routing</Option>
+      <Option>动态路由</Option>
       <Option>`getStaticPaths()`</Option>
       <Option>props</Option>
     </MultipleChoice>
@@ -315,5 +322,5 @@ const { posts } = Astro.props;
 
 ### 相关资源
 
-- [Astro 中的动态页面路由](/zh-cn/core-concepts/routing/#动态路由)
-- [`getStaticPaths()` API 文档](/zh-cn/reference/api-reference/#getstaticpaths)
+- [Astro 中的动态页面路由](/zh-cn/guides/routing/#动态路由)
+- [`getStaticPaths()` API 文档](/zh-cn/reference/routing-reference/#getstaticpaths)

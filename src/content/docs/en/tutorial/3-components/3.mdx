@@ -8,15 +8,13 @@ description: >-
   navigation
 i18nReady: true
 ---
-import Badge from '~/components/Badge.astro';
 import Box from '~/components/tutorial/Box.astro';
 import Checklist from '~/components/Checklist.astro';
-import MultipleChoice from '~/components/tutorial/MultipleChoice.astro';
-import Option from '~/components/tutorial/Option.astro';
 import PreCheck from '~/components/tutorial/PreCheck.astro';
+import { Steps } from '@astrojs/starlight/components';
+import Badge from "~/components/Badge.astro"
 
-
-Since your site will be viewed on different devices, let's create a page navigation that can respond to multiple screen sizes!
+Since your site will be viewed on different devices, it's time to create a page navigation that can respond to multiple screen sizes!
 
 <PreCheck>
   - Create a Header for your site that contains the Navigation component
@@ -28,6 +26,7 @@ Since your site will be viewed on different devices, let's create a page navigat
 
 ## Try it yourself - Build a new Header component
 
+<Steps>
 1. Create a new Header component. Import and use your existing `Navigation.astro` component inside a `<nav>` element which is inside a `<header>` element.
 
     <details>
@@ -46,16 +45,18 @@ Since your site will be viewed on different devices, let's create a page navigat
     ```
 
     </details>
+</Steps>
 
 </Box>
 
 
 
 
-<Box icon="check-list">
+<Box icon="puzzle-piece">
 
 ## Try it yourself - Update your pages
 
+<Steps>
 1. On each page, replace your existing `<Navigation/>` component with your new header.
 
     <details>
@@ -88,11 +89,12 @@ Since your site will be viewed on different devices, let's create a page navigat
     </details>
 
 2. Check your browser preview and verify that your header is displayed on every page. It won't look different yet, but if you inspect your preview using dev tools, you will see that you now have elements like `<header>` and `<nav>` around your navigation links.
-
+</Steps>
 </Box>
 
 ## Add responsive styles
 
+<Steps>
 1. Update `Navigation.astro` with the CSS class to control your navigation links. Wrap the existing navigation links in a `<div>` with the class `nav-links`.
 
     ```astro title="src/components/Navigation.astro" ins={3,7}
@@ -111,7 +113,7 @@ Since your site will be viewed on different devices, let's create a page navigat
     - Include an `expanded` class that can be toggled to display or hide the links on mobile
     - Use a `@media` query to define different styles for larger screen sizes
 
-    :::tip[mobile-first design]
+    :::tip[Mobile-first design]
     Start by defining what should happen on small screen sizes first! Smaller screen sizes require simpler layouts. Then, adjust your styles to accommodate larger devices. If you design the complicated case first, then you have to work to try to make it simple again.
     :::
 
@@ -159,7 +161,8 @@ Since your site will be viewed on different devices, let's create a page navigat
       text-transform: uppercase;
     }
 
-    .nav-links a:hover, a:focus {
+    .nav-links a:hover,
+    .nav-links a:focus {
       background-color: #ff9776;
     }
 
@@ -183,6 +186,7 @@ Since your site will be viewed on different devices, let's create a page navigat
 
     }
     ```
+</Steps>
 
 Resize your window and look for different styles being applied at different screen widths. Your header is now **responsive** to screen size through the use of `@media` queries.
 
@@ -199,8 +203,8 @@ Resize your window and look for different styles being applied at different scre
 
 ### Resources
 
-- [Component-based Design](https://www.droptica.com/blog/component-based-design/) <Badge>external</Badge>
+- [Component-based Design](https://www.droptica.com/blog/component-based-design/) <Badge class="neutral-badge" text="external" />
 
-- [Semantic HTML Tags](https://www.dofactory.com/html/semantics) <Badge>external</Badge>
+- [Semantic HTML Tags](https://www.dofactory.com/html/semantics) <Badge class="neutral-badge" text="external" />
 
-- [Mobile-first Design](https://www.mobileapps.com/blog/mobile-first-design) <Badge>external</Badge>
+- [Mobile-first Design](https://www.mobileapps.com/blog/mobile-first-design) <Badge class="neutral-badge" text="external" />

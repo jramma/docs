@@ -1,24 +1,29 @@
 ---
 title: Headless WordPress et Astro
 description: Ajoutez du contenu à votre projet Astro en utilisant WordPress comme CMS
+sidebar:
+  label: WordPress
 type: cms
 stub: false
 service: WordPress
 i18nReady: true
 ---
-import FileTree from '~/components/FileTree.astro'
+import { FileTree } from '@astrojs/starlight/components';
+import Grid from '~/components/FluidGrid.astro'
+import Card from '~/components/ShowcaseCard.astro'
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 [WordPress](https://wordpress.org/) est un système de gestion de contenu qui comprend son propre frontend, mais qui peut également être utilisé comme un CMS sans tête pour fournir du contenu à votre projet Astro.
 
 ## Intégration avec Astro
 
-WordPress est doté d'un système intégré de l'[API REST WordPress](https://developer.wordpress.org/rest-api/) pour connecter vos données WordPress à Astro. Vous pouvez éventuellement installer [WPGraphQL](https://wordpress.org/plugins/wp-graphql/) sur votre site afin d'utiliser GraphQL.
+WordPress est doté d'un système intégré de l'[API REST WordPress](https://developer.wordpress.org/rest-api/) pour connecter vos données WordPress à Astro. Vous pouvez éventuellement installer [WPGraphQL](https://wordpress.org/plugins/wp-graphql/) ou [Gato GraphQL](https://wordpress.org/plugins/gatographql/) sur votre site pour utiliser GraphQL.
 
 ### Pré-requis
 
 Pour commencer, vous devez disposer des éléments suivants :
 
-1. **Un projet Astro** - Si vous n'avez pas encore de projet Astro, notre [Guide d'installation](/fr/install/auto/) vous permettra d'être opérationnel en un rien de temps.
+1. **Un projet Astro** - Si vous n'avez pas encore de projet Astro, notre [Guide d'installation](/fr/install-and-setup/) vous permettra d'être opérationnel en un rien de temps.
 2. **Un site WordPress** - L'API REST de votre site est `[VOTRE_SITE]/wp-json/wp/v2/` et est disponible par défaut avec tout site WordPress. Il est également possible de [configurer WordPress dans un environnement local](https://wordpress.org/support/article/installing-wordpress-on-your-own-computer/).
 
 ### Mise en place des informations d'identification
@@ -33,10 +38,10 @@ Récupérez vos données WordPress via l'URL unique de l'API REST de votre site 
 
 Par exemple, pour afficher une liste de titres d'articles et leur contenu :
 
-```astro title="src/pages/index.astro
+```astro title="src/pages/index.astro"
 ---
-const res = await fetch("https://[YOUR-SITE]/wp-json/wp/v2/posts")
-const posts = await res.json()
+const res = await fetch("https://[YOUR-SITE]/wp-json/wp/v2/posts");
+const posts = await res.json();
 ---
 <h1>Astro + WordPress 🚀</h1>
 {
@@ -87,9 +92,9 @@ La récupération via l'API renvoie un objet qui comprend les propriétés suiva
 
 ```astro title="/src/pages/index.astro"
 ---
-import Layout from "../layouts/Layout.astro"
+import Layout from "../layouts/Layout.astro";
 
-let res = await fetch("https://norian.studio/wp-json/wp/v2/dinos")
+let res = await fetch("https://norian.studio/wp-json/wp/v2/dinos");
 let posts = await res.json();
 ---
 <Layout title="Dinos!">
@@ -111,7 +116,7 @@ let posts = await res.json();
 
 ### Utiliser l'API de WordPress pour générer des pages
 
-La page `src/pages/dinos/[slug].astro` [génère dynamiquement une page](/fr/core-concepts/routing/#routes-dynamiques) pour chaque dinosaure.
+La page `src/pages/dinos/[slug].astro` [génère dynamiquement une page](/fr/guides/routing/#routes-dynamiques) pour chaque dinosaure.
 
 ```astro title="/src/pages/dinos/[slug].astro"
 ---
@@ -119,13 +124,13 @@ import Layout from '../../layouts/Layout.astro';
 
 const { slug } = Astro.params;
 
-let res = await fetch(`https://norian.studio/wp-json/wp/v2/dinos?slug=${slug}`)
+let res = await fetch(`https://norian.studio/wp-json/wp/v2/dinos?slug=${slug}`);
 let [post] = await res.json();
 
 // La fonction getStaticPaths() est nécessaire pour les sites Astro statiques.
 // Si vous utilisez SSR, vous n'aurez pas besoin de cette fonction.
 export async function getStaticPaths() {
-  let data = await fetch("https://norian.studio/wp-json/wp/v2/dinos")
+  let data = await fetch("https://norian.studio/wp-json/wp/v2/dinos");
   let posts = await data.json();
 
   return posts.map((post) => ({
@@ -150,7 +155,7 @@ Le paramètre de requête `_embed` demande au serveur de renvoyer des ressources
 ---
 const { slug } = Astro.params;
 
-let res = await fetch(`https://norian.studio/wp-json/wp/v2/dinos?slug=${slug}&_embed`)
+let res = await fetch(`https://norian.studio/wp-json/wp/v2/dinos?slug=${slug}&_embed`);
 let [post] = await res.json();
 ---
 ```
@@ -175,12 +180,43 @@ Pour déployer votre site web, consultez nos [guides de déploiement](/fr/guides
 
 - [Construire un site Astro avec WordPress comme CMS sans tête](https://blog.openreplay.com/building-an-astro-website-with-wordpress-as-a-headless-cms/) par Chris Bongers.
 - [Construire avec Astro x WordPress](https://www.youtube.com/watch?v=Jstqgklvfnc) sur le flux de Ben Holmes.
-- [Construire un site WordPress sans tête avec Astro](https://developers.wpengine.com/blog/building-a-headless-wordpress-site-with-astro) par Jeff Everhart
-- [Astro et WordPress en tant qu'API](https://darko.io/posts/astrojs-and-wordpress-as-an-api/)
+- [Construire un site WordPress sans tête avec Astro](https://developers.wpengine.com/blog/building-a-headless-wordpress-site-with-astro) par Jeff Everhart.
+- [Astro et WordPress en tant qu'API](https://darko.io/posts/wp-as-an-api/) par Darko Bozhinovski.
 
 ## Sites web en production
 
 Les sites suivants utilisent Astro + WordPress en production :
 
-- [Soft Hard System](https://softhardsystem.com/) par Rafid Muhymin Wafi - [code source sur GitHub](https://github.com/RafidMuhymin/softhardsystem)
 - [Dinos !](https://wc-dinos.netlify.app/) par Anindo Neel Dutta - [code source sur GitHub](https://github.com/leen-neel/astro-wordpress)
+
+## Thèmes
+
+<Grid>
+  <Card title="Astro WordPress Starter" href="https://astro.build/themes/details/astro-wordpress-starter/" thumbnail="astro-wordpress-starter.png"/>
+</Grid>
+
+## Ressources communautaires
+
+<CardGrid>
+
+  <LinkCard href="https://dev.to/bngmnn/leveraging-wordpress-as-a-headless-cms-for-your-astro-website-a-comprehensive-guide-a4d" title="Introduction à Astro + WordPress (en)"/>
+  <LinkCard title="Astro + WPGraphQL pour des sites WordPress plus sécurisés (en)" href="https://www.youtube.com/watch?v=fWxn-r83ygQ" />
+  <LinkCard title="Réduire les temps de construction de WordPress en mode sans tête grâce à l'API Content Layer d'Astro (en)" href="https://andrewkepson.com/blog/headless-wordpress/build-time-astro-content-layer-api/"/>
+  <LinkCard title="Comment configurer un site WordPress sans tête avec Astro (en)" href="https://dev.to/mathiasahlgren/how-to-set-up-a-headless-wordpress-site-with-astro-3a2h" />
+  <LinkCard title="Créer un site statique avec WordPress et Astro (en)" href="https://kinsta.com/blog/wordpress-astro/" />
+  <LinkCard title="Passer à WordPress headless avec Astro (en)" href="https://www.youtube.com/watch?v=MP2TR6Z_YTc" />
+  <LinkCard title="Tirer parti de WordPress comme CMS sans tête pour votre site Web Astro : configuration de l'API et récupération de données (en)" href="https://medium.com/@bangemann.dev/configure-wordpress-rest-api-setup-data-fetching-4af5161095f6" />
+  <LinkCard title="WordPress headless avec Astro : Installation d'Astro et récupération d'articles avec WP-GraphQL (en)" href="https://www.youtube.com/watch?v=2PSqABrME28" />
+  <LinkCard title="Créer un site WordPress sans tête avec Astro (en)" href="https://www.youtube.com/watch?v=54U7dVmhyxE" />
+  <LinkCard title="Démo de démarrage de WordPress sans tête avec Astro par WPEngine (en)" href="https://www.youtube.com/watch?v=BcoxZZIfESI" />
+  <LinkCard title="WordPress headless avec Astro – Créez un blog simple à partir de zéro avec Tailwind CSS (en)" href="https://fullstackdigital.io/blog/headless-wordpress-with-astro-build-a-simple-blog/" />
+  <LinkCard title="Créer un site e-commerce avec WordPress Headless et Astro (en)" href="https://shaxadd.medium.com/building-an-e-commerce-website-with-headless-wordpress-and-astro-2712d8c8b735" />
+   <LinkCard title="Créer un site WordPress sans tête avec Astro (en)" href="https://wpengine.com/builders/building-headless-wordpress-site-astro/" />
+  <LinkCard title="Créer un site web Astro avec WordPress en tant que CMS headless (en)" href="https://blog.openreplay.com/building-an-astro-website-with-wordpress-as-a-headless-cms/" />
+ 
+
+</CardGrid>
+
+:::note[Vous avez une ressource à partager ?]
+Si vous avez trouvé (ou créé !) une vidéo ou un article de blog utile sur l'utilisation de WordPress avec Astro, [ajoutez-le à cette liste](https://github.com/withastro/docs/edit/main/src/content/docs/en/guides/cms/wordpress.mdx) !
+:::

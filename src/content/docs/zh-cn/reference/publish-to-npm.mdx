@@ -2,7 +2,8 @@
 title: 发布到 NPM
 description: 学习如何将 Astro 组件发布到 NPM
 ---
-import FileTree from '~/components/FileTree.astro'
+import { Steps } from '@astrojs/starlight/components';
+import { FileTree } from '@astrojs/starlight/components';
 
 创建了一个新的 Astro 组件？**发布到 [npm](https://npmjs.com/)**！
 
@@ -30,7 +31,7 @@ pnpm create astro@latest my-new-component-directory -- --template component
 ## 创建模块
 
 :::note[必要条件]
-在开始前，请先对以下内容有最基本的了解:
+在开始前，请先对以下内容有最基本的了解：
 
 - [Node 模块](https://docs.npmjs.com/creating-node-js-modules)
 - [模块 Manifest (`package.json`)](https://docs.npmjs.com/creating-a-package-json-file)
@@ -228,25 +229,30 @@ Astro 没有专门针对开发的模块模式。作为替代的是，你可以�
 
 ## 测试组件
 
-目前 Astro 并未提供测试运行器。**（如果你有兴趣帮忙，[欢迎加入我们的 Discord！](https://astro.build/chat/)）**。
+目前 Astro 并未提供测试运行器。**（如果你有兴趣帮忙，[欢迎加入我们的 Discord！](https://astro.build/chat)）**。
 
 同时，我们目前对测试的建议有：
 
+<Steps>
 1. 在 `demo/src/pages` 目录下添加用于测试的 `fixtures` 目录。
+
 2. 为你想运行的每个测试添加一个新的页面。
+
 3. 每个页面应该包括组件需要测试的不同用法。
+
 4. 运行 `astro build` 进行构建，然后比较 `dist/__fixtures__/` 目录的输出与预期间的差异。
 
-<FileTree>
-- my-project/demo/src/pages/\_\_fixtures\_\_/
-  - test-name-01.astro
-  - test-name-02.astro
-  - test-name-03.astro
-</FileTree>
+    <FileTree>
+    - my-project/demo/src/pages/\_\_fixtures\_\_/
+      - test-name-01.astro
+      - test-name-02.astro
+      - test-name-03.astro
+    </FileTree>
+</Steps>
 
 ## 发布组件
 
-当模块准备就绪后，你可以使用 `npm publish` 命令将其发布到 npm。如果发布失败，请确保你已经使用 `npm login` 登录了 npm 账号 ，并 `package.json` 文件没有问题。如果发布成功，那就好了！
+当模块准备就绪后，你可以使用 `npm publish` 命令将其发布到 npm。如果发布失败，请确保你已经使用 `npm login` 登录了 npm 账号，并 `package.json` 文件没有问题。如果发布成功，那就好了！
 
 注意 Astro 模块没有 `build` 步骤。Astro 本身支持的任何类型文件（例如 `.astro`、`.ts`、`.jsx` 和 `.css`）都可以直接发布，无需构建步骤。
 
@@ -256,32 +262,41 @@ Astro 没有专门针对开发的模块模式。作为替代的是，你可以�
 
 欢迎通过[集成库](https://astro.build/integrations/)分享你的辛勤工作。
 
+:::tip
+如果在构建你的集成过程中需要帮助，或者只是想要认识其他集成构建者？我们在 [Discord 服务器](https://astro.build/chat)上设有专门的 `#integrations` 频道。过来打个招呼吧！
+:::
+
 ### `package.json` 数据
 
-该库每晚自动更新，拉入每一个使用 `astro-component` 或者 `withastro` 关键字发布到 NPM 的模块。
+该库每周自动更新，拉入每一个使用 `astro-component` 或者 `withastro` 关键字发布到 NPM 的模块。
 
 它会从模块的 `package.json` 文件中读取 `name`、`description`、`repository` 和 `homepage` 数据。
 
 添加头像是凸显品牌的好方法。在你的的模块发布后，你可以[在 GitHub 提交一个 issue](https://github.com/withastro/astro.build/issues/new/choose)并附上你的头像，我们会把它添加到列表中。
 
 :::tip
-需要覆盖从 NPM 读取的信息？没问题! [提交带有更新后信息的 issue](https://github.com/withastro/astro.build/issues/new/choose)。我们将使用自定义信息替代 `name`、`description` 或 `homepage`。
+需要覆盖从 NPM 读取的信息？没问题！[提交带有更新后信息的 issue](https://github.com/withastro/astro.build/issues/new/choose)。我们将使用自定义信息替代 `name`、`description` 或 `homepage`。
 :::
 
-### 集合
+### 分类
 
-除了必要的 `astro-component` 或 `withastro` 关键词外，我们也会使用特殊的关键词将模块进行分类。包括以下任一关键词都会将你的集成添加到相应的集合中。
+除了必要的 `astro-component` 或 `withastro` 关键词外，我们也会使用特殊的关键词将模块进行分类。包括以下任一关键词都会将你的集成添加到相应的分类中。
 
-| 集合         | 关键词                                    |
-|------------ | ---------------------------------------- |
-| 无障碍辅助功能| `a11y`, `accessibility`                       |
-| 适配器      | `astro-adapter`                               |
-| 统计        | `analytics`                                   |
-| CSS + UI   | `css`, `ui`, `icon`, `icons`, `renderer`      |
-| 框架        | `renderer`                                    |
-| 性能 + SEO  | `performance`, `perf`, `seo`, `optimization`  |
+| 分类         | 关键词                                         |
+|------------ | --------------------------------------------- |
+| 无障碍辅助功能 | `a11y`, `accessibility`                       |
+| 适配器        | `astro-adapter`                              |
+| 统计         | `analytics`                                   |
+| CSS + UI    | `css`, `ui`, `icon`, `icons`, `renderer`      |
+| 框架         | `renderer`                                    |
+| 内容加载器    | `astro-loader`                                |
+| 图片 + 媒体   | `media`, `image`, `images`, `video`, `audio`  |
+| 性能 + SEO   | `performance`, `perf`, `seo`, `optimization`  |
+| 开发工具栏    | `devtools`, `dev-overlay`, `dev-toolbar`      |
+| 工具类       | `tooling`, `utils`, `utility`                 |
 
+不包含任何与类别匹配的关键字的包将显示为 `Uncategorized`。
 
 ## 分享
 
-我们鼓励你分享创造，我们真的很喜欢看到有才华的 Astronauts 创作。来吧，在我们的 [Discord 服务器](https://astro.build/chat/)中与我们分享你的创作，或者在 Twitter 中提及[@astrodotbuild](https://twitter.com/astrodotbuild)!
+我们鼓励你分享创造，我们真的很喜欢看到有才华的 Astronauts 创作。来吧，在我们的 [Discord 服务器](https://astro.build/chat)中与我们分享你的创作，或者在 Twitter 中提及[@astrodotbuild](https://twitter.com/astrodotbuild)!

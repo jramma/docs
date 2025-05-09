@@ -3,6 +3,9 @@ title: Référence des directives de modèle
 i18nReady: true
 ---
 
+import Since from '~/components/Since.astro';
+import ReadMore from '~/components/ReadMore.astro'
+
 Les **directives de modèle** sont un type spécial d'attribut HTML disponible dans n'importe quel modèle de composant Astro (fichiers `.astro`). Certains peuvent également être utilisés dans les fichiers `.mdx`.
 
 Les directives de modèle sont utilisées pour contrôler le comportement d'un élément ou d'un composant d'une certaine manière. Une directive de modèle peut activer certaines fonctionnalités du compilateur qui vous facilitent la vie (comme l'utilisation de `class:list` au lieu de `class`). Ou, une directive pourrait dire au compilateur d'Astro de faire quelque chose de spécial avec un composant (comme l'hydratation avec `client:load`).
@@ -30,7 +33,7 @@ Une directive de modèle n'est jamais incluse directement dans la sortie HTML fi
 - `string` : ajouté à l'élément `class`
 - `Object` : toutes les clés truthy sont ajoutées à l'élément `class`
 - `Array` : aplati
-- `Set` : aplati
+- `false`, `null`, ou `undefined`: ignoré
 
 ```astro
 <!-- Ceci -->
@@ -38,8 +41,6 @@ Une directive de modèle n'est jamais incluse directement dans la sortie HTML fi
 <!-- Devient -->
 <span class="bonjour salut monde ami"></span>
 ```
-
-Les valeurs en double sont supprimées automatiquement.
 
 ### `set:html`
 
@@ -106,11 +107,11 @@ Ceci est particulièrement utile lors de l'utilisation de `fetch()`. Par exemple
 Cela équivaut à passer directement une variable dans une expression de modèle (ex : `<div>{someText}</div>`) et, par conséquent, cette directive n'est pas couramment utilisée.
 ## Directives Client
 
-Ces directives contrôlent la façon dont les [composants de Framework UI](/fr/core-concepts/framework-components/) sont hydratés sur la page.
+Ces directives contrôlent la façon dont les [composants de Framework UI](/fr/guides/framework-components/) sont hydratés sur la page.
 
 Par défaut, un composant de Framework UI n'est pas hydraté côté client. Si aucune directive `client:*` n'est fournie, son HTML est rendu sur la page sans JavaScript.
 
-Une directive client ne peut être utilisée que sur un composant de Framework UI directement importé dans un composant `.astro`. Les directives d'hydratation ne sont pas prises en charge lors de l'utilisation de [balises dynamiques](/fr/core-concepts/astro-syntax/#dynamic-tags) et de [composants personnalisés transmis via la prop `components`](/fr/guides/markdown-content/#composants-personnalisés-avec-du-mdx-importé).
+Une directive client ne peut être utilisée que sur un composant de Framework UI directement importé dans un composant `.astro`. Les directives d'hydratation ne sont pas prises en charge lors de l'utilisation de [balises dynamiques](/fr/reference/astro-syntax/#balises-dynamiques) et de [composants personnalisés transmis via la propriété `components`](/fr/guides/integrations-guide/mdx/#composants-personnalisés-avec-mdx-importé).
 
 ### `client:load`
 
@@ -132,16 +133,40 @@ Charge et hydrate le composant JavaScript une fois que le chargement initial de 
 ```astro
 <ShowHideButton client:idle />
 ```
+
+#### `timeout`
+
+<p><Since v="4.15.0" /></p>
+
+Le temps d'attente maximal, en millisecondes, avant d'hydrater le composant, même si la page n'a pas encore terminé son chargement initial.
+
+Cela vous permet de transmettre une valeur pour [l'option `timeout` de la spécification `requestIdleCallback()`](https://www.w3.org/TR/requestidlecallback/#the-requestidlecallback-method). Cela signifie que vous pouvez retarder l'hydratation des éléments d'interface utilisateur de moindre priorité avec plus de contrôle pour garantir que votre élément est interactif dans un délai déterminé.
+
+```astro
+<ShowHideButton client:idle={{timeout: 500}} />
+```
+
 ### `client:visible`
 
 - **Priorité :** Faible
-- **Utile pour :** Les éléments UI de faible priorité qui sont soit loin en bas de page ("sous la ligne de flottaison") ou qui consomment tellement de ressources que vous préféreriez ne pas les charger du tout si l'utilisateur ne voit jamais ces éléments.
+- **Utile pour :** Les éléments UI de faible priorité qui sont soit loin en bas de page (« sous la ligne de flottaison ») ou qui consomment tellement de ressources que vous préféreriez ne pas les charger du tout si l'utilisateur ne voit jamais ces éléments.
 
 Charge et hydrate le JavaScript du composant une fois que le celui-ci est entré dans la fenêtre d'affichage de l'utilisateur. Ceci utilise un `IntersectionObserver` en interne pour garder une trace de la visibilité.
 
 ```astro
 <HeavyImageCarousel client:visible />
 ```
+
+#### `client:visible={{rootMargin}}`
+<p><Since v="4.1.0" /></p>
+
+Optionnellement, une valeur pour `rootMargin` peut être passée au `IntersectionObserver` sous-jacent. Lorsque `rootMargin` est spécifié, le JavaScript du composant s'hydrate lorsqu'une marge spécifiée (en pixels) autour du composant entre dans le viewport, plutôt que le composant lui-même.
+
+```astro
+<HeavyImageCarousel client:visible={{rootMargin: "200px"}} />
+```
+
+La spécification d'une valeur de `rootMargin` peut réduire les décalages de mise en page (CLS), donner plus de temps à un composant pour s'hydrater sur des connexions Internet plus lentes, et rendre les composants interactifs plus tôt, améliorant ainsi la stabilité et la réactivité de la page.
 
 ### `client:media`
 
@@ -171,11 +196,35 @@ Si le composant est déjà masqué et affiché par une requête multimédia dans
 <SomeSolidComponent client:only="solid-js" />
 ```
 
+#### Afficher le contenu en cours de chargement
+
+Pour les composants qui s'affichent uniquement sur le client, il est également possible d'afficher le contenu de secours pendant leur chargement. Utilisez `slot="fallback"` sur n'importe quel élément enfant pour créer du contenu qui sera affiché uniquement jusqu'à ce que votre composant client soit disponible :
+
+```astro {2}
+<ClientComponent client:only="vue">
+  <div slot="fallback">En cours de chargement</div>
+</ClientComponent>
+```
+
 ### Directives Client personnalisées
 
 Depuis Astro 2.6.0, les intégrations peuvent également ajouter des directives `client:*` personnalisées pour modifier comment et quand les composants doivent être hydratés.
 
-Visitez la page [API `addClientDirective`](/fr/reference/integrations-reference/#addclientdirective-option) pour en savoir plus sur la création d'une directive client personnalisée.
+Visitez la page [API `addClientDirective`](/fr/reference/integrations-reference/#option-addclientdirective) pour en savoir plus sur la création d'une directive client personnalisée.
+
+## Directives serveur
+
+Ces directives contrôlent la manière dont les composants de l'île de serveur sont rendus.
+
+### `server:defer`
+
+La directive `server:defer` transforme le composant en une île serveur, provoquant son rendu à la demande, en dehors de la portée du reste du rendu de la page.
+
+<ReadMore>En savoir plus sur l'utilisation des [composants d'île de serveur](/fr/guides/server-islands/).</ReadMore>
+
+```astro
+<Avatar server:defer />
+```
 
 ## Directives de Script et de Style
 
@@ -188,7 +237,7 @@ Par défaut, Astro limite automatiquement la portée des règles CSS du `<style>
 
 Vous pouvez combiner `<style>` et `<style is:global>` ensemble dans le même composant pour créer des règles de style globales tout en limitant la portée de la plupart des règles CSS de votre composant.
 
-📚 Consultez la page [CSS et Stylisation](/fr/guides/styling/#styles-globaux) pour plus de détails sur le fonctionnement des styles globaux.
+<ReadMore>Consultez la page [CSS et Stylisation](/fr/guides/styling/#styles-globaux) pour plus de détails sur le fonctionnement des styles globaux.</ReadMore>
 
 ```astro
 <style is:global>
@@ -212,6 +261,7 @@ La directive `is:inline` signifie que les balises `<style>` et `<script>` :
 
 :::caution
 La directive `is:inline` est implicite chaque fois qu'un attribut autre que `src` est utilisé sur une balise `<script>` ou `<style>`.
+L'unique exception est l'utilisation de la [directive `define:vars`](/fr/reference/directives-reference/#definevars) sur la balise `<style>` qui n'implique pas `is:inline` automatiquement.
 :::
 
 ```astro
@@ -227,11 +277,11 @@ La directive `is:inline` est implicite chaque fois qu'un attribut autre que `src
 </script>
 ```
 
-📚 Découvrez comment les [scripts côté client](/fr/guides/client-side-scripts/) fonctionnent dans les composants Astro.
+<ReadMore>Découvrez comment les [scripts côté client](/fr/guides/client-side-scripts/) fonctionnent dans les composants Astro.</ReadMore>
 
 ### `define:vars`
 
-`define:vars={...}` peut passer des variables côté serveur du frontmatter de votre composant dans les balises client `<script>` ou `<style>`. Toute variable du frontmatter sérialisable en JSON est supportée, y compris les "props" transmis à votre composant via `Astro.props`. Les valeurs sont sérialisées avec [`JSON.stringify()`](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
+`define:vars={...}` peut passer des variables côté serveur du frontmatter de votre composant dans les balises client `<script>` ou `<style>`. Toute variable du frontmatter sérialisable en JSON est supportée, y compris les `props` transmis à votre composant via `Astro.props`. Les valeurs sont sérialisées avec [`JSON.stringify()`](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
 
 ```astro
 ---
@@ -256,7 +306,7 @@ L'utilisation de `define:vars` sur une balise `<script>` implique la [directive 
 
 En effet, lorsque Astro regroupe un script, il inclut et exécute le script une seule fois même si vous incluez le composant contenant le script plusieurs fois sur une même page. `define:vars` nécessite qu'un script soit réexécuté avec chaque ensemble de valeurs, donc Astro crée un script en ligne à la place.
 
-Pour les scripts, essayez plutôt de [transmettre les variables aux scripts manuellement](/fr/guides/client-side-scripts/#passer-les-variables-frontmatter-aux-scripts).
+Pour les scripts, essayez plutôt de [transmettre les variables aux scripts manuellement](/fr/guides/client-side-scripts/#transmettre-les-variables-du-frontmatter-aux-scripts).
 :::
 
 ## Directives Avancées
